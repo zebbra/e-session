@@ -63,10 +63,13 @@
 </template>
 
 <script lang="ts">
-export default {
+import { defineComponent } from "nuxt-composition-api";
+
+export default defineComponent({
+  name: "Index",
   components: {
     Logo: () => import("~/components/Logo.vue"),
     VuetifyLogo: () => import("~/components/VuetifyLogo.vue"),
   },
-};
+});
 </script>

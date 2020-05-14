@@ -3,8 +3,9 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-export default Vue.extend({
+import { defineComponent } from "nuxt-composition-api";
+
+export default defineComponent({
   name: "VuetifyLogo",
 });
 </script>

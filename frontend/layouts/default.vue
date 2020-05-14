@@ -65,8 +65,11 @@
 </template>
 
 <script lang="ts">
-export default {
-  data() {
+import { defineComponent } from "nuxt-composition-api";
+
+export default defineComponent({
+  name: "DefaultLayout",
+  setup() {
     return {
       clipped: false,
       drawer: false,
@@ -89,5 +92,5 @@ export default {
       title: "Vuetify.js",
     };
   },
-};
+});
 </script>

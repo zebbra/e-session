@@ -39,7 +39,12 @@ const config: Configuration = {
   /*
    ** Nuxt.js dev-modules
    */
-  buildModules: ["@nuxt/typescript-build", "@nuxtjs/vuetify"],
+  buildModules: [
+    "@nuxt/typescript-build",
+    "@nuxtjs/vuetify",
+    // Doc: https://github.com/nuxt-community/composition-api
+    "nuxt-composition-api",
+  ],
 
   /*
    ** Nuxt.js modules

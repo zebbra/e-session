@@ -1898,6 +1898,13 @@
   optionalDependencies:
     prettier "^1.18.2"
 
+"@vue/composition-api@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@vue/composition-api/-/composition-api-0.5.0.tgz#2dbaa02a5d1f5d0d407d53d5529fe444aa8362f3"
+  integrity sha512-9QDFWq7q839G1CTTaxeruPOTrrVOPSaVipJ2TxxK9QAruePNTHOGbOOFRpc8WLl4YPsu1/c29yBhMVmrXz8BZw==
+  dependencies:
+    tslib "^1.9.3"
+
 "@vue/test-utils@^1.0.0-beta.27":
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@vue/test-utils/-/test-utils-1.0.2.tgz#68134747cb88d996e4c9703ca4b103b4d23fda14"
@@ -7291,6 +7298,14 @@ num2fraction@^1.2.2:
   resolved "https://registry.yarnpkg.com/num2fraction/-/num2fraction-1.2.2.tgz#6f682b6a027a4e9ddfa4564cd2589d1d4e669ede"
   integrity sha1-b2gragJ6Tp3fpFZM0lidHU5mnt4=
 
+nuxt-composition-api@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/nuxt-composition-api/-/nuxt-composition-api-0.7.0.tgz#40d3e6049607bc74a69f7ced60e3e72252db7dfb"
+  integrity sha512-WXlqYcqKGBi9MRIMWlOF8fkIskG2sMYaO0dTWJg5DwEFYhDCWrDFMfjYhI/+w2OgKyY+G8MrJt1kj3RHxQmThw==
+  dependencies:
+    "@vue/composition-api" "^0.5.0"
+    defu "^2.0.2"
+
 nuxt-lazy-load@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/nuxt-lazy-load/-/nuxt-lazy-load-1.2.2.tgz#4dee7a36021917927446b2f1d5a9dbdb9db69a6e"
@@ -10128,7 +10143,7 @@ ts-node@^8.9.0:
     source-map-support "^0.5.17"
     yn "3.1.1"
 
-tslib@^1.8.1, tslib@^1.9.0:
+tslib@^1.8.1, tslib@^1.9.0, tslib@^1.9.3:
   version "1.13.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.13.0.tgz#c881e13cc7015894ed914862d276436fa9a47043"
   integrity sha512-i/6DQjL8Xf3be4K/E6Wgpekn5Qasl1usyw++dAA35Ue5orEn65VIxOA+YvNNl9HV3qv70T7CNwjODHZrLwvd1Q==
