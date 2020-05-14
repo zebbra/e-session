@@ -23,6 +23,8 @@ import { RoomModule } from './conference/room.module';
     // configure GraphQL module
     GraphQLModule.forRoot({
       autoSchemaFile: `${process.cwd()}/src/schema.gql`,
+      installSubscriptionHandlers: true,
+      debug: true,
     }),
 
     UserModule,

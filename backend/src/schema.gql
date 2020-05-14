@@ -16,3 +16,11 @@ type Query {
   user(id: Float!): User!
   room(id: Float!): Room!
 }
+
+type Mutation {
+  createRoom(name: String!): Room!
+}
+
+type Subscription {
+  roomCreated: User!
+}
