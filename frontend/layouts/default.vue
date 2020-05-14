@@ -72,7 +72,7 @@ export default defineComponent({
   setup() {
     return {
       clipped: false,
-      drawer: false,
+      drawer: true,
       fixed: false,
       items: [
         {
@@ -84,6 +84,11 @@ export default defineComponent({
           icon: "mdi-chart-bubble",
           title: "Inspire",
           to: "/inspire",
+        },
+        {
+          icon: "mdi-information",
+          title: "Hello World",
+          to: "/hello",
         },
       ],
       miniVariant: false,
