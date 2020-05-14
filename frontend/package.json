@@ -5,6 +5,7 @@
   "author": "Hannes Wüthrich",
   "private": true,
   "scripts": {
+    "deps": "yarn upgrade-interactive --latest",
     "build": "nuxt-ts build",
     "generate": "nuxt-ts generate",
     "start": "nuxt-ts start",
@@ -23,18 +24,18 @@
   },
   "devDependencies": {
     "@nuxt/typescript-build": "^0.6.0",
-    "@nuxtjs/eslint-config-typescript": "^1.0.0",
-    "@nuxtjs/eslint-module": "^1.0.0",
+    "@nuxtjs/eslint-config-typescript": "^2.0.0",
+    "@nuxtjs/eslint-module": "^2.0.0",
     "@nuxtjs/vuetify": "^1.0.0",
     "@vue/test-utils": "^1.0.0-beta.27",
     "babel-eslint": "^10.0.1",
-    "babel-jest": "^24.1.0",
-    "eslint": "^6.1.0",
+    "babel-jest": "^26.0.1",
+    "eslint": "^7.0.0",
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-nuxt": ">=0.4.2",
     "eslint-plugin-prettier": "^3.1.2",
-    "jest": "^24.1.0",
-    "prettier": "^1.19.1",
+    "jest": "^26.0.1",
+    "prettier": "^2.0.5",
     "ts-jest": "^25.0.0",
     "vue-jest": "^4.0.0-0"
   }
