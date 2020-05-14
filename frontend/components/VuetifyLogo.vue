@@ -2,6 +2,11 @@
   <img class="VuetifyLogo" alt="Vuetify Logo" src="/vuetify-logo.svg" />
 </template>
 
+<script lang="ts">
+import Vue from "vue";
+export default Vue.extend({});
+</script>
+
 <style>
 .VuetifyLogo {
   height: 180px;

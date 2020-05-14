@@ -47,7 +47,8 @@ const config: Configuration = {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     "@nuxtjs/axios",
-    "@nuxtjs/pwa",
+    // Doc: https://pwa.nuxtjs.org/
+    ["@nuxtjs/pwa", { meta: false, icon: false, manifest: false }],
     // Doc: https://github.com/nuxt-community/dotenv-module
     "@nuxtjs/dotenv",
   ],
@@ -68,6 +69,16 @@ const config: Configuration = {
     },
     "/graphql": {
       target: process.env.API_PROXY_URL || "http://localhost:3001/",
+    },
+  },
+
+  /**
+   * Enable runtime linting after save file
+   * See https://typescript.nuxtjs.org/guide/lint.html#configuration
+   */
+  typescript: {
+    typeCheck: {
+      eslint: true,
     },
   },
 

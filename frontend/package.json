@@ -15,8 +15,7 @@
     "test": "jest"
   },
   "lint-staged": {
-    "*.{ts,js,vue}": "yarn lint",
-    "*.{css,vue}": "stylelint"
+    "*.{ts,js,vue}": "yarn lint"
   },
   "husky": {
     "hooks": {
