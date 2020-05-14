@@ -1,0 +1,18 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  id: Int!
+  name: String
+}
+
+type Room {
+  id: Int!
+  name: String
+}
+
+type Query {
+  user(id: Float!): User!
+  room(id: Float!): Room!
+}

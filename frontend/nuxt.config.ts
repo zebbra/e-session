@@ -66,6 +66,10 @@ const config: Configuration = {
     '/api/': {
       target: process.env.API_PROXY_URL || 'http://localhost:3001/',
       pathRewrite: { '^/api': '' }
+    },
+    '/graphql/': {
+      target: process.env.API_PROXY_URL || 'http://localhost:3001/',
+      pathRewrite: { '^/graphql': '' }
     }
   },
 

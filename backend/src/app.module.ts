@@ -3,6 +3,8 @@ import { LoggerModule } from 'nestjs-pino';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
+import { GraphQLModule } from '@nestjs/graphql';
+import { RoomModule } from './conference/room.module';
 
 @Module({
   imports: [
@@ -18,7 +20,13 @@ import { UserModule } from './user/user.module';
       },
     }),
 
+    // configure GraphQL module
+    GraphQLModule.forRoot({
+      autoSchemaFile: `${process.cwd()}/src/schema.gql`,
+    }),
+
     UserModule,
+    RoomModule,
   ],
   controllers: [AppController],
   providers: [AppService],
