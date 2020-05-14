@@ -11,7 +11,7 @@ class FindOneParams {
 @Controller('users')
 export class UserController {
   constructor(
-    @InjectPinoLogger(UserService.name)
+    @InjectPinoLogger(UserController.name)
     private readonly logger: PinoLogger,
 
     private readonly userService: UserService,
