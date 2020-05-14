@@ -4,7 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { GraphQLModule } from '@nestjs/graphql';
-import { RoomModule } from './conference/room.module';
+import { RoomModule } from './room/room.module';
 
 @Module({
   imports: [

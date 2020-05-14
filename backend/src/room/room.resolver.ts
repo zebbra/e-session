@@ -11,24 +11,27 @@ export class RoomResolver {
   constructor(private roomService: RoomService) {}
 
   @Query(returns => Room)
-  async room(@Args('id') id: number) {
-    return this.roomService.findOne(id);
+  async room(@Args('name') name: string) {
+    return this.roomService.findByName(name);
   }
 
   @Mutation(returns => Room)
-  async createRoom(@Args('name') name: string) {
-    const room = this.roomService.create(name);
-    pubSub.publish('roomCreated', { roomCreated: room });
+  async say(@Args('room') name: string, @Args('message') message: string) {
+    const room = this.roomService.say(name, message);
+    pubSub.publish('messagePosted', { room, message });
     return room;
   }
-
-  // @Subscription(returns => User)
-  // userJoined() {
-  //   return pubSub.asyncIterator('commentAdded');
-  // }
 
   @Subscription(returns => User)
   roomCreated() {
     return pubSub.asyncIterator('roomCreated');
+  }
+
+  @Subscription(returns => Room, {
+    filter: (payload, variables) => payload.room.name === variables.room,
+    resolve: payload => payload.room,
+  })
+  messagePosted(@Args('room') room: string) {
+    return pubSub.asyncIterator('messagePosted');
   }
 }
