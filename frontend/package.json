@@ -14,6 +14,15 @@
     "lint": "eslint --ext .js,.ts,.vue --ignore-path .gitignore .",
     "test": "jest"
   },
+  "lint-staged": {
+    "*.{ts,js,vue}": "yarn lint",
+    "*.{css,vue}": "stylelint"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
   "dependencies": {
     "@nuxt/typescript-runtime": "^0.4.0",
     "@nuxtjs/axios": "^5.3.6",
@@ -34,7 +43,9 @@
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-nuxt": ">=0.4.2",
     "eslint-plugin-prettier": "^3.1.2",
+    "husky": "^4.0.0",
     "jest": "^26.0.1",
+    "lint-staged": "^10.0.0",
     "prettier": "^2.0.5",
     "ts-jest": "^25.0.0",
     "vue-jest": "^4.0.0-0"
