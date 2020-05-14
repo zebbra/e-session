@@ -63,13 +63,10 @@
 </template>
 
 <script lang="ts">
-import Logo from "~/components/Logo.vue";
-import VuetifyLogo from "~/components/VuetifyLogo.vue";
-
 export default {
   components: {
-    Logo,
-    VuetifyLogo,
+    Logo: () => import("~/components/Logo.vue"),
+    VuetifyLogo: () => import("~/components/VuetifyLogo.vue"),
   },
 };
 </script>

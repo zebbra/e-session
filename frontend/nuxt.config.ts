@@ -45,6 +45,8 @@ const config: Configuration = {
    ** Nuxt.js modules
    */
   modules: [
+    // Doc: https://www.npmjs.com/package/nuxt-lazy-load/v/latest
+    "nuxt-lazy-load",
     // Doc: https://axios.nuxtjs.org/usage
     "@nuxtjs/axios",
     // Doc: https://pwa.nuxtjs.org/
