@@ -1,0 +1,16 @@
+# image:
+#   tag: git-f89268f
+
+# apiUrlBrowser: https://pandemia.k8s.zebbra.ch/api
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: pandemia.k8s.zebbra.ch
+  tls:
+    - secretName: pandemia-tls
+      hosts:
+        - pandemia.k8s.zebbra.ch

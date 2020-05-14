@@ -1,0 +1,6 @@
+releases:
+  - name: pandemia
+    namespace: pandemia
+    chart: ./helm
+    values:
+      - production.yaml
