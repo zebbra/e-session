@@ -1,10 +1,10 @@
-import { mount } from '@vue/test-utils'
-import Logo from '../components/Logo.vue'
+import { mount } from "@vue/test-utils";
+import Logo from "../components/Logo.vue";
 
-describe('Logo', () => {
-  const wrapper = mount(Logo)
+describe("Logo", () => {
+  const wrapper = mount(Logo);
 
-  test('is a Vue instance', () => {
-    expect(wrapper.exists()).toBeTruthy()
-  })
-})
+  test("is a Vue instance", () => {
+    expect(wrapper.exists()).toBeTruthy();
+  });
+});

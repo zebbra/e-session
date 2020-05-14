@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { PinoLogger, InjectPinoLogger } from 'nestjs-pino';
+import { Injectable } from "@nestjs/common";
+import { PinoLogger, InjectPinoLogger } from "nestjs-pino";
 
 @Injectable()
 export class AppService {
@@ -9,7 +9,7 @@ export class AppService {
   ) {}
 
   getHello(...params: any[]) {
-    this.logger.info('getHello(%o)', params);
-    return { hello: 'world' };
+    this.logger.info("getHello(%o)", params);
+    return { hello: "world" };
   }
 }
