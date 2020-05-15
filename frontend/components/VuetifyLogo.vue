@@ -2,6 +2,14 @@
   <img class="VuetifyLogo" alt="Vuetify Logo" src="/vuetify-logo.svg" />
 </template>
 
+<script lang="ts">
+import { defineComponent } from "nuxt-composition-api";
+
+export default defineComponent({
+  name: "VuetifyLogo",
+});
+</script>
+
 <style>
 .VuetifyLogo {
   height: 180px;

@@ -64,12 +64,15 @@
   </v-app>
 </template>
 
-<script>
-export default {
-  data() {
+<script lang="ts">
+import { defineComponent } from "nuxt-composition-api";
+
+export default defineComponent({
+  name: "DefaultLayout",
+  setup() {
     return {
       clipped: false,
-      drawer: false,
+      drawer: true,
       fixed: false,
       items: [
         {
@@ -82,6 +85,11 @@ export default {
           title: "Inspire",
           to: "/inspire",
         },
+        {
+          icon: "mdi-information",
+          title: "Hello World",
+          to: "/hello",
+        },
       ],
       miniVariant: false,
       right: true,
@@ -89,5 +97,5 @@ export default {
       title: "Vuetify.js",
     };
   },
-};
+});
 </script>

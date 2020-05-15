@@ -12,8 +12,9 @@
   </v-app>
 </template>
 
-<script>
+<script lang="ts">
 export default {
+  name: "ErrorLayout",
   layout: "empty",
   props: {
     error: {
@@ -27,7 +28,7 @@ export default {
       otherError: "An error occurred",
     };
   },
-  head() {
+  head(this: any) {
     const title =
       this.error.statusCode === 404 ? this.pageNotFound : this.otherError;
     return {
