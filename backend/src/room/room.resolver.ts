@@ -10,7 +10,7 @@ const pubSub = new PubSub();
 export class RoomResolver {
   constructor(private roomService: RoomService) {}
 
-  @Query((returns) => Room)
+  @Query((returns) => Room, { nullable: true })
   async room(@Args("name") name: string) {
     return this.roomService.findByName(name);
   }

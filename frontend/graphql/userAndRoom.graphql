@@ -1,0 +1,13 @@
+query getUserAndRoom($id: Float!, $name: String!) {
+  user(id: $id) {
+    id
+    name
+  }
+  room(name: $name) {
+    id
+    name
+    messages {
+      text
+    }
+  }
+}

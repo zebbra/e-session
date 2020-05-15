@@ -65,11 +65,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "nuxt-composition-api";
+import { defineComponent, provide, useContext } from "nuxt-composition-api";
+import { DefaultApolloClient } from "@vue/apollo-composable";
 
 export default defineComponent({
   name: "DefaultLayout",
   setup() {
+    const { app } = useContext();
+    provide(DefaultApolloClient, app.apolloProvider.defaultClient);
+
     return {
       clipped: false,
       drawer: true,
@@ -81,14 +85,14 @@ export default defineComponent({
           to: "/",
         },
         {
-          icon: "mdi-chart-bubble",
-          title: "Inspire",
-          to: "/inspire",
+          icon: "mdi-information",
+          title: "Rest API Example",
+          to: "/hello",
         },
         {
           icon: "mdi-information",
-          title: "Hello World",
-          to: "/hello",
+          title: "Apollo API Example",
+          to: "/apollo",
         },
         {
           icon: "mdi-home-floor-1",
