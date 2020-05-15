@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { PinoLogger, InjectPinoLogger } from 'nestjs-pino';
-import { User } from './user.model';
+import { Injectable } from "@nestjs/common";
+import { PinoLogger, InjectPinoLogger } from "nestjs-pino";
+import { User } from "./user.model";
 
 @Injectable()
 export class UserService {
@@ -10,7 +10,7 @@ export class UserService {
   ) {}
 
   findOne(id: number): User {
-    this.logger.info('findOne(%d)', id);
+    this.logger.info("findOne(%d)", id);
     return { id, name: `User ${id}` };
   }
 }

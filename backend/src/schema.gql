@@ -10,17 +10,24 @@ type User {
 type Room {
   id: Int!
   name: String
+  messages: [Message!]!
+}
+
+type Message {
+  room: Room!
+  text: String!
 }
 
 type Query {
   user(id: Float!): User!
-  room(id: Float!): Room!
+  room(name: String!): Room!
 }
 
 type Mutation {
-  createRoom(name: String!): Room!
+  say(message: String!, room: String!): Room!
 }
 
 type Subscription {
   roomCreated: User!
+  messagePosted(room: String!): Room!
 }
