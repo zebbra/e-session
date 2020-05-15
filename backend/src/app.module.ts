@@ -1,21 +1,21 @@
-import { Module } from '@nestjs/common';
-import { LoggerModule } from 'nestjs-pino';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { UserModule } from './user/user.module';
-import { GraphQLModule } from '@nestjs/graphql';
-import { RoomModule } from './room/room.module';
+import { Module } from "@nestjs/common";
+import { LoggerModule } from "nestjs-pino";
+import { AppController } from "./app.controller";
+import { AppService } from "./app.service";
+import { UserModule } from "./user/user.module";
+import { GraphQLModule } from "@nestjs/graphql";
+import { RoomModule } from "./room/room.module";
 
 @Module({
   imports: [
     // configure HTTP logger
     LoggerModule.forRoot({
       pinoHttp: {
-        level: process.env.LOG_LEVEL || 'debug',
+        level: process.env.LOG_LEVEL || "debug",
         prettyPrint: {
           translateTime: true,
-          messageFormat: '[{context}] - {msg}',
-          ignore: 'pid,hostname,context',
+          messageFormat: "[{context}] - {msg}",
+          ignore: "pid,hostname,context",
         },
       },
     }),

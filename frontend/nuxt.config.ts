@@ -1,30 +1,30 @@
-import { Configuration } from '@nuxt/types'
+import { Configuration } from "@nuxt/types";
 
 const config: Configuration = {
-  mode: 'universal',
+  mode: "universal",
 
   /*
    ** Headers of the page
    */
   head: {
-    titleTemplate: '%s - ' + process.env.npm_package_name,
-    title: process.env.npm_package_name || '',
+    titleTemplate: "%s - " + process.env.npm_package_name,
+    title: process.env.npm_package_name || "",
     meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      { charset: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
       {
-        hid: 'description',
-        name: 'description',
-        content: process.env.npm_package_description || ''
-      }
+        hid: "description",
+        name: "description",
+        content: process.env.npm_package_description || "",
+      },
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
+    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
   },
 
   /*
    ** Customize the progress-bar color
    */
-  loading: { color: '#fff' },
+  loading: { color: "#fff" },
 
   /*
    ** Global CSS
@@ -39,17 +39,17 @@ const config: Configuration = {
   /*
    ** Nuxt.js dev-modules
    */
-  buildModules: ['@nuxt/typescript-build', '@nuxtjs/vuetify'],
+  buildModules: ["@nuxt/typescript-build", "@nuxtjs/vuetify"],
 
   /*
    ** Nuxt.js modules
    */
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
-    '@nuxtjs/axios',
-    '@nuxtjs/pwa',
+    "@nuxtjs/axios",
+    "@nuxtjs/pwa",
     // Doc: https://github.com/nuxt-community/dotenv-module
-    '@nuxtjs/dotenv'
+    "@nuxtjs/dotenv",
   ],
 
   /*
@@ -57,18 +57,18 @@ const config: Configuration = {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    prefix: '/api',
+    prefix: "/api",
     proxy: true,
-    debug: true
+    debug: true,
   },
 
   proxy: {
-    '/api': {
-      target: process.env.API_PROXY_URL || 'http://localhost:3001/'
+    "/api": {
+      target: process.env.API_PROXY_URL || "http://localhost:3001/",
     },
-    '/graphql': {
-      target: process.env.API_PROXY_URL || 'http://localhost:3001/'
-    }
+    "/graphql": {
+      target: process.env.API_PROXY_URL || "http://localhost:3001/",
+    },
   },
 
   /*
@@ -76,7 +76,7 @@ const config: Configuration = {
    ** https://github.com/nuxt-community/vuetify-module
    */
   vuetify: {
-    customVariables: ['~/assets/variables.scss']
+    customVariables: ["~/assets/variables.scss"],
     // theme: {
     //   dark: true,
     //   themes: {
@@ -91,7 +91,7 @@ const config: Configuration = {
     //     }
     //   }
     // }
-  }
+  },
 
   /*
    ** Build configuration
@@ -102,6 +102,6 @@ const config: Configuration = {
   //    */
   //   extend(config, ctx) {}
   // }
-}
+};
 
-export default config
+export default config;

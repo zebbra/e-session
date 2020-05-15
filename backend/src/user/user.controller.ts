@@ -1,14 +1,14 @@
-import { Controller, Get, Param } from '@nestjs/common';
-import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
-import { IsNumberString } from 'class-validator';
-import { UserService } from './user.service';
+import { Controller, Get, Param } from "@nestjs/common";
+import { InjectPinoLogger, PinoLogger } from "nestjs-pino";
+import { IsNumberString } from "class-validator";
+import { UserService } from "./user.service";
 
 class FindOneParams {
   @IsNumberString()
   id: number;
 }
 
-@Controller('users')
+@Controller("users")
 export class UserController {
   constructor(
     @InjectPinoLogger(UserController.name)
@@ -17,9 +17,9 @@ export class UserController {
     private readonly userService: UserService,
   ) {}
 
-  @Get(':id')
+  @Get(":id")
   get(@Param() params: FindOneParams) {
-    this.logger.info('getting user: %o', params);
+    this.logger.info("getting user: %o", params);
     return this.userService.findOne(params.id);
   }
 }

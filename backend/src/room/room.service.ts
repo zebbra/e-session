@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { PinoLogger, InjectPinoLogger } from 'nestjs-pino';
-import { Room } from './room.model';
+import { Injectable } from "@nestjs/common";
+import { PinoLogger, InjectPinoLogger } from "nestjs-pino";
+import { Room } from "./room.model";
 
 @Injectable()
 export class RoomService {
@@ -21,12 +21,12 @@ export class RoomService {
   }
 
   findByName(name: string): Room | null {
-    this.logger.info('findByName(%s)', name);
-    return this.rooms.find(room => room.name == name);
+    this.logger.info("findByName(%s)", name);
+    return this.rooms.find((room) => room.name == name);
   }
 
   say(room: string, message: string): Room {
-    this.logger.info('say(%s)', message);
+    this.logger.info("say(%s)", message);
     return this.lookup(room).say(message);
   }
 }

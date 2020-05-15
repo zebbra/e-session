@@ -1,15 +1,15 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { User } from 'src/user/user.model';
+import { Field, Int, ObjectType } from "@nestjs/graphql";
+import { User } from "src/user/user.model";
 
 @ObjectType()
 export class Room {
-  @Field(type => Int)
+  @Field((type) => Int)
   id: number;
 
   @Field({ nullable: true })
   name?: string;
 
-  @Field(type => [Message])
+  @Field((type) => [Message])
   messages: Message[] = [];
 
   constructor(name: string) {
@@ -24,7 +24,7 @@ export class Room {
 
 @ObjectType()
 export class Message {
-  @Field(type => Room)
+  @Field((type) => Room)
   room: Room;
 
   @Field()
