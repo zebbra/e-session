@@ -1,0 +1,8 @@
+subscription onMessagePosted($room: String!) {
+  messagePosted(room: $room) {
+    name
+    messages {
+      text
+    }
+  }
+}

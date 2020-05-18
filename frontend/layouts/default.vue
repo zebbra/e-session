@@ -95,6 +95,11 @@ export default defineComponent({
           to: "/apollo",
         },
         {
+          icon: "mdi-information",
+          title: "Apollo Subscriptions Example",
+          to: "/subscriptions",
+        },
+        {
           icon: "mdi-home-floor-1",
           title: "Example Room",
           to: "/rooms/1",
