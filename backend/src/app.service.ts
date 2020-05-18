@@ -9,9 +9,9 @@ export class AppService {
     private readonly logger: PinoLogger,
   ) {}
 
-  async getHello(...params: any[]) {
+  async getHello(params: { test: string }) {
     await delay(500);
-    this.logger.info("getHello(%o)", params);
+    // this.logger.info("getHello(%o)", params);
     return { hello: "world" };
   }
 }

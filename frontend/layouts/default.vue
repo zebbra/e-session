@@ -87,7 +87,7 @@ export default defineComponent({
         {
           icon: "mdi-information",
           title: "Rest API Example",
-          to: "/hello",
+          to: "/rest",
         },
         {
           icon: "mdi-information",

@@ -1,4 +1,4 @@
-import { Controller, Get } from "@nestjs/common";
+import { Controller, Get, Query } from "@nestjs/common";
 import { InjectPinoLogger, PinoLogger } from "nestjs-pino";
 import { AppService } from "./app.service";
 
@@ -10,8 +10,8 @@ export class AppController {
   ) {}
 
   @Get("/hello")
-  getHello() {
-    this.logger.debug("hello", { world: 1 });
-    return this.appService.getHello({ test: 1 });
+  getHello(@Query("text") text = "default") {
+    // this.logger.debug("hello", { text });
+    return this.appService.getHello({ test: text });
   }
 }
