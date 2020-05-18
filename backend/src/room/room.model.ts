@@ -13,6 +13,7 @@ export class Room {
   messages: Message[] = [];
 
   constructor(name: string) {
+    this.id = 1;
     this.name = name;
   }
 

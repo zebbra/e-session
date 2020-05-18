@@ -24,7 +24,7 @@ const config: Configuration = {
   /*
    ** Customize the progress-bar color
    */
-  loading: { color: "#fff" },
+  loading: { color: "red" },
 
   /*
    ** Global CSS
@@ -34,7 +34,7 @@ const config: Configuration = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ["~/plugins/axios-store"],
+  plugins: ["~/plugins/axios-store", "~/plugins/axios-instance"],
 
   /*
    ** Nuxt.js dev-modules
@@ -44,6 +44,8 @@ const config: Configuration = {
     "@nuxtjs/vuetify",
     // Doc: https://github.com/nuxt-community/composition-api
     "nuxt-composition-api",
+    // Doc: https://github.com/nuxt-community/apollo-module
+    "@nuxtjs/apollo",
   ],
 
   /*
@@ -60,6 +62,32 @@ const config: Configuration = {
     "@nuxtjs/dotenv",
   ],
 
+  /**
+   * Apollo module configuration
+   * See https://github.com/nuxt-community/apollo-module
+   */
+  apollo: {
+    // (Optional) Default 'apollo' definition
+    defaultOptions: {
+      // See 'apollo' definition
+      // For example: default query options
+      $query: {
+        loadingKey: "loading",
+        fetchPolicy: "cache-and-network",
+      },
+    },
+    // required
+    clientConfigs: {
+      default: {
+        // required
+        httpEndpoint:
+          process.env.HTTP_GRAPHQL_ENDPOINT || "http://localhost:3001/graphql",
+        wsEndpoint:
+          process.env.WS_GRAPHQL_ENDPOINT || "ws://localhost:3001/graphql", // optional
+      },
+    },
+  },
+
   /*
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
@@ -67,7 +95,7 @@ const config: Configuration = {
   axios: {
     prefix: "/api",
     proxy: true,
-    debug: true,
+    debug: process.env.NODE_ENV === "development",
   },
 
   proxy: {
@@ -98,6 +126,14 @@ const config: Configuration = {
     treeShake: true,
     optionsPath: "~/vuetify.options.ts",
   },
+
+  loaders: [
+    {
+      test: /\.(graphql|gql)$/,
+      exclude: /node_modules/,
+      loader: "graphql-tag/loader",
+    },
+  ],
 
   /*
    ** Build configuration

@@ -20,7 +20,7 @@ type Message {
 
 type Query {
   user(id: Float!): User!
-  room(name: String!): Room!
+  room(name: String!): Room
 }
 
 type Mutation {

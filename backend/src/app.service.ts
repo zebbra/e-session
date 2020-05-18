@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PinoLogger, InjectPinoLogger } from "nestjs-pino";
+import { delay } from "../utils/helpers";
 
 @Injectable()
 export class AppService {
@@ -8,8 +9,9 @@ export class AppService {
     private readonly logger: PinoLogger,
   ) {}
 
-  getHello(...params: any[]) {
-    this.logger.info("getHello(%o)", params);
+  async getHello(params: { test: string }) {
+    await delay(500);
+    // this.logger.info("getHello(%o)", params);
     return { hello: "world" };
   }
 }
