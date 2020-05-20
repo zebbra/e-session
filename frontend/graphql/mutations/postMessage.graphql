@@ -1,8 +1,5 @@
 mutation postMessage($room: String!, $message: String!) {
   say(message: $message, room: $room) {
-    name
-    messages {
-      text
-    }
+    text
   }
 }

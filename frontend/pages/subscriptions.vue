@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title>Example Subscriptions for {{ name }}</v-card-title>
+    <v-card-title>Example Subscriptions for {{ room.name }}</v-card-title>
     <v-card-text>
       <h2>Messages</h2>
       <input v-model="text" placeholder="Enter a message" />
@@ -8,7 +8,7 @@
         Send message
       </button>
       <ul id="messages-list">
-        <li v-for="(message, index) in messages" :key="index">
+        <li v-for="(message, index) in room.messages" :key="index">
           {{ message.text }}
         </li>
       </ul>
@@ -27,22 +27,17 @@ export default defineComponent({
     title: "Example Subscriptions",
   },
   setup() {
-    const { result, loading, subscribeToMore, refetch } = fetchRoom(
-      "Example Room",
-    );
-    const name = useResult(result, "Room not found", (data) => data.room.name);
-    const messages = useResult(result, [], (data) => data.room.messages);
+    const name = "Example Room";
+    const { result, loading, subscribeToMore } = fetchRoom(name);
+    const room = useResult(result);
 
-    // here we use the signal approach to simply refetch the room on message added
-    // another approach would be to change the backend to send the newly addes message
-    // and we add it to the messages array manually
-    // not sure which approach to use
-    subscribeToMore(() => ({
+    subscribeToMore<{}, { messagePosted: { text: string } }>(() => ({
       document: require("~/graphql/subscriptions/messagePosted.graphql"),
-      variables: { room: name.value },
-      updateQuery: (previousResult) => {
+      variables: { room: name },
+      updateQuery: (previousResult, { subscriptionData }) => {
         text.value = "";
-        refetch();
+        const message = subscriptionData.data.messagePosted;
+        previousResult.room.messages.push(message);
         return previousResult;
       },
       onError: (_error) => {
@@ -58,13 +53,13 @@ export default defineComponent({
     function addMessage() {
       if (text.value !== "") {
         sendMessage({
-          room: name.value,
+          room: name,
           message: text.value,
         });
       }
     }
 
-    return { loading, name, messages, text, addMessage };
+    return { loading, room, text, addMessage };
   },
 });
 </script>

@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PinoLogger, InjectPinoLogger } from "nestjs-pino";
-import { Room } from "./room.model";
+import { Room, Message } from "./room.model";
 
 @Injectable()
 export class RoomService {
@@ -25,7 +25,7 @@ export class RoomService {
     return this.rooms.find((room) => room.name == name);
   }
 
-  say(room: string, message: string): Room {
+  say(room: string, message: string): Message {
     this.logger.info("say(%s)", message);
     return this.lookup(room).say(message);
   }

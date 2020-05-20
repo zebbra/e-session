@@ -21,6 +21,12 @@ export class Room {
     this.messages.push(new Message(this, message));
     return this;
   }
+
+  say(text: string): Message {
+    const message = new Message(this, text);
+    this.messages.push(message);
+    return message;
+  }
 }
 
 @ObjectType()

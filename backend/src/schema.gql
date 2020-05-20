@@ -24,10 +24,10 @@ type Query {
 }
 
 type Mutation {
-  say(message: String!, room: String!): Room!
+  say(message: String!, room: String!): Message!
 }
 
 type Subscription {
   roomCreated: User!
-  messagePosted(room: String!): Room!
+  messagePosted(room: String!): Message!
 }
