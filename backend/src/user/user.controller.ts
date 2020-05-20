@@ -4,8 +4,7 @@ import { IsNumberString } from "class-validator";
 import { UserService } from "./user.service";
 
 class FindOneParams {
-  @IsNumberString()
-  id: number;
+  id: string;
 }
 
 @Controller("users")
