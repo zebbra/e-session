@@ -29,7 +29,7 @@ export default defineComponent({
   setup() {
     const name = "Example Room";
     const { result, loading, subscribeToMore } = fetchRoom(name);
-    const room = useResult(result);
+    const room = useResult(result, { name: "Room was not found " });
 
     subscribeToMore<{}, { messagePosted: { text: string } }>(() => ({
       document: require("~/graphql/subscriptions/messagePosted.graphql"),

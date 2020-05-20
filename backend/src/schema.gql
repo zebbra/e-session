@@ -3,12 +3,12 @@
 # ------------------------------------------------------
 
 type User {
-  id: Int!
+  id: String!
   name: String
 }
 
 type Room {
-  id: Int!
+  id: String!
   name: String
   messages: [Message!]!
 }
@@ -19,11 +19,13 @@ type Message {
 }
 
 type Query {
-  user(id: Float!): User!
-  room(name: String!): Room
+  user(id: String!): User
+  room(name: String!): Room!
 }
 
 type Mutation {
+  login(name: String!): User!
+  logout(id: String!): User!
   say(message: String!, room: String!): Message!
 }
 

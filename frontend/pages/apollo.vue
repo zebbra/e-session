@@ -1,23 +1,46 @@
 <template>
-  <v-card :loading="loading">
-    <v-card-title>Apollo Examples</v-card-title>
-    <v-card-text>
-      <section>
-        <span>User: {{ user }} </span>
-        <v-btn small @click="changeUser">Toggle User</v-btn>
-      </section>
-      <section v-if="room">Room: {{ room }}</section>
-      <section v-if="!room">
-        Room: Room was not found
-      </section>
-    </v-card-text>
-  </v-card>
+  <v-container fluid>
+    <v-row dense>
+      <v-col key="session-card" cols="6">
+        <v-card>
+          <v-card-title>Example Session</v-card-title>
+          <v-card-text>
+            <section v-if="user">
+              User: {{ user.name }}
+              <button @click="logoutUser()">
+                Logout
+              </button>
+            </section>
+            <section v-if="!user">
+              <input v-model="variables.name" placeholder="Enter your name" />
+              <button :disabled="variables.name === ''" @click="loginUser()">
+                Login
+              </button>
+            </section>
+          </v-card-text>
+        </v-card>
+      </v-col>
+      <v-col key="room-card" cols="6">
+        <v-card :loading="loading">
+          <v-card-title>Example Room</v-card-title>
+          <v-card-text> Room: {{ room.name }} </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script lang="ts">
-import { defineComponent, useMeta, reactive } from "nuxt-composition-api";
+import {
+  defineComponent,
+  useMeta,
+  computed,
+  reactive,
+} from "nuxt-composition-api";
 import { useResult } from "@vue/apollo-composable";
-import { fetchUserAndRoom } from "~/composable/useUserAndRoom";
+import { fetchRoom } from "~/composable/useRoom";
+import { login, logout } from "~/composable/useUser";
+import { sessionStore } from "~/store";
 
 export default defineComponent({
   name: "ApolloExample",
@@ -25,28 +48,23 @@ export default defineComponent({
   setup() {
     useMeta({ title: "Apollo Example " });
 
+    const { result, loading } = fetchRoom("Example Name");
+    const room = useResult(result, { name: "Room was not found" });
+
     const variables = reactive({
-      id: 100,
-      name: "Example Name",
+      name: "",
     });
-
-    const { result, loading } = fetchUserAndRoom(variables);
-    const user = useResult(result, null, (data) => data.user);
-    const room = useResult(result, null, (data) => data.room);
-
-    function changeUser() {
-      if (variables.id === 100) {
-        variables.id = 200;
-      } else {
-        variables.id = 100;
-      }
-    }
+    const user = computed(() => sessionStore.user);
+    const { mutate: loginUser } = login(variables);
+    const { mutate: logoutUser } = logout(user);
 
     return {
-      user,
       room,
       loading,
-      changeUser,
+      variables,
+      user,
+      loginUser,
+      logoutUser,
     };
   },
 });

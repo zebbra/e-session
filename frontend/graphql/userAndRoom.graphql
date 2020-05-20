@@ -1,4 +1,4 @@
-query getUserAndRoom($id: Float!, $name: String!) {
+query getUserAndRoom($id: String!, $name: String!) {
   user(id: $id) {
     id
     name

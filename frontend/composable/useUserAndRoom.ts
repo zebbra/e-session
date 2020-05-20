@@ -1,10 +1,11 @@
 import { useQuery } from "@vue/apollo-composable";
+import { IUser, IRoom } from "~/types";
 
-export function fetchUserAndRoom(variables: { id: number; name: string }) {
+export function fetchUserAndRoom(variables: { id: string; name: string }) {
   const userAndRoomTypeQuery = require("~/graphql/userAndRoom.graphql");
 
   return useQuery<{
-    user?: { id: number; name: string };
-    room?: { id: number; name: string; messages: [] };
+    user?: IUser;
+    room?: IRoom;
   }>(userAndRoomTypeQuery, variables);
 }
