@@ -78,13 +78,7 @@ const config: Configuration = {
     },
     // required
     clientConfigs: {
-      default: {
-        // required
-        httpEndpoint:
-          process.env.HTTP_GRAPHQL_ENDPOINT || "http://localhost:3001/graphql",
-        wsEndpoint:
-          process.env.WS_GRAPHQL_ENDPOINT || "ws://localhost:3001/graphql", // optional
-      },
+      default: "~/apollo/client-config/default",
     },
   },
 

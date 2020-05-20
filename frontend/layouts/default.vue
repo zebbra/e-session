@@ -1,5 +1,6 @@
 <template>
   <v-app dark>
+    <e-session-snackbar />
     <v-navigation-drawer
       v-model="drawer"
       :mini-variant="miniVariant"
@@ -67,9 +68,11 @@
 <script lang="ts">
 import { defineComponent, provide, useContext } from "nuxt-composition-api";
 import { DefaultApolloClient } from "@vue/apollo-composable";
+import ESessionSnackbar from "~/components/ESessionSnackbar.vue";
 
 export default defineComponent({
   name: "DefaultLayout",
+  components: { ESessionSnackbar },
   setup() {
     const { app } = useContext();
     provide(DefaultApolloClient, app.apolloProvider.defaultClient);
