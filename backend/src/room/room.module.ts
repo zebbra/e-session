@@ -15,5 +15,6 @@ import { PUB_SUB } from "../constants";
       useValue: new PubSub(),
     },
   ],
+  exports: [RoomService],
 })
 export class RoomModule {}

@@ -1,6 +1,5 @@
 import { Controller, Get, Param } from "@nestjs/common";
 import { InjectPinoLogger, PinoLogger } from "nestjs-pino";
-import { IsNumberString } from "class-validator";
 import { UserService } from "./user.service";
 
 class FindOneParams {
@@ -12,7 +11,6 @@ export class UserController {
   constructor(
     @InjectPinoLogger(UserController.name)
     private readonly logger: PinoLogger,
-
     private readonly userService: UserService,
   ) {}
 

@@ -1,9 +1,8 @@
 import { Resolver, Args, Query, Subscription, Mutation } from "@nestjs/graphql";
 import { PubSub } from "graphql-subscriptions";
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject } from "@nestjs/common";
 import { RoomService } from "./room.service";
 import { Room, Message } from "./room.model";
-import { User } from "../user/user.model";
 import { PUB_SUB } from "../constants";
 
 @Resolver((of) => Room)
@@ -19,15 +18,10 @@ export class RoomResolver {
   }
 
   @Mutation((returns) => Message)
-  async say(@Args("room") name: string, @Args("message") text: string) {
+  async say(@Args("room") name: string, @Args("text") text: string) {
     const message = this.roomService.say(name, text);
     this.pubSub.publish("messagePosted", { message });
     return message;
-  }
-
-  @Subscription((returns) => User)
-  roomCreated() {
-    return this.pubSub.asyncIterator("roomCreated");
   }
 
   @Subscription((returns) => Message, {
