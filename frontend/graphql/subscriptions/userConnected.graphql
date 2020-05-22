@@ -1,0 +1,6 @@
+subscription userConnected($userId: String!, $roomId: String!) {
+  userConnected(userId: $userId, roomId: $roomId) {
+    id
+    name
+  }
+}

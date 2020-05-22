@@ -60,8 +60,9 @@ import {
   computed,
   reactive,
   watch,
+  onBeforeUnmount,
 } from "nuxt-composition-api";
-import { useResult } from "@vue/apollo-composable";
+import { useResult, useSubscription } from "@vue/apollo-composable";
 import { fetchRoom } from "~/composable/useRoom";
 import { login, logout, join, leave } from "~/composable/useUser";
 import { sessionStore } from "~/store";
@@ -92,20 +93,27 @@ export default defineComponent({
     const { mutate: joinRoom } = join(user, room);
     const { mutate: leaveRoom } = leave(user, room);
 
-    watch(user, (user) => {
-      if (user) {
-        subscribeToMore<{}, { roomJoined: IUser }>(() => ({
-          document: require("~/graphql/subscriptions/roomJoined.graphql"),
-          variables: { userId: user.id, roomId: room.value.id },
-          updateQuery: (previousResult, { subscriptionData }) => {
-            previousResult.room.users.push(subscriptionData.data.roomJoined);
-            return previousResult;
-          },
-          onError: (_error) => {
-            // handle error
-          },
-        }));
+    if (process.client) {
+      useSubscription(
+        require("~/graphql/subscriptions/userConnected.graphql"),
+        () => {
+          return {
+            userId: user.value && user.value.id,
+            roomId: room.value && room.value.id,
+          };
+        },
+        () => {
+          const enabled = !!user.value;
+          return {
+            enabled,
+          };
+        },
+      );
+    }
 
+    watch(user, (user) => {
+      refetch();
+      if (user && process.client) {
         subscribeToMore<{}, { roomLeft: IUser }>(() => ({
           document: require("~/graphql/subscriptions/roomLeft.graphql"),
           variables: { userId: user.id, roomId: room.value.id },
@@ -117,7 +125,23 @@ export default defineComponent({
             // handle error
           },
         }));
+
+        subscribeToMore<{}, { roomJoined: IUser }>(() => ({
+          document: require("~/graphql/subscriptions/roomJoined.graphql"),
+          variables: { userId: user.id, roomId: room.value.id },
+          updateQuery: (previousResult, { subscriptionData }) => {
+            previousResult.room.users.push(subscriptionData.data.roomJoined);
+            return previousResult;
+          },
+          onError: (_error) => {
+            // handle error
+          },
+        }));
       }
+    });
+
+    onBeforeUnmount(() => {
+      sessionStore.leaveRoom();
     });
 
     return {

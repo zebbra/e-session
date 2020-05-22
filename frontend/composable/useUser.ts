@@ -3,7 +3,7 @@ import { Ref } from "nuxt-composition-api";
 import { sessionStore } from "~/store";
 import { IUser, IRoom } from "~/types";
 
-export function fetchUser(id: number) {
+export function fetchUser(id: string) {
   const userTypeQuery = require("~/graphql/user.graphql");
 
   return useQuery<{ user: IUser }>(userTypeQuery, {

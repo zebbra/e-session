@@ -36,5 +36,6 @@ type Mutation {
 type Subscription {
   roomJoined(roomId: String!, userId: String!): User!
   roomLeft(roomId: String!, userId: String!): User!
+  userConnected(userId: String!, roomId: String!): User!
   messagePosted(room: String!): Message!
 }

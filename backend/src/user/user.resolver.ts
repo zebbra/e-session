@@ -4,6 +4,7 @@ import { Inject } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { User } from "./user.model";
 import { PUB_SUB } from "../constants";
+import { withCancel } from "../utils/with-observable";
 
 @Resolver((of) => User)
 export class UserResolver {
@@ -63,5 +64,19 @@ export class UserResolver {
   })
   roomLeft(@Args("userId") userId: string, @Args("roomId") roomId: string) {
     return this.pubSub.asyncIterator("roomLeft");
+  }
+
+  @Subscription((returns) => User)
+  userConnected(
+    @Args("roomId") roomId: string,
+    @Args("userId") userId: string,
+  ) {
+    return withCancel(this.pubSub.asyncIterator("userConnected"), () => {
+      const user = this.userService.findOne(userId);
+      if (user && user.room && user.room.id === roomId) {
+        this.userService.leave(user.id);
+        this.pubSub.publish("roomLeft", { user, roomId });
+      }
+    });
   }
 }
