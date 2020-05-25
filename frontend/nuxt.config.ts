@@ -34,7 +34,7 @@ const config: Configuration = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ["~/plugins/axios-store", "~/plugins/axios-instance"],
+  plugins: [],
 
   /*
    ** Nuxt.js dev-modules
@@ -54,8 +54,6 @@ const config: Configuration = {
   modules: [
     // Doc: https://www.npmjs.com/package/nuxt-lazy-load/v/latest
     "nuxt-lazy-load",
-    // Doc: https://axios.nuxtjs.org/usage
-    "@nuxtjs/axios",
     // Doc: https://pwa.nuxtjs.org/
     ["@nuxtjs/pwa", { meta: false, icon: false, manifest: false }],
     // Doc: https://github.com/nuxt-community/dotenv-module
@@ -82,20 +80,7 @@ const config: Configuration = {
     },
   },
 
-  /*
-   ** Axios module configuration
-   ** See https://axios.nuxtjs.org/options
-   */
-  axios: {
-    prefix: "/api",
-    proxy: true,
-    debug: process.env.NODE_ENV === "development",
-  },
-
   proxy: {
-    "/api": {
-      target: process.env.API_PROXY_URL || "http://localhost:3001/",
-    },
     "/graphql": {
       target: process.env.API_PROXY_URL || "http://localhost:3001/",
     },

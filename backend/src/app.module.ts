@@ -1,6 +1,5 @@
 import { Module } from "@nestjs/common";
 import { LoggerModule } from "nestjs-pino";
-import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { UserModule } from "./user/user.module";
 import { GraphQLModule } from "@nestjs/graphql";
@@ -30,7 +29,7 @@ import { RoomModule } from "./room/room.module";
     UserModule,
     RoomModule,
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [AppService],
 })
 export class AppModule {}
