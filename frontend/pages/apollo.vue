@@ -141,7 +141,9 @@ export default defineComponent({
     });
 
     onBeforeUnmount(() => {
-      sessionStore.leaveRoom();
+      if (sessionStore.user && sessionStore.user.room) {
+        sessionStore.leaveRoom();
+      }
     });
 
     return {
