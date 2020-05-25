@@ -1,0 +1,10 @@
+query getUser($id: String!) {
+  user(id: $id) {
+    id
+    name
+    room {
+      id
+      name
+    }
+  }
+}

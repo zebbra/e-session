@@ -1,5 +1,6 @@
 <template>
   <v-app dark>
+    <e-session-snackbar />
     <v-navigation-drawer
       v-model="drawer"
       :mini-variant="miniVariant"
@@ -65,15 +66,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "nuxt-composition-api";
 import Vue from "vue";
+import { defineComponent, provide, useContext } from "nuxt-composition-api";
+import { DefaultApolloClient } from "@vue/apollo-composable";
+import ESessionSnackbar from "~/components/ESessionSnackbar.vue";
 
 export default defineComponent({
   name: "DefaultLayout",
+  components: { ESessionSnackbar },
   setup() {
     if (process.browser) {
       Vue.prototype.$jitsi = window.JitsiMeetJS;
     }
+
+    const { app } = useContext();
+    provide(DefaultApolloClient, app.apolloProvider.defaultClient);
 
     return {
       clipped: false,
@@ -86,19 +93,9 @@ export default defineComponent({
           to: "/",
         },
         {
-          icon: "mdi-chart-bubble",
-          title: "Inspire",
-          to: "/inspire",
-        },
-        {
           icon: "mdi-information",
-          title: "Hello World",
-          to: "/hello",
-        },
-        {
-          icon: "mdi-home-floor-1",
-          title: "Example Room",
-          to: "/rooms/1",
+          title: "Apollo API Example",
+          to: "/apollo",
         },
         {
           icon: "mdi-video",

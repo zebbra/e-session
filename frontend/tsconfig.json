@@ -7,7 +7,7 @@
     "esModuleInterop": true,
     "allowJs": true,
     "sourceMap": true,
-    "strict": true,
+    "strict": false,
     "noEmit": true,
     "experimentalDecorators": true,
     "baseUrl": ".",
@@ -15,7 +15,13 @@
       "~/*": ["./*"],
       "@/*": ["./*"]
     },
-    "types": ["@types/node", "@nuxt/types", "@nuxtjs/vuetify", "@nuxtjs/axios"]
+    "types": [
+      "@types/node",
+      "@nuxt/types",
+      "@nuxtjs/vuetify",
+      "@nuxtjs/apollo",
+      "vue-cli-plugin-apollo"
+    ]
   },
   "exclude": ["node_modules", ".nuxt", "dist"]
 }

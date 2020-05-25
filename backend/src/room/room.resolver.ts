@@ -1,37 +1,35 @@
 import { Resolver, Args, Query, Subscription, Mutation } from "@nestjs/graphql";
 import { PubSub } from "graphql-subscriptions";
+import { Inject } from "@nestjs/common";
 import { RoomService } from "./room.service";
-import { Room } from "./room.model";
-import { User } from "src/user/user.model";
-
-const pubSub = new PubSub();
+import { Room, Message } from "./room.model";
+import { PUB_SUB } from "src/app/pubsub.provider";
 
 @Resolver((of) => Room)
 export class RoomResolver {
-  constructor(private roomService: RoomService) {}
+  constructor(
+    @Inject(PUB_SUB) private pubSub: PubSub,
+    private roomService: RoomService,
+  ) {}
 
   @Query((returns) => Room)
   async room(@Args("name") name: string) {
-    return this.roomService.findByName(name);
+    return this.roomService.lookup(name);
   }
 
-  @Mutation((returns) => Room)
-  async say(@Args("room") name: string, @Args("message") message: string) {
-    const room = this.roomService.say(name, message);
-    pubSub.publish("messagePosted", { room, message });
-    return room;
+  @Mutation((returns) => Message)
+  async say(@Args("room") name: string, @Args("text") text: string) {
+    const message = this.roomService.say(name, text);
+    this.pubSub.publish("messagePosted", { message });
+    return message;
   }
 
-  @Subscription((returns) => User)
-  roomCreated() {
-    return pubSub.asyncIterator("roomCreated");
-  }
-
-  @Subscription((returns) => Room, {
-    filter: (payload, variables) => payload.room.name === variables.room,
-    resolve: (payload) => payload.room,
+  @Subscription((returns) => Message, {
+    filter: (payload, variables) =>
+      payload.message.room.name === variables.room,
+    resolve: (payload) => payload.message,
   })
   messagePosted(@Args("room") room: string) {
-    return pubSub.asyncIterator("messagePosted");
+    return this.pubSub.asyncIterator("messagePosted");
   }
 }

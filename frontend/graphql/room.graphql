@@ -1,0 +1,13 @@
+query getRoom($name: String!) {
+  room(name: $name) {
+    id
+    name
+    messages {
+      text
+    }
+    users {
+      id
+      name
+    }
+  }
+}

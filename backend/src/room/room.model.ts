@@ -1,24 +1,43 @@
-import { Field, Int, ObjectType } from "@nestjs/graphql";
-import { User } from "src/user/user.model";
+import { Field, ObjectType } from "@nestjs/graphql";
+import { v4 as uuidv4 } from "uuid";
+import { remove } from "lodash";
+import { User } from "../user/user.model";
 
 @ObjectType()
 export class Room {
-  @Field((type) => Int)
-  id: number;
+  @Field((type) => String)
+  id: string;
 
-  @Field({ nullable: true })
-  name?: string;
+  @Field((type) => String)
+  name: string;
 
   @Field((type) => [Message])
   messages: Message[] = [];
 
+  @Field((type) => [User])
+  users: User[] = [];
+
   constructor(name: string) {
+    this.id = uuidv4();
     this.name = name;
   }
 
-  say(message: string): Room {
-    this.messages.push(new Message(this, message));
+  userJoined(user: User): Room {
+    if (!this.users.includes(user)) {
+      this.users.push(user);
+    }
     return this;
+  }
+
+  userLeft(user: User): Room {
+    remove(this.users, { id: user.id });
+    return this;
+  }
+
+  say(text: string): Message {
+    const message = new Message(this, text);
+    this.messages.push(message);
+    return message;
   }
 }
 

@@ -1,0 +1,10 @@
+subscription onRoomLeft($userId: String!, $roomId: String!) {
+  roomLeft(userId: $userId, roomId: $roomId) {
+    id
+    name
+    room {
+      id
+      name
+    }
+  }
+}

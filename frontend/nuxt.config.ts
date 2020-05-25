@@ -31,7 +31,7 @@ const config: Configuration = {
   /*
    ** Customize the progress-bar color
    */
-  loading: { color: "#fff" },
+  loading: { color: "red" },
 
   /*
    ** Global CSS
@@ -41,7 +41,7 @@ const config: Configuration = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ["~/plugins/axios-store"],
+  plugins: [],
 
   /*
    ** Nuxt.js dev-modules
@@ -51,6 +51,8 @@ const config: Configuration = {
     "@nuxtjs/vuetify",
     // Doc: https://github.com/nuxt-community/composition-api
     "nuxt-composition-api",
+    // Doc: https://github.com/nuxt-community/apollo-module
+    "@nuxtjs/apollo",
   ],
 
   /*
@@ -59,28 +61,33 @@ const config: Configuration = {
   modules: [
     // Doc: https://www.npmjs.com/package/nuxt-lazy-load/v/latest
     "nuxt-lazy-load",
-    // Doc: https://axios.nuxtjs.org/usage
-    "@nuxtjs/axios",
     // Doc: https://pwa.nuxtjs.org/
     ["@nuxtjs/pwa", { meta: false, icon: false, manifest: false }],
     // Doc: https://github.com/nuxt-community/dotenv-module
     "@nuxtjs/dotenv",
   ],
 
-  /*
-   ** Axios module configuration
-   ** See https://axios.nuxtjs.org/options
+  /**
+   * Apollo module configuration
+   * See https://github.com/nuxt-community/apollo-module
    */
-  axios: {
-    prefix: "/api",
-    proxy: true,
-    debug: true,
+  apollo: {
+    // (Optional) Default 'apollo' definition
+    defaultOptions: {
+      // See 'apollo' definition
+      // For example: default query options
+      $query: {
+        loadingKey: "loading",
+        fetchPolicy: "cache-and-network",
+      },
+    },
+    // required
+    clientConfigs: {
+      default: "~/apollo/client-config/default",
+    },
   },
 
   proxy: {
-    "/api": {
-      target: process.env.API_PROXY_URL || "http://localhost:3001/",
-    },
     "/graphql": {
       target: process.env.API_PROXY_URL || "http://localhost:3001/",
     },
@@ -105,6 +112,14 @@ const config: Configuration = {
     treeShake: true,
     optionsPath: "~/vuetify.options.ts",
   },
+
+  loaders: [
+    {
+      test: /\.(graphql|gql)$/,
+      exclude: /node_modules/,
+      loader: "graphql-tag/loader",
+    },
+  ],
 
   /*
    ** Build configuration

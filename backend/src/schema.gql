@@ -2,15 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type User {
-  id: Int!
-  name: String
-}
-
 type Room {
-  id: Int!
-  name: String
+  id: String!
+  name: String!
   messages: [Message!]!
+  users: [User!]!
 }
 
 type Message {
@@ -18,16 +14,28 @@ type Message {
   text: String!
 }
 
+type User {
+  id: String!
+  name: String!
+  room: Room
+}
+
 type Query {
-  user(id: Float!): User!
+  user(id: String!): User
   room(name: String!): Room!
 }
 
 type Mutation {
-  say(message: String!, room: String!): Room!
+  login(name: String!): User!
+  logout(id: String!): User!
+  join(roomId: String!, userId: String!): User!
+  leave(roomId: String!, userId: String!): User!
+  say(text: String!, room: String!): Message!
 }
 
 type Subscription {
-  roomCreated: User!
-  messagePosted(room: String!): Room!
+  roomJoined(roomId: String!, userId: String!): User!
+  roomLeft(roomId: String!, userId: String!): User!
+  userConnected(userId: String!, roomId: String!): User!
+  messagePosted(room: String!): Message!
 }

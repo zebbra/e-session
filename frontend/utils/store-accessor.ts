@@ -1,16 +1,19 @@
 import { Store } from "vuex";
 import { getModule } from "vuex-module-decorators";
-import HelloWorld from "~/store/HelloWorld";
+import Session from "~/store/Session";
+import Global from "~/store/Global";
 import ConferenceStatus from "~/store/ConferenceStatus";
 
 /* eslint-disable import/no-mutable-exports */
-let helloWorldStore: HelloWorld;
+let sessionStore: Session;
+let globalStore: Global;
 let conferenceStatusStore: ConferenceStatus;
 /* eslint-enable import/no-mutable-exports */
 
 function initialiseStores(store: Store<any>): void {
-  helloWorldStore = getModule(HelloWorld, store);
+  sessionStore = getModule(Session, store);
+  globalStore = getModule(Global, store);
   conferenceStatusStore = getModule(ConferenceStatus, store);
 }
 
-export { initialiseStores, helloWorldStore, conferenceStatusStore };
+export { initialiseStores, sessionStore, globalStore, conferenceStatusStore };
