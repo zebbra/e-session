@@ -1,5 +1,5 @@
 {{- if .Values.ingress.enabled -}}
-{{- $fullName := include "meraki-root-cause.fullname" . -}}
+{{- $fullName := include "e-session.fullname" . -}}
 {{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.k8s.io/v1beta1
 {{- else -}}
@@ -7,9 +7,9 @@ apiVersion: extensions/v1beta1
 {{- end }}
 kind: Ingress
 metadata:
-  name: {{ include "meraki-root-cause.fullname" . }}
+  name: {{ include "e-session.fullname" . }}
   labels:
-{{ include "meraki-root-cause.labels" . | indent 4 }}
+{{ include "e-session.labels" . | indent 4 }}
   {{- with .Values.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}

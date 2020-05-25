@@ -1,27 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "meraki-root-cause.fullname" . }}-backend
+  name: {{ include "e-session.fullname" . }}-backend
   labels:
-    {{- include "meraki-root-cause.labels" . | nindent 4 }}
+    {{- include "e-session.labels" . | nindent 4 }}
     app.kubernetes.io/component: backend
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "meraki-root-cause.selectorLabels" . | nindent 6 }}
+      {{- include "e-session.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/component: backend
   template:
     metadata:
       labels:
-        {{- include "meraki-root-cause.selectorLabels" . | nindent 8 }}
+        {{- include "e-session.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: backend
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-      serviceAccountName: {{ template "meraki-root-cause.serviceAccountName" . }}
+      serviceAccountName: {{ template "e-session.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -35,7 +35,7 @@ spec:
               value: '3000'
           envFrom:
             - secretRef:
-                name: "{{ template "meraki-root-cause.fullname" . }}"
+                name: "{{ template "e-session.fullname" . }}"
           args: ['backend', 'start']
           ports:
             - name: http

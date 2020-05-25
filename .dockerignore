@@ -1,0 +1,10 @@
+.git
+.drone.yml
+Dockerfile
+.DS_Store
+deploy
+
+*/yarn-error.log
+*/dist
+*/node_modules
+*/.nuxt

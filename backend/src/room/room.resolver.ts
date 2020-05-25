@@ -3,7 +3,7 @@ import { PubSub } from "graphql-subscriptions";
 import { Inject } from "@nestjs/common";
 import { RoomService } from "./room.service";
 import { Room, Message } from "./room.model";
-import { PUB_SUB } from "src/app/pubsub.provider";
+import { PUB_SUB } from "~/app/pubsub.provider";
 
 @Resolver((of) => Room)
 export class RoomResolver {

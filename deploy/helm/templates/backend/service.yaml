@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "meraki-root-cause.fullname" . }}-backend
+  name: {{ include "e-session.fullname" . }}-backend
   labels:
-    {{- include "meraki-root-cause.labels" . | nindent 4 }}
+    {{- include "e-session.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -12,5 +12,5 @@ spec:
       protocol: TCP
       name: http
   selector:
-    {{- include "meraki-root-cause.selectorLabels" . | nindent 4 }}
+    {{- include "e-session.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: backend

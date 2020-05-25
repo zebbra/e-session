@@ -12,7 +12,7 @@
     "start:dev": "nuxt-ts",
     "start:prod": "nuxt start",
     "lint": "eslint --ext .js,.ts,.vue --ignore-path .gitignore .",
-    "test": "jest"
+    "test": "jest --passWithNoTests"
   },
   "lint-staged": {
     "*.{ts,js,vue}": "yarn lint"

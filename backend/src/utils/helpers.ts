@@ -1,4 +1,4 @@
-function delay(ms: number = 1000) {
+function delay(ms = 1000) {
   let ctr: any, rej: any;
   const p: any = new Promise((resolve, reject) => {
     ctr = setTimeout(resolve, ms);

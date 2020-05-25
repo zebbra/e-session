@@ -41,7 +41,7 @@
   "devDependencies": {
     "@nestjs/cli": "^7.0.0",
     "@nestjs/schematics": "^7.0.0",
-    "@nestjs/testing": "^7.0.0",
+    "@nestjs/testing": "^7.1.0",
     "@types/express": "^4.17.3",
     "@types/jest": "25.1.4",
     "@types/lodash": "^4.14.152",
@@ -73,6 +73,10 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/$1",
+      "^~/(.*)$": "<rootDir>/$1"
+    }
   }
 }
