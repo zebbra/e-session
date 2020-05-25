@@ -3,8 +3,8 @@ import { PubSub } from "graphql-subscriptions";
 import { Inject } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { User } from "./user.model";
-import { PUB_SUB } from "../constants";
 import { withCancel } from "../utils/with-observable";
+import { PUB_SUB } from "src/app/pubsub.provider";
 
 @Resolver((of) => User)
 export class UserResolver {

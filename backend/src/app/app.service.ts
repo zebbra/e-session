@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PinoLogger, InjectPinoLogger } from "nestjs-pino";
-import { delay } from "./utils/helpers";
+import { delay } from "../utils/helpers";
 
 @Injectable()
 export class AppService {
