@@ -81,6 +81,5 @@ steps:
       values: image.tag=git-${DRONE_COMMIT_SHA:0:7}
       values_files:
         - ./deploy/production.yaml
-
       reuse_values: false
       skip_tls_verify: true
