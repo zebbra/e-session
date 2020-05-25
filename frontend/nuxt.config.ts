@@ -19,6 +19,13 @@ const config: Configuration = {
       },
     ],
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
+    script: [
+      { src: "https://meet.jit.si/libs/lib-jitsi-meet.min.js" },
+      {
+        src:
+          "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js",
+      },
+    ],
   },
 
   /*

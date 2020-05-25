@@ -42,9 +42,9 @@
       </v-btn>
     </v-app-bar>
     <v-content>
-      <v-container>
+      <div>
         <nuxt />
-      </v-container>
+      </div>
     </v-content>
     <v-navigation-drawer v-model="rightDrawer" :right="right" temporary fixed>
       <v-list>
@@ -66,10 +66,15 @@
 
 <script lang="ts">
 import { defineComponent } from "nuxt-composition-api";
+import Vue from "vue";
 
 export default defineComponent({
   name: "DefaultLayout",
   setup() {
+    if (process.browser) {
+      Vue.prototype.$jitsi = window.JitsiMeetJS;
+    }
+
     return {
       clipped: false,
       drawer: true,
@@ -95,6 +100,11 @@ export default defineComponent({
           title: "Example Room",
           to: "/rooms/1",
         },
+        {
+          icon: "mdi-video",
+          title: "Jitsi Meeting",
+          to: "/meeting",
+        },
       ],
       miniVariant: false,
       right: true,
@@ -104,3 +114,4 @@ export default defineComponent({
   },
 });
 </script>
+<style scoped></style>>
