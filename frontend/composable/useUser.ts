@@ -1,9 +1,9 @@
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import { Ref } from "nuxt-composition-api";
 import { sessionStore } from "~/store";
-import { IUser } from "~/types";
+import { IUser, IRoom } from "~/types";
 
-export function fetchUser(id: number) {
+export function fetchUser(id: string) {
   const userTypeQuery = require("~/graphql/user.graphql");
 
   return useQuery<{ user: IUser }>(userTypeQuery, {
@@ -31,6 +31,32 @@ export function logout(user: Ref<IUser>) {
     },
     update: () => {
       sessionStore.logout();
+    },
+  }));
+}
+
+export function join(user: Ref<IUser>, room: Ref<IRoom>) {
+  const joinRoomTypeMutation = require("~/graphql/mutations/joinRoom.graphql");
+  return useMutation(joinRoomTypeMutation, () => ({
+    variables: {
+      userId: user.value.id,
+      roomId: room.value.id,
+    },
+    update: (_cache, { data }) => {
+      sessionStore.joinRoom(data.join.room);
+    },
+  }));
+}
+
+export function leave(user: Ref<IUser>, room: Ref<IRoom>) {
+  const leaveRoomTypeMutation = require("~/graphql/mutations/leaveRoom.graphql");
+  return useMutation(leaveRoomTypeMutation, () => ({
+    variables: {
+      userId: user.value.id,
+      roomId: room.value.id,
+    },
+    update: () => {
+      sessionStore.leaveRoom();
     },
   }));
 }

@@ -1,0 +1,10 @@
+mutation leaveRoom($userId: String!, $roomId: String!) {
+  leave(userId: $userId, roomId: $roomId) {
+    id
+    name
+    room {
+      id
+      name
+    }
+  }
+}

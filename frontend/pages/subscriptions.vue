@@ -29,7 +29,7 @@ export default defineComponent({
   setup() {
     const name = "Example Room";
     const { result, loading, subscribeToMore } = fetchRoom(name);
-    const room = useResult(result, { name: "Room was not found " });
+    const room = useResult(result, { id: null, name: "Room was not found" });
 
     subscribeToMore<{}, { messagePosted: { text: string } }>(() => ({
       document: require("~/graphql/subscriptions/messagePosted.graphql"),
@@ -54,7 +54,7 @@ export default defineComponent({
       if (text.value !== "") {
         sendMessage({
           room: name,
-          message: text.value,
+          text: text.value,
         });
       }
     }
