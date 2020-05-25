@@ -1,21 +1,13 @@
 import { Module, forwardRef } from "@nestjs/common";
-import { PubSub } from "graphql-subscriptions";
 import { RoomResolver } from "./room.resolver";
 import { RoomService } from "./room.service";
 import { UserModule } from "../user/user.module";
-import { PUB_SUB } from "../constants";
+import { AppModule } from "src/app/app.module";
 
 @Module({
-  imports: [forwardRef(() => UserModule)],
+  imports: [forwardRef(() => UserModule), forwardRef(() => AppModule)],
   controllers: [],
-  providers: [
-    RoomService,
-    RoomResolver,
-    {
-      provide: PUB_SUB,
-      useValue: new PubSub(),
-    },
-  ],
+  providers: [RoomService, RoomResolver],
   exports: [RoomService],
 })
 export class RoomModule {}
