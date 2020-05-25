@@ -2,7 +2,8 @@
 .drone.yml
 Dockerfile
 .DS_Store
-deploy
+deploy/helm
+deploy/*.yaml
 
 */yarn-error.log
 */dist
