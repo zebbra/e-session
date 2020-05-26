@@ -8985,6 +8985,11 @@ nuxt-composition-api@^0.7.0:
     "@vue/composition-api" "^0.5.0"
     defu "^2.0.2"
 
+nuxt-env@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/nuxt-env/-/nuxt-env-0.1.0.tgz#8ac50b9ff45391ad3044ea932cbd05f06a585f87"
+  integrity sha512-7mTao3qG0zfN0hahk3O6SuDy0KEwYmNojammWQsMwhqMn3aUjX4nMYnWDa0pua+2/rwAY9oG53jQtLgJdG7f9w==
+
 nuxt-lazy-load@^1.2.2:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/nuxt-lazy-load/-/nuxt-lazy-load-1.2.4.tgz#11ff7bc8fc61c812d4d15c8120477d9b05fa8a31"
@@ -12072,7 +12077,7 @@ ts-jest@^26.0.0:
     semver "7.x"
     yargs-parser "18.x"
 
-ts-loader@^7.0.4:
+ts-loader@^7.0.4, ts-loader@^7.0.5:
   version "7.0.5"
   resolved "https://registry.yarnpkg.com/ts-loader/-/ts-loader-7.0.5.tgz#789338fb01cb5dc0a33c54e50558b34a73c9c4c5"
   integrity sha512-zXypEIT6k3oTc+OZNx/cqElrsbBtYqDknf48OZos0NQ3RTt045fBIU8RRSu+suObBzYB355aIPGOe/3kj9h7Ig==

@@ -58,6 +58,12 @@ const config: Configuration = {
     ["@nuxtjs/pwa", { meta: false, icon: false, manifest: false }],
     // Doc: https://github.com/nuxt-community/dotenv-module
     "@nuxtjs/dotenv",
+    [
+      "nuxt-env",
+      {
+        keys: ["HTTP_GRAPHQL_ENDPOINT", "WS_GRAPHQL_ENDPOINT"],
+      },
+    ],
   ],
 
   /**
