@@ -24,6 +24,10 @@ RUN cd ./backend && yarn build
 
 FROM node:14.2.0-slim
 
+RUN apt-get update && \
+  apt-get -y install g++ build-essential python && \
+  apt-get clean
+
 WORKDIR /app
 
 ENV NODE_ENV=production
