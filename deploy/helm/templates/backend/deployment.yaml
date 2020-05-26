@@ -33,10 +33,10 @@ spec:
           env:
             - name: PORT
               value: '3000'
-          envFrom:
-            - secretRef:
-                name: "{{ template "e-session.fullname" . }}"
-          args: ['backend', 'start']
+          # envFrom:
+          #   - secretRef:
+          #       name: "{{ template "e-session.fullname" . }}"
+          args: ['backend', 'start:prod']
           ports:
             - name: http
               containerPort: 3000

@@ -9,3 +9,6 @@ ingress:
     - secretName: e-session-tls
       hosts:
         - e-session.zebbra.ch
+
+image:
+  tag: git-5b503c2
