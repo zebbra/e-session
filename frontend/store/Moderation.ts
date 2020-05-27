@@ -1,4 +1,4 @@
-import { Module, VuexModule } from "vuex-module-decorators";
+import { Module, VuexModule, Mutation } from "vuex-module-decorators";
 import { IUser, IRoom } from "~/types";
 
 @Module({
@@ -9,4 +9,14 @@ import { IUser, IRoom } from "~/types";
 export default class Moderation extends VuexModule {
   public users: IUser[] = [];
   public room: IRoom = null;
+
+  @Mutation
+  setRoom(room: IRoom) {
+    this.room = room;
+  }
+
+  @Mutation
+  leaveRoom(){
+    this.room = null
+  }
 }
