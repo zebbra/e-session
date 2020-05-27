@@ -1,6 +1,6 @@
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import { Ref } from "nuxt-composition-api";
-import { sessionStore } from "~/store";
+import { sessionStore, moderationStore } from "~/store";
 import { IUser, IRoom } from "~/types";
 
 export function fetchUser(id: string) {
@@ -44,6 +44,7 @@ export function join(user: Ref<IUser>, room: Ref<IRoom>) {
     },
     update: (_cache, { data }) => {
       sessionStore.joinRoom(data.join.room);
+      moderationStore.setRoom(data.join.room)
     },
   }));
 }
@@ -57,6 +58,7 @@ export function leave(user: Ref<IUser>, room: Ref<IRoom>) {
     },
     update: () => {
       sessionStore.leaveRoom();
+      moderationStore.leaveRoom();
     },
   }));
 }
