@@ -3,9 +3,6 @@
     <v-card>
       <v-card-title>Messages</v-card-title>
         <v-card-text v-if="room">
-          <v-card-text>
-            {{ room.name }}
-          </v-card-text>
           <v-list v-for="(message, index) in room.messages" :key="index">
             <v-list-item-content>
               <v-list-item-title>
@@ -13,15 +10,16 @@
               </v-list-item-title>
             </v-list-item-content>
           </v-list>
+          <v-text-field v-model="message" @keydown.enter="addMessage()" label="Press enter to send" placeholder="New message" />
         </v-card-text>
         <v-card-text v-else>
           No room joined
         </v-card-text>
     </v-card>
-    <input v-model="message" placeholder="Enter a message" />
+    <!-- <input v-model="message" placeholder="Enter a message" />
     <button @click="addMessage()">
       Send message
-    </button>
+    </button> -->
   </section>
 </template>
 
