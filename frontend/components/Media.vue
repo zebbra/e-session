@@ -16,11 +16,10 @@ import { defineComponent, onMounted, watch, ref } from "nuxt-composition-api";
 export default defineComponent({
   name: "Media",
   props: {
-    videoStream: Object,
-    audioStream: Object,
+    videoStream: Object || null,
+    audioStream: Object || null,
   },
   setup(props, context) {
-    console.log("Media: ", props);
     const videoRef = ref(null);
     const audioRef = ref(null);
 
@@ -54,6 +53,20 @@ export default defineComponent({
         lazy: false, // immediate: true
       },
     );
+
+    watch(
+      // getter
+      () => props.audioStream,
+      // callback
+      (newVal) => {
+        doConnectAudioStream(newVal);
+      },
+      // watch Options
+      {
+        lazy: false, // immediate: true
+      },
+    );
+
     return { videoRef, audioRef };
   },
 });

@@ -31,9 +31,18 @@ export default defineComponent({
     const videoStream = computed(() =>
       props.mediaTracks.value.video ? props.mediaTracks.value.video : null,
     );
-    const audioStream = computed(() =>
-      props.mediaTracks.value.audio ? props.mediaTracks.value.audio : null,
-    );
+    const audioStream = computed(() => {
+      if (
+        props.mediaTracks.value.audio &&
+        props.mediaTracks.value.audio.isLocal()
+      ) {
+        return null;
+      } else {
+        return props.mediaTracks.value.audio
+          ? props.mediaTracks.value.audio
+          : null;
+      }
+    });
     return {
       videoStream,
       audioStream,

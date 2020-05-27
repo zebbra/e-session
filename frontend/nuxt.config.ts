@@ -1,3 +1,5 @@
+import path from "path";
+import fs from "fs";
 import { Configuration } from "@nuxt/types";
 
 const config: Configuration = {
@@ -130,6 +132,13 @@ const config: Configuration = {
   //    */
   //   extend(config, ctx) {}
   // }
+  server: {
+    host: "0.0.0.0",
+    https: {
+      key: fs.readFileSync(path.resolve(__dirname, "server.key")),
+      cert: fs.readFileSync(path.resolve(__dirname, "server.crt")),
+    },
+  },
 };
 
 export default config;
