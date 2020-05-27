@@ -2,12 +2,13 @@
   <v-navigation-drawer
     v-model="show"
     right
-    temporary
+    permanent
     fixed
-    color="primary"
+    color="background"
     dark
   >
     <e-session-user-list />
+    <v-spacer/>
     <e-session-chat />
   </v-navigation-drawer>
 </template>
