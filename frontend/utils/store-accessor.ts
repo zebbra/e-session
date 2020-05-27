@@ -13,6 +13,7 @@ let moderationStore: Moderation;
 function initialiseStores(store: Store<any>): void {
   sessionStore = getModule(Session, store);
   globalStore = getModule(Global, store);
+  moderationStore = getModule(Moderation, store);
 }
 
 export { initialiseStores, sessionStore, globalStore, moderationStore };
