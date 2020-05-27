@@ -50,6 +50,32 @@
         </v-card>
       </v-col>
     </v-row>
+    <v-row v-if="user && user.room">
+      <v-col>
+        <v-card>
+          <v-card-title>Messages</v-card-title>
+          <v-card-text>
+            <v-list v-for="(message, index) in room.messages" :key="index">
+              <v-list-item-content>
+                <v-list-item-title>
+                  {{ message.author.name }} - {{ message.text }}
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list>
+          </v-card-text>
+        </v-card>
+      </v-col>
+      <v-col>
+        <v-card>
+          <v-card-text>
+            <input v-model="text" placeholder="Enter a message" />
+            <button @click="addMessage()">
+              Send message
+            </button>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -61,8 +87,13 @@ import {
   reactive,
   watch,
   onBeforeUnmount,
+  ref,
 } from "nuxt-composition-api";
-import { useResult, useSubscription } from "@vue/apollo-composable";
+import {
+  useResult,
+  useSubscription,
+  useMutation,
+} from "@vue/apollo-composable";
 import { fetchRoom } from "~/composable/useRoom";
 import { login, logout, join, leave } from "~/composable/useUser";
 import { sessionStore } from "~/store";
@@ -140,6 +171,28 @@ export default defineComponent({
       }
     });
 
+    const text = ref("");
+    const postMessageTypeMutation = require("~/graphql/mutations/postMessage.graphql");
+    const { mutate: sendMessage } = useMutation(
+      postMessageTypeMutation,
+      () => ({
+        update: () => {
+          refetch();
+          text.value = "";
+        },
+      }),
+    );
+    // do not allow empty message
+    function addMessage() {
+      if (text.value !== "") {
+        sendMessage({
+          room: room.value.name,
+          author: user.value.id,
+          text: text.value,
+        });
+      }
+    }
+
     onBeforeUnmount(() => {
       if (sessionStore.user && sessionStore.user.room) {
         sessionStore.leaveRoom();
@@ -155,6 +208,8 @@ export default defineComponent({
       logoutUser,
       joinRoom,
       leaveRoom,
+      text,
+      addMessage,
     };
   },
 });

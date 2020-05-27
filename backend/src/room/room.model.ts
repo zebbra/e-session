@@ -34,8 +34,8 @@ export class Room {
     return this;
   }
 
-  say(text: string): Message {
-    const message = new Message(this, text);
+  say(author: User, text: string): Message {
+    const message = new Message(this, author, text);
     this.messages.push(message);
     return message;
   }
@@ -46,11 +46,15 @@ export class Message {
   @Field((type) => Room)
   room: Room;
 
+  @Field((type) => User)
+  author: User;
+
   @Field()
   text: string;
 
-  constructor(room: Room, text: string) {
+  constructor(room: Room, author: User, text: string) {
     this.room = room;
+    this.author = author;
     this.text = text;
   }
 }

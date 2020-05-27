@@ -11,6 +11,7 @@ type Room {
 
 type Message {
   room: Room!
+  author: User!
   text: String!
 }
 
@@ -30,7 +31,7 @@ type Mutation {
   logout(id: String!): User!
   join(roomId: String!, userId: String!): User!
   leave(roomId: String!, userId: String!): User!
-  say(text: String!, room: String!): Message!
+  say(text: String!, author: String!, room: String!): Message!
 }
 
 type Subscription {

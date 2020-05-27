@@ -38,7 +38,7 @@
       </v-btn>
       <v-toolbar-title v-text="title" />
       <v-spacer />
-      <v-btn icon @click.stop="rightDrawer = !rightDrawer">
+      <v-btn icon @click.stop="moderationDrawer = !moderationDrawer">
         <v-icon>mdi-menu</v-icon>
       </v-btn>
     </v-app-bar>
@@ -47,18 +47,7 @@
         <nuxt />
       </v-container>
     </v-content>
-    <v-navigation-drawer v-model="rightDrawer" :right="right" temporary fixed>
-      <v-list>
-        <v-list-item @click.native="right = !right">
-          <v-list-item-action>
-            <v-icon light>
-              mdi-repeat
-            </v-icon>
-          </v-list-item-action>
-          <v-list-item-title>Switch drawer (click me)</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
+    <e-session-moderation-drawer :show="moderationDrawer" />
     <v-footer :fixed="fixed" app>
       <span>&copy; {{ new Date().getFullYear() }}</span>
     </v-footer>
@@ -68,11 +57,14 @@
 <script lang="ts">
 import { defineComponent, provide, useContext } from "nuxt-composition-api";
 import { DefaultApolloClient } from "@vue/apollo-composable";
-import ESessionSnackbar from "~/components/ESessionSnackbar.vue";
 
 export default defineComponent({
   name: "DefaultLayout",
-  components: { ESessionSnackbar },
+  components: {
+    ESessionSnackbar: () => import("~/components/ESessionSnackbar.vue"),
+    ESessionModerationDrawer: () =>
+      import("~/components/ESessionModerationDrawer.vue"),
+  },
   setup() {
     const { app } = useContext();
     provide(DefaultApolloClient, app.apolloProvider.defaultClient);
@@ -99,8 +91,7 @@ export default defineComponent({
         },
       ],
       miniVariant: false,
-      right: true,
-      rightDrawer: false,
+      moderationDrawer: false,
       title: "Vuetify.js",
     };
   },

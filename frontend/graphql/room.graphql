@@ -3,6 +3,9 @@ query getRoom($name: String!) {
     id
     name
     messages {
+      author {
+        name
+      }
       text
     }
     users {
