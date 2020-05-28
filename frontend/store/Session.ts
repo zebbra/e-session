@@ -1,5 +1,5 @@
 import { Module, VuexModule, Mutation } from "vuex-module-decorators";
-import { IUser, IRoom } from "~/types";
+import { IUser } from "~/types";
 
 @Module({
   name: "Session",
@@ -17,15 +17,5 @@ export default class Session extends VuexModule {
   @Mutation
   logout() {
     this.user = null;
-  }
-
-  @Mutation
-  joinRoom(room: IRoom) {
-    this.user.room = room;
-  }
-
-  @Mutation
-  leaveRoom() {
-    this.user.room = null;
   }
 }

@@ -1,4 +1,4 @@
-mutation login($name: String!) {
+mutation loginUser($name: String!) {
   login(name: $name) {
     id
     name

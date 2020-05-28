@@ -67,11 +67,8 @@ export class UserResolver {
   }
 
   @Subscription((returns) => User)
-  userConnected(
-    @Args("roomId") roomId: string,
-    @Args("userId") userId: string,
-  ) {
-    return withCancel(this.pubSub.asyncIterator("userConnected"), () => {
+  signal(@Args("roomId") roomId: string, @Args("userId") userId: string) {
+    return withCancel(this.pubSub.asyncIterator("signal"), () => {
       const user = this.userService.findOne(userId);
       if (user && user.room && user.room.id === roomId) {
         this.userService.leave(user.id);

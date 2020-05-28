@@ -1,0 +1,6 @@
+subscription signal($userId: String!, $roomId: String!) {
+  signal(userId: $userId, roomId: $roomId) {
+    id
+    name
+  }
+}

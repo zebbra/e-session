@@ -1,44 +1,13 @@
 <template>
   <v-app dark>
     <e-session-snackbar />
-    <v-navigation-drawer
-      v-model="drawer"
-      :mini-variant="miniVariant"
-      :clipped="clipped"
-      fixed
-      app
-    >
-      <v-list>
-        <v-list-item
-          v-for="(item, i) in items"
-          :key="i"
-          :to="item.to"
-          router
-          exact
-        >
-          <v-list-item-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title v-text="item.title" />
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-    <v-app-bar :clipped-left="clipped" fixed app>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-btn icon @click.stop="miniVariant = !miniVariant">
-        <v-icon>mdi-{{ `chevron-${miniVariant ? "right" : "left"}` }}</v-icon>
-      </v-btn>
-      <v-btn icon @click.stop="clipped = !clipped">
-        <v-icon>mdi-application</v-icon>
-      </v-btn>
-      <v-btn icon @click.stop="fixed = !fixed">
-        <v-icon>mdi-minus</v-icon>
-      </v-btn>
+    <v-app-bar fixed app>
       <v-toolbar-title v-text="title" />
-      <v-spacer />
-      <v-btn icon @click.stop="rightDrawer = !rightDrawer">
+      <v-spacer></v-spacer>
+      <v-btn v-if="roomJoined" icon @click.stop="leaveRoom">
+        <v-icon>mdi-exit-to-app</v-icon>
+      </v-btn>
+      <v-btn v-if="roomJoined" icon @click.stop="toggleModerationDrawer">
         <v-icon>mdi-menu</v-icon>
       </v-btn>
     </v-app-bar>
@@ -47,50 +16,59 @@
         <nuxt />
       </v-container>
     </v-content>
-    <v-navigation-drawer v-model="rightDrawer" :right="right" temporary fixed>
-      <v-list>
-        <v-list-item @click.native="right = !right">
-          <v-list-item-action>
-            <v-icon light>
-              mdi-repeat
-            </v-icon>
-          </v-list-item-action>
-          <v-list-item-title>Switch drawer (click me)</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-    <v-footer :fixed="fixed" app>
-      <span>&copy; {{ new Date().getFullYear() }}</span>
+    <e-session-moderation-drawer />
+    <v-footer fixed app>
+      <span>&copy; zebbra AG {{ new Date().getFullYear() }}</span>
     </v-footer>
   </v-app>
 </template>
 
 <script lang="ts">
-import { defineComponent, provide, useContext } from "nuxt-composition-api";
+import {
+  defineComponent,
+  provide,
+  useContext,
+  computed,
+} from "nuxt-composition-api";
 import { DefaultApolloClient } from "@vue/apollo-composable";
-import ESessionSnackbar from "~/components/ESessionSnackbar.vue";
+import { useLeave } from "~/composable/useRoom";
+import { sessionStore, roomStore, globalStore } from "~/store";
 
 export default defineComponent({
   name: "DefaultLayout",
-  components: { ESessionSnackbar },
+  components: {
+    ESessionSnackbar: () => import("~/components/ESessionSnackbar.vue"),
+    ESessionModerationDrawer: () =>
+      import("~/components/ESessionModerationDrawer.vue"),
+  },
   setup() {
-    const { app } = useContext();
+    const { app, redirect } = useContext();
     provide(DefaultApolloClient, app.apolloProvider.defaultClient);
 
+    const userRef = computed(() => sessionStore.user);
+    const roomRef = computed(() => roomStore.room);
+    const roomJoined = computed(
+      () => userRef.value !== null && roomRef.value !== null,
+    );
+
+    function toggleModerationDrawer() {
+      globalStore.toggleModerationDrawer();
+    }
+
+    const { mutate: leave, onDone } = useLeave(userRef, roomRef);
+    function leaveRoom() {
+      onDone(() => {
+        redirect("/");
+      });
+      leave();
+    }
+
     return {
-      clipped: false,
-      drawer: true,
-      fixed: false,
       items: [
         {
           icon: "mdi-apps",
-          title: "Welcome",
+          title: "Join Room",
           to: "/",
-        },
-        {
-          icon: "mdi-information",
-          title: "Apollo API Example",
-          to: "/apollo",
         },
         {
           icon: "mdi-home-floor-1",
@@ -98,10 +76,10 @@ export default defineComponent({
           to: "/rooms/1",
         },
       ],
-      miniVariant: false,
-      right: true,
-      rightDrawer: false,
-      title: "Vuetify.js",
+      title: "E-Session",
+      roomJoined,
+      toggleModerationDrawer,
+      leaveRoom,
     };
   },
 });

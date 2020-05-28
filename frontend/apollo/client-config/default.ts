@@ -1,3 +1,4 @@
+import consola from "consola";
 import { ErrorLink } from "apollo-link-error";
 import { globalStore } from "~/store";
 
@@ -14,7 +15,8 @@ const errorLink = new ErrorLink((error) => {
         "",
       )}`;
 
-  globalStore.showErrorMessage(errorMessage);
+  consola.error(errorMessage);
+  globalStore.showErrorMessage("Server Error");
 });
 
 export default function ({ req, nuxtState }) {

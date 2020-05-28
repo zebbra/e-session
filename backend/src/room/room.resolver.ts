@@ -17,6 +17,11 @@ export class RoomResolver {
     return this.roomService.lookup(name);
   }
 
+  @Mutation((returns) => Room)
+  async createRoom(@Args("name") name: string) {
+    return this.roomService.lookup(name);
+  }
+
   @Mutation((returns) => Message)
   async say(@Args("room") name: string, @Args("text") text: string) {
     const message = this.roomService.say(name, text);

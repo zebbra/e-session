@@ -30,12 +30,13 @@ type Mutation {
   logout(id: String!): User!
   join(roomId: String!, userId: String!): User!
   leave(roomId: String!, userId: String!): User!
+  createRoom(name: String!): Room!
   say(text: String!, room: String!): Message!
 }
 
 type Subscription {
   roomJoined(roomId: String!, userId: String!): User!
   roomLeft(roomId: String!, userId: String!): User!
-  userConnected(userId: String!, roomId: String!): User!
+  signal(userId: String!, roomId: String!): User!
   messagePosted(room: String!): Message!
 }

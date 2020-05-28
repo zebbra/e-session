@@ -1,5 +1,5 @@
-query getUser($id: String!) {
-  user(id: $id) {
+mutation logoutUser($id: String!) {
+  logout(id: $id) {
     id
     name
     room {
