@@ -38,7 +38,7 @@ export default class Room extends VuexModule {
   @Mutation
   addMessage(message: IMessage) {
     if (this.room) {
-      this.room.messages.push(message);
+      this.room.messages.unshift(message);
     }
   }
 }

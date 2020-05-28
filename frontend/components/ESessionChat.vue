@@ -2,7 +2,9 @@
   <v-card light tile>
     <v-list dense>
       <v-list-item v-for="(message, index) in room.messages" :key="index">
-        <v-list-item-content>
+        <v-list-item-content
+          :class="user.id === message.author.id ? 'text-right' : ''"
+        >
           <v-list-item-title>{{ message.author.name }}</v-list-item-title>
           <v-list-item-subtitle class="wrap-text">{{
             message.text
@@ -14,15 +16,17 @@
 </template>
 <script lang="ts">
 import { defineComponent, computed } from "nuxt-composition-api";
-import { roomStore } from "../store";
+import { roomStore, sessionStore } from "../store";
 
 export default defineComponent({
   name: "ESessionChat",
   setup() {
     const roomRef = computed(() => roomStore.room);
+    const userRef = computed(() => sessionStore.user);
 
     return {
       room: roomRef,
+      user: userRef,
     };
   },
 });
