@@ -18,7 +18,6 @@ export function useSendMessage(
   message: Ref<string>,
 ) {
   const postMessageTypeMutation = require("~/graphql/mutations/postMessage.graphql");
-
   return useMutation(postMessageTypeMutation, () => ({
     variables: {
       room: room.value.name,

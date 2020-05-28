@@ -1,6 +1,6 @@
 <template>
-  <section>
-    <v-card>
+  <section height="100%">
+    <v-card height="100%">
       <v-card-title>Messages</v-card-title>
         <v-card-text v-if="room">
           <v-list v-for="(message, index) in room.messages" :key="index">
@@ -10,11 +10,16 @@
               </v-list-item-title>
             </v-list-item-content>
           </v-list>
-          <v-text-field v-model="message" @keydown.enter="addMessage()" label="Press enter to send" placeholder="New message" />
         </v-card-text>
         <v-card-text v-else>
           No room joined
         </v-card-text>
+    </v-card>
+    <v-spacer></v-spacer>
+    <v-card v-if="room" style="bottom: 0; position: fixed; width: 100%">
+      <v-card-text>
+        <v-text-field  v-model="message" @keydown.enter="addMessage()" label="Press enter to send" placeholder="New message" />
+      </v-card-text>
     </v-card>
     <!-- <input v-model="message" placeholder="Enter a message" />
     <button @click="addMessage()">
@@ -41,8 +46,10 @@ export default defineComponent({
 
     function addMessage() {
       console.log(chatActivated.value)
-      console.log(user.value)
-      console.log(room.value)
+      console.log(user.value.id)
+      console.log(room.value.name)
+      console.log(message.value);
+      
       if(chatActivated.value){
         console.log("send message " + message.value + ".")
         if (message.value !== "") {
@@ -51,7 +58,6 @@ export default defineComponent({
       } else {
         console.log("Join room first")
       }
-
     }
 
     return {
