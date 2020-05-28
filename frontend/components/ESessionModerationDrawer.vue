@@ -11,7 +11,10 @@
       <v-list-item two-line>
         <v-list-item-content>
           <v-list-item-title>{{ user.name }}</v-list-item-title>
-          <v-list-item-subtitle>{{ room.name }}</v-list-item-subtitle>
+          <v-list-item-subtitle
+            >{{ room.name }}
+            {{ isModerator ? " - (Moderator)" : "" }}</v-list-item-subtitle
+          >
         </v-list-item-content>
       </v-list-item>
     </template>
@@ -74,6 +77,7 @@ export default defineComponent({
 
     const roomRef = computed(() => roomStore.room);
     const userRef = computed(() => sessionStore.user);
+    const isModerator = computed(() => sessionStore.role === "moderator");
 
     const selectedTab = ref(0);
 
@@ -97,6 +101,7 @@ export default defineComponent({
       sendMessage,
       valid,
       selectedTab,
+      isModerator,
     };
   },
 });

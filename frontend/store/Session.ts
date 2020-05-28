@@ -8,6 +8,12 @@ import { IUser } from "~/types";
 })
 export default class Session extends VuexModule {
   public user: IUser = null;
+  public role: string = null;
+
+  @Mutation
+  setRole(role: string) {
+    this.role = role;
+  }
 
   @Mutation
   login(value: IUser) {
@@ -17,5 +23,6 @@ export default class Session extends VuexModule {
   @Mutation
   logout() {
     this.user = null;
+    this.role = null;
   }
 }

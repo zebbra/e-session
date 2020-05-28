@@ -50,13 +50,23 @@ import { sessionStore, roomStore } from "~/store";
 export default defineComponent({
   name: "ESessionJoinRoomForm",
   setup() {
+    const { redirect, query } = useContext();
+    if (query.value.role) {
+      sessionStore.setRole(query.value.role.toString());
+    }
     const userRef = computed(() => sessionStore.user);
     const userName = ref(userRef.value ? userRef.value.name : "");
     const { mutate: login } = useLogin(userName);
     const { mutate: logout } = useLogout(userRef);
 
     const roomRef = computed(() => roomStore.room);
-    const roomName = ref(roomRef.value ? roomRef.value.name : "");
+    const roomName = ref(
+      roomRef.value
+        ? roomRef.value.name
+        : query.value.room
+        ? query.value.room.toString()
+        : "",
+    );
     const { mutate: create } = useCreate(roomName);
 
     function submit() {
@@ -68,7 +78,6 @@ export default defineComponent({
       }
     }
 
-    const { redirect } = useContext();
     watch([userRef, roomRef], ([user, room]) => {
       if (user && room) {
         redirect(`/rooms/${room.name}`);
