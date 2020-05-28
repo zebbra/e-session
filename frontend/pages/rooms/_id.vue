@@ -1,29 +1,40 @@
 <template>
-  <v-card>
-    <v-card-title>
-      <span class="info--text">{{ roomName }}</span>
-    </v-card-title>
-    <v-card-text>
-      {{ userId }}
-      <!-- @Marke your code goes here -->
-    </v-card-text>
-  </v-card>
+  <v-container fluid>
+    <v-card>
+      <v-card-title>
+        <span>{{ room && room.name }}</span>
+      </v-card-title>
+    </v-card>
+  </v-container>
 </template>
 
 <script lang="ts">
-import { defineComponent, useMeta, ref } from "nuxt-composition-api";
+import { defineComponent, useMeta, computed } from "nuxt-composition-api";
+import {
+  useSignal,
+  useOnJoined,
+  useOnLeft,
+  useJoin,
+} from "~/composable/useRoom";
+import { roomStore, sessionStore } from "~/store";
 
 export default defineComponent({
   name: "Room",
   head: {},
   setup() {
-    const roomName = ref("Example Room");
-    const userId = ref(1);
-    useMeta({ title: roomName.value });
+    const roomRef = computed(() => roomStore.room);
+    const userRef = computed(() => sessionStore.user);
+    useMeta({ title: roomRef.value.name });
+
+    useSignal(userRef, roomRef);
+    useOnJoined(userRef, roomRef);
+    useOnLeft(userRef, roomRef);
+
+    const { mutate: join } = useJoin(userRef, roomRef);
+    join();
 
     return {
-      roomName,
-      userId,
+      room: roomRef,
     };
   },
 });

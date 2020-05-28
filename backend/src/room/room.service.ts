@@ -1,6 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { PinoLogger, InjectPinoLogger } from "nestjs-pino";
 import { Room, Message } from "./room.model";
+import { User } from "../user/user.model";
+import { UserService } from "../user/user.service";
 
 @Injectable()
 export class RoomService {
@@ -9,6 +11,7 @@ export class RoomService {
   constructor(
     @InjectPinoLogger(RoomService.name)
     private readonly logger: PinoLogger,
+    private userService: UserService,
   ) {}
 
   create(name: string): Room {
@@ -20,14 +23,12 @@ export class RoomService {
 
   destroy(id: string): Room {
     this.logger.info("destroy(%s)", id);
-
     let room;
     for (let i = this.rooms.length - 1; i >= 0; --i) {
       if (this.rooms[i].id === id) {
         room = this.rooms.splice(i, 1)[0];
       }
     }
-
     return room;
   }
 
@@ -50,8 +51,26 @@ export class RoomService {
     return this.findByName(name) || this.create(name);
   }
 
-  say(room: string, message: string): Message {
+  say(room: string, author: User, message: string): Message {
     this.logger.info("say(%s)", message);
-    return this.lookup(room).say(message);
+    return this.lookup(room).say(author, message);
+  }
+
+  join(userId: string, roomId: string): User {
+    this.logger.info("join(%s %s)", userId, roomId);
+    const user = this.userService.findOne(userId);
+    this.findOne(roomId).userJoined(user);
+    return user;
+  }
+
+  leave(userId: string, roomId: string): User {
+    this.logger.info("leave(%s %s)", userId, roomId);
+    const user = this.userService.findOne(userId);
+    const room = this.findOne(roomId);
+    room.userLeft(userId);
+    if (room.users.length === 0) {
+      this.destroy(room.id);
+    }
+    return user;
   }
 }

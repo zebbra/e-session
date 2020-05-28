@@ -1,4 +1,4 @@
-mutation logout($id: String!) {
+mutation logoutUser($id: String!) {
   logout(id: $id) {
     id
     name

@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { Module, forwardRef } from "@nestjs/common";
 import { AppService } from "./app.service";
 import { UserModule } from "../user/user.module";
 import { RoomModule } from "../room/room.module";
@@ -7,7 +7,12 @@ import { graphQLModule } from "./graphql.module";
 import { loggerModule } from "./logger.module";
 
 @Module({
-  imports: [loggerModule, graphQLModule, UserModule, RoomModule],
+  imports: [
+    loggerModule,
+    graphQLModule,
+    forwardRef(() => UserModule),
+    forwardRef(() => RoomModule),
+  ],
   controllers: [],
   providers: [AppService, PubSubProvider],
   exports: [PubSubProvider],
