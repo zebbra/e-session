@@ -34,5 +34,5 @@ initial #VersusVirus pitch
 | Michael Baertschi | Hacker | https://github.com/mbaertschi |
 | Hannes Wuethrich | Hacker / DevOps | https://5px.ch/ https://github.com/hwuethrich |
 | Leandro Lerena | Hacker | https://github.com/leandrolerena |
-| Mike Steinmann | Security / Auth / Infra | https://github.com/cloedu87 |
+| Mike Steinmann | Security / Auth / Infra | https://github.com/msteinmann |
 | Claudio Sigenthaler | Hacker | https://github.com/cloedu87 |
