@@ -4,12 +4,30 @@
     right
     permanent
     fixed
-    color="background"
     dark
   >
-    <e-session-user-list />
-    <v-spacer/>
-    <e-session-chat />
+    <v-tabs
+      v-model="tabs"
+      color="primary"
+      dark
+      slider-color="primary"
+      centered="centered"
+      grow="grow"
+      right="right"
+    >
+      <v-tab>
+        Users
+      </v-tab>
+      <v-tab-item>
+        <e-session-user-list />
+      </v-tab-item>
+      <v-tab>
+        Chat
+      </v-tab>
+      <v-tab-item>
+        <e-session-chat />
+      </v-tab-item>
+    </v-tabs>
   </v-navigation-drawer>
 </template>
 
