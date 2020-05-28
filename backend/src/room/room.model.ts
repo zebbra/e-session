@@ -40,7 +40,10 @@ export class Room {
 
   say(author: User, text: string): Message {
     const message = new Message(this, author, text);
-    this.messages.push(message);
+    this.messages.unshift(message);
+    if (this.messages.length > 50) {
+      this.messages = this.messages.slice(0, 50);
+    }
     return message;
   }
 }

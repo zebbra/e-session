@@ -18,22 +18,22 @@
 
     <v-divider></v-divider>
 
-    <v-tabs centered grow right>
+    <v-tabs v-model="selectedTab" centered grow right>
       <v-tab>
         <v-icon>mdi-account-multiple-outline</v-icon> People ({{
           room.users.length
         }})
       </v-tab>
-      <v-tab-item :transition="false" :reverse-transition="false"> </v-tab-item>
+      <v-tab-item :transition="false" :reverse-transition="false">
+        <e-session-users />
+      </v-tab-item>
       <v-tab> <v-icon>mdi-message</v-icon> Chat </v-tab>
       <v-tab-item :transition="false" :reverse-transition="false">
         <e-session-chat />
       </v-tab-item>
     </v-tabs>
 
-    <v-divider></v-divider>
-
-    <template v-slot:append>
+    <template v-if="selectedTab === 1" v-slot:append>
       <v-card>
         <v-card-text>
           <v-form v-model="valid">
@@ -48,6 +48,7 @@
               class="message-input"
               append-outer-icon="mdi-send"
               @click:append-outer="sendMessage"
+              @keydown.enter="sendMessage"
             >
             </v-text-field>
           </v-form>
@@ -66,12 +67,15 @@ export default defineComponent({
   name: "ESessionModerationDrawer",
   components: {
     ESessionChat: () => import("~/components/ESessionChat.vue"),
+    ESessionUsers: () => import("~/components/ESessionUsers.vue"),
   },
   setup() {
     const moderationDrawer = computed(() => globalStore.moderationDrawer);
 
     const roomRef = computed(() => roomStore.room);
     const userRef = computed(() => sessionStore.user);
+
+    const selectedTab = ref(0);
 
     useOnMessagePosted(roomRef);
     const message = ref("");
@@ -92,6 +96,7 @@ export default defineComponent({
       messageRules: [(v) => v.length <= 100],
       sendMessage,
       valid,
+      selectedTab,
     };
   },
 });

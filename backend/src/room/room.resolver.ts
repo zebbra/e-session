@@ -78,6 +78,9 @@ export class RoomResolver {
         const user = room.findUser(userId);
         if (user) {
           room.userLeft(user.id);
+          if (room.users.length === 0) {
+            this.roomService.destroy(room.id);
+          }
           this.pubSub.publish("roomLeft", { user, roomId });
         }
       }

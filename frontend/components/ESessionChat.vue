@@ -1,5 +1,5 @@
 <template>
-  <v-card light tile>
+  <v-card v-if="room.messages.length" light tile flat>
     <v-list dense>
       <v-list-item v-for="(message, index) in room.messages" :key="index">
         <v-list-item-content

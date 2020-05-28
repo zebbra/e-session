@@ -39,6 +39,10 @@ export default class Room extends VuexModule {
   addMessage(message: IMessage) {
     if (this.room) {
       this.room.messages.unshift(message);
+
+      if (this.room.messages.length > 50) {
+        this.room.messages = this.room.messages.slice(0, 50);
+      }
     }
   }
 }
