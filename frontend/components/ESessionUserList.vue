@@ -1,10 +1,8 @@
 <template>
   <section>
     <v-card>
-      <v-card-title>
-        User List
-      </v-card-title>
       <v-card-text v-if="room">
+        <v-text-field  v-model="userFilter" placeholder="Filter" solo />
         <v-list v-for="(user, index) in room.users" :key="index">
           {{ user.name }}
         </v-list>
@@ -27,9 +25,11 @@ export default defineComponent({
     console.log("Setup ESessionChat")
     const room = computed(() => moderationStore.room);
     const userListActivated = computed(() => room.value != null)
+    const userFilter = ref("")
 
     return{
-      room
+      room,
+      userFilter
     }
   }
 });

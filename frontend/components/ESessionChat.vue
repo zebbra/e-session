@@ -1,7 +1,6 @@
 <template>
   <section height="100%">
     <v-card height="100%">
-      <v-card-title>Messages</v-card-title>
         <v-card-text v-if="room">
           <v-list v-for="(message, index) in room.messages" :key="index">
             <v-list-item-content>
