@@ -6,10 +6,16 @@ import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators";
   stateFactory: true,
 })
 export default class ConferenceStatus extends VuexModule {
-  public status: { isJoned: Boolean; id: String; displayName: String } = {
+  public status: {
+    isJoned: boolean;
+    id: string;
+    displayName: string;
+    roomName: string;
+  } = {
     isJoned: false,
     id: "",
     displayName: "",
+    roomName: "",
   };
 
   public devices: { cameraId: string; micId: string; outputId: string } = {
@@ -53,32 +59,42 @@ export default class ConferenceStatus extends VuexModule {
   // -------STATUS-------
 
   @Mutation
-  setJoned(isJoned: Boolean) {
+  setJoned(isJoned: boolean) {
     this.status.isJoned = isJoned;
   }
 
   @Mutation
-  setId(id: String) {
+  setId(id: string) {
     this.status.id = id;
   }
 
   @Mutation
-  setDisplayName(displayName: String) {
+  setDisplayName(displayName: string) {
     this.status.displayName = displayName;
   }
 
+  @Mutation
+  setRoomName(roomName: string) {
+    this.status.roomName = roomName;
+  }
+
   @Action
-  updateJoined(joined: Boolean) {
+  updateJoined(joined: boolean) {
     this.setJoned(joined);
   }
 
   @Action
-  updateId(text: String) {
+  updateId(text: string) {
     this.setId(text);
   }
 
   @Action
-  updateDisplayName(text: String) {
+  updateDisplayName(text: string) {
     this.setDisplayName(text);
+  }
+
+  @Action
+  updateRoomName(roomName: string) {
+    this.setRoomName(roomName);
   }
 }

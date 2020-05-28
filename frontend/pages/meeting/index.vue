@@ -47,6 +47,8 @@ export default defineComponent({
 
     function connect() {
       conferenceStatusStore.updateDisplayName(attendeeName.value);
+      conferenceStatusStore.updateRoomName(roomName.value);
+
       if (process.browser) {
         // console.log("jitsi connect", context);
         jitsi = context.root.$jitsi;

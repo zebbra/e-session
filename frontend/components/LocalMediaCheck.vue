@@ -64,7 +64,7 @@ export default defineComponent({
     Media: () => import("~/components/Media.vue"),
   },
 
-  setup(props, { root }) {
+  setup(_, { root }) {
     const localTracks = ref({ localStream: ref({ video: null, audio: null }) });
 
     const videoStream = computed(() => localTracks.value.localStream.video);
@@ -98,7 +98,7 @@ export default defineComponent({
           cameraDevices.value = devices.filter((d) => d.kind === "videoinput");
         });
       }
-      getLocalTracks();
+      createLocalTracks();
     }
 
     function confirm() {
@@ -107,6 +107,7 @@ export default defineComponent({
     }
 
     function cancel() {
+      globalStore.showDeviceSettings(false);
       // Vue.prototype.$localTracks = null;
       // localTracks.value.localStream.video.dispose();
       // localTracks.value.localStream.audio.dispose();
@@ -115,7 +116,7 @@ export default defineComponent({
       // globalStore.showDeviceSettings(false);
     }
 
-    async function getLocalTracks() {
+    async function createLocalTracks() {
       try {
         const tracks = await jitsi.createLocalTracks({
           devices: ["audio", "video"],
@@ -127,11 +128,11 @@ export default defineComponent({
     }
 
     async function changeCamera(id) {
-      props.localTracks.localStream.value.video.dispose();
-      props.localTracks.localStream.value.audio.dispose();
+      localTracks.value.localStream.video.dispose();
+      root.$set(localTracks.value.localStream, "video", null);
       try {
         const tracks = await jitsi.createLocalTracks({
-          devices: ["audio", "video"],
+          devices: ["video"],
           micDeviceId: id,
         });
         onLocalTracks(tracks);
@@ -145,12 +146,12 @@ export default defineComponent({
     }
 
     async function changeMicrophoneDevice(id) {
-      props.localTracks.localStream.value.video.dispose();
-      props.localTracks.localStream.value.audio.dispose();
+      localTracks.value.localStream.audio.dispose();
+      root.$set(localTracks.value.localStream, "audio", null);
       // console.log(event);
       try {
         const tracks = await jitsi.createLocalTracks({
-          devices: ["audio", "video"],
+          devices: ["audio"],
           micDeviceId: id,
         });
         onLocalTracks(tracks);
