@@ -7,7 +7,7 @@
           <v-text-field
             v-model="userName"
             :rules="nameRules"
-            :counter="10"
+            :counter="32"
             required
             outlined
             label="Username"
@@ -15,7 +15,7 @@
           <v-text-field
             v-model="roomName"
             :rules="nameRules"
-            :counter="10"
+            :counter="32"
             required
             outlined
             label="Room"
@@ -85,7 +85,7 @@ export default defineComponent({
       nameRules: [
         (v) => !!v || "Attribute is required",
         (v) => v.length >= 3 || "Attribute must be more than 3 characters",
-        (v) => v.length <= 10 || "Attribute must be less than 10 characters",
+        (v) => v.length <= 32 || "Attribute must be less than 32 characters",
       ],
       submit,
       logout,

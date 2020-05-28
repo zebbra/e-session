@@ -2,9 +2,5 @@ mutation logoutUser($id: String!) {
   logout(id: $id) {
     id
     name
-    room {
-      id
-      name
-    }
   }
 }

@@ -1,3 +1,3 @@
-const onMesagePosted = require("./posted.graphql");
+const onMessagePosted = require("./posted.graphql");
 
-export { onMesagePosted };
+export { onMessagePosted };

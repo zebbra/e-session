@@ -8,6 +8,10 @@ mutation createRoom($name: String!) {
     }
     messages {
       text
+      author {
+        id
+        name
+      }
     }
   }
 }

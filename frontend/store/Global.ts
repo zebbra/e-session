@@ -7,7 +7,7 @@ import { Module, VuexModule, Mutation } from "vuex-module-decorators";
 })
 export default class Global extends VuexModule {
   public errorMessage: string = null;
-  public moderationDrawer: boolean = false;
+  public moderationDrawer: boolean = true;
 
   @Mutation
   toggleModerationDrawer() {

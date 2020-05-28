@@ -1,7 +1,6 @@
 export interface IUser {
   id: string;
   name: string;
-  room?: IRoom;
   raised?: Boolean;
 }
 
@@ -14,6 +13,6 @@ export interface IRoom {
 
 export interface IMessage {
   text: string;
-  author?: IUser;
-  room?: IRoom;
+  author: IUser;
+  room: IRoom;
 }

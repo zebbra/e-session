@@ -2,9 +2,5 @@ mutation loginUser($name: String!) {
   login(name: $name) {
     id
     name
-    room {
-      id
-      name
-    }
   }
 }

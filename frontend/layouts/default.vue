@@ -16,8 +16,8 @@
         <nuxt />
       </v-container>
     </v-content>
-    <e-session-moderation-drawer />
-    <v-footer fixed app>
+    <e-session-moderation-drawer v-if="roomJoined" />
+    <v-footer fixed>
       <span>&copy; zebbra AG {{ new Date().getFullYear() }}</span>
     </v-footer>
   </v-app>
