@@ -17,8 +17,13 @@
       </v-container>
     </v-content>
     <e-session-moderation-drawer v-if="roomJoined" />
-    <v-footer fixed>
-      <span>&copy; zebbra AG {{ new Date().getFullYear() }}</span>
+    <v-footer :fixed="fixed" app>
+      <span
+        >&#9994; e-session
+        <a href="https://github.com/zebbra/e-session" target="_blank"
+          >prototype</a
+        ></span
+      >
     </v-footer>
   </v-app>
 </template>
