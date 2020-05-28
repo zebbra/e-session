@@ -4,7 +4,9 @@
       <v-list-item v-for="(message, index) in room.messages" :key="index">
         <v-list-item-content>
           <v-list-item-title>{{ message.author.name }}</v-list-item-title>
-          <v-list-item-subtitle>{{ message.text }}</v-list-item-subtitle>
+          <v-list-item-subtitle class="wrap-text">{{
+            message.text
+          }}</v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
     </v-list>
@@ -25,3 +27,11 @@ export default defineComponent({
   },
 });
 </script>
+
+<style>
+.wrap-text {
+  -webkit-line-clamp: unset !important;
+  word-wrap: break-word;
+  white-space: normal;
+}
+</style>
