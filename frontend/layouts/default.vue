@@ -60,7 +60,7 @@
       </v-list>
     </v-navigation-drawer>
     <v-footer :fixed="fixed" app>
-      <span>&copy; {{ new Date().getFullYear() }}</span>
+      <span>&#9994; e-session <a href="https://github.com/zebbra/e-session" target="_blank">prototype</a></span>
     </v-footer>
   </v-app>
 </template>
