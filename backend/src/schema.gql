@@ -31,7 +31,7 @@ type Mutation {
   createRoom(name: String!): Room!
   say(text: String!, author: String!, room: String!): Message!
   join(roomId: String!, userId: String!): User!
-  leave(roomId: String!, userId: String!): User!
+  leave(roomId: String!, userId: String!): User
 }
 
 type Subscription {

@@ -45,7 +45,7 @@ export class RoomResolver {
     return user;
   }
 
-  @Mutation((returns) => User)
+  @Mutation((returns) => User, { nullable: true })
   async leave(@Args("userId") userId: string, @Args("roomId") roomId: string) {
     const user = this.roomService.leave(userId, roomId);
     this.pubSub.publish("roomLeft", { user, roomId });
