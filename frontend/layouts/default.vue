@@ -1,7 +1,10 @@
 <template>
   <v-app dark>
+    <div id="stars"></div>
+    <div id="stars2"></div>
+    <div id="stars3"></div>
     <e-session-snackbar />
-    <v-app-bar fixed app>
+    <v-app-bar fixed app color="rgb(0, 0, 0, 0.2)">
       <v-toolbar-title v-text="title" />
       <v-spacer></v-spacer>
       <v-btn v-if="roomJoined" icon @click.stop="toggleModerationDrawer">
@@ -22,7 +25,7 @@
       </v-container>
     </v-content>
     <e-session-moderation-drawer v-if="roomJoined" />
-    <v-footer fixed>
+    <v-footer fixed color="rgb(0, 0, 0, 0.2)">
       <span
         >&#9994; e-session
         <a href="https://github.com/zebbra/e-session" target="_blank"

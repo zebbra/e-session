@@ -68,7 +68,13 @@ const config: Configuration = {
         keys: ["HTTP_GRAPHQL_ENDPOINT", "WS_GRAPHQL_ENDPOINT"],
       },
     ],
+    // Doc: https://github.com/nuxt-community/style-resources-module
+    "@nuxtjs/style-resources",
   ],
+
+  styleResources: {
+    sass: ["assets/sass/background.sass"],
+  },
 
   /**
    * Apollo module configuration
