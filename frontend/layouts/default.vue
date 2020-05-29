@@ -4,12 +4,17 @@
     <v-app-bar fixed app>
       <v-toolbar-title v-text="title" />
       <v-spacer></v-spacer>
-      <v-btn v-if="roomJoined" icon @click.stop="leaveRoom">
-        <v-icon>mdi-exit-to-app</v-icon>
-      </v-btn>
       <v-btn v-if="roomJoined" icon @click.stop="toggleModerationDrawer">
         <v-icon>mdi-menu</v-icon>
       </v-btn>
+      <v-tooltip v-if="roomJoined && !moderationDrawer" bottom>
+        <template v-slot:activator="{ on }">
+          <v-btn icon @click.stop="leaveRoom">
+            <v-icon v-on="on">mdi-exit-to-app</v-icon>
+          </v-btn>
+        </template>
+        <span>Leave Room</span>
+      </v-tooltip>
     </v-app-bar>
     <v-content>
       <v-container>
@@ -50,6 +55,7 @@ export default defineComponent({
     const { app, redirect } = useContext();
     provide(DefaultApolloClient, app.apolloProvider.defaultClient);
 
+    const moderationDrawer = computed(() => globalStore.moderationDrawer);
     const userRef = computed(() => sessionStore.user);
     const roomRef = computed(() => roomStore.room);
     const roomJoined = computed(
@@ -67,22 +73,10 @@ export default defineComponent({
       });
       leave();
     }
-
     return {
-      items: [
-        {
-          icon: "mdi-apps",
-          title: "Join Room",
-          to: "/",
-        },
-        {
-          icon: "mdi-home-floor-1",
-          title: "Example Room",
-          to: "/rooms/1",
-        },
-      ],
       title: "E-Session",
       roomJoined,
+      moderationDrawer,
       toggleModerationDrawer,
       leaveRoom,
     };
