@@ -1,7 +1,6 @@
 <template>
   <v-row justify="center">
     <v-expansion-panels
-      light
       accordion
       multiple
       focusable

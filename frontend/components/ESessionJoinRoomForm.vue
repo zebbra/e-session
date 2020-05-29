@@ -1,7 +1,12 @@
 <template>
   <v-container>
     <v-form v-model="valid">
-      <v-card class="mx-auto" max-width="600" outlined>
+      <v-card
+        color="rgb(0, 0, 0, 0.2)"
+        class="mx-auto"
+        max-width="600"
+        outlined
+      >
         <v-card-title>Join Room</v-card-title>
         <v-card-text>
           <v-text-field

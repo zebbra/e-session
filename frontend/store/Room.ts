@@ -24,9 +24,13 @@ export default class Room extends VuexModule {
   addUser(user: IUser) {
     if (this.room) {
       this.room.users.unshift(user);
-      this.room.users = this.room.users.sort((a, b) => {
-        return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
-      });
+      this.room.users
+        .sort((a, b) =>
+          a.name.toLowerCase().localeCompare(b.name.toLowerCase()),
+        )
+        .sort((a, b) =>
+          a.handRaised === b.handRaised ? 0 : a.handRaised ? -1 : 1,
+        );
     }
   }
 
@@ -59,6 +63,12 @@ export default class Room extends VuexModule {
         i = 0;
       }
     }
+
+    this.room.users
+      .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
+      .sort((a, b) =>
+        a.handRaised === b.handRaised ? 0 : a.handRaised ? -1 : 1,
+      );
   }
 
   @Mutation
