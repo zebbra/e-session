@@ -63,12 +63,11 @@ export function useSignal(user: Ref<IUser>, room: Ref<IRoom>) {
   }
 }
 
-export function useOnJoined(user: Ref<IUser>, room: Ref<IRoom>) {
+export function useOnJoined(room: Ref<IRoom>) {
   if (process.browser) {
     const { onResult } = useSubscription<{ roomJoined: IUser }>(
       subscriptions.room.onRoomJoined,
       () => ({
-        userId: user.value && user.value.id,
         roomId: room.value && room.value.id,
       }),
     );
@@ -79,12 +78,11 @@ export function useOnJoined(user: Ref<IUser>, room: Ref<IRoom>) {
   }
 }
 
-export function useOnLeft(user: Ref<IUser>, room: Ref<IRoom>) {
+export function useOnLeft(room: Ref<IRoom>) {
   if (process.browser) {
     const { onResult } = useSubscription<{ roomLeft: IUser }>(
       subscriptions.room.onRoomLeft,
       () => ({
-        userId: user.value && user.value.id,
         roomId: room.value && room.value.id,
       }),
     );
@@ -95,12 +93,11 @@ export function useOnLeft(user: Ref<IUser>, room: Ref<IRoom>) {
   }
 }
 
-export function useOnHandMoved(user: Ref<IUser>, room: Ref<IRoom>) {
+export function useOnHandMoved(room: Ref<IRoom>) {
   if (process.browser) {
     const { onResult } = useSubscription<{ handMoved: IUser }>(
       subscriptions.room.onHandMoved,
       () => ({
-        userId: user.value && user.value.id,
         roomId: room.value && room.value.id,
       }),
     );

@@ -76,7 +76,7 @@ export class RoomResolver {
     filter: (payload, variables) => payload.roomId === variables.roomId,
     resolve: (payload) => payload.user,
   })
-  handMoved(@Args("userId") userId: string, @Args("roomId") roomId: string) {
+  handMoved(@Args("roomId") roomId: string) {
     return this.pubSub.asyncIterator("handMoved");
   }
 
@@ -84,7 +84,7 @@ export class RoomResolver {
     filter: (payload, variables) => payload.roomId === variables.roomId,
     resolve: (payload) => payload.user,
   })
-  roomJoined(@Args("userId") userId: string, @Args("roomId") roomId: string) {
+  roomJoined(@Args("roomId") roomId: string) {
     return this.pubSub.asyncIterator("roomJoined");
   }
 
@@ -92,7 +92,7 @@ export class RoomResolver {
     filter: (payload, variables) => payload.roomId === variables.roomId,
     resolve: (payload) => payload.user,
   })
-  roomLeft(@Args("userId") userId: string, @Args("roomId") roomId: string) {
+  roomLeft(@Args("roomId") roomId: string) {
     return this.pubSub.asyncIterator("roomLeft");
   }
 

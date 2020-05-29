@@ -1,5 +1,5 @@
 <template>
-  <v-list dense>
+  <v-list dense class="py-0">
     <v-list-item v-for="(message, index) in room.messages" :key="index">
       <v-list-item-content
         :class="user.id === message.author.id ? 'text-right' : ''"

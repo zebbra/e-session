@@ -38,9 +38,9 @@ type Mutation {
 }
 
 type Subscription {
-  handMoved(roomId: String!, userId: String!): User!
-  roomJoined(roomId: String!, userId: String!): User!
-  roomLeft(roomId: String!, userId: String!): User!
+  handMoved(roomId: String!): User!
+  roomJoined(roomId: String!): User!
+  roomLeft(roomId: String!): User!
   signal(userId: String!, roomId: String!): User!
   messagePosted(room: String!): Message!
 }

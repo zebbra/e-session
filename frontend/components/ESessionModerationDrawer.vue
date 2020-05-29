@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from "nuxt-composition-api";
+import { defineComponent, computed, ref, watch } from "nuxt-composition-api";
 import { globalStore, roomStore } from "~/store";
 
 export default defineComponent({
@@ -49,6 +49,11 @@ export default defineComponent({
     const roomRef = computed(() => roomStore.room);
 
     const selectedTab = ref(0);
+    watch(selectedTab, (tab) => {
+      if (tab === 1) {
+        roomStore.setUsersFilter("");
+      }
+    });
 
     function onUsersFiltered(value) {
       roomStore.setUsersFilter(value);

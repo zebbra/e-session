@@ -27,8 +27,8 @@ export default defineComponent({
     useMeta({ title: roomRef.value.name });
 
     useSignal(userRef, roomRef);
-    useOnJoined(userRef, roomRef);
-    useOnLeft(userRef, roomRef);
+    useOnJoined(roomRef);
+    useOnLeft(roomRef);
 
     const { mutate: join } = useJoin(userRef, roomRef);
     join();
