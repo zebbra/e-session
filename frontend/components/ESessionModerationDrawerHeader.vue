@@ -51,6 +51,7 @@ export default defineComponent({
     const { mutate: leave, onDone } = useLeave(userRef, roomRef);
     function leaveRoom() {
       onDone(() => {
+        roomStore.setUsersFilter("");
         redirect("/");
       });
       leave();
