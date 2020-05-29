@@ -63,16 +63,11 @@ export default defineComponent({
       import("~/components/ESessionLocalMediaAudioLevelIndicator.vue"),
   },
 
-  setup(_, { root }) {
+  setup() {
     const { app } = useContext();
-    const localTracks: any = computed(() => root.$localTracks);
     const audioLevel: any = ref(0);
-    const videoStream = computed(
-      () => localTracks.value.value.localStream.video,
-    );
-    const audioStream = computed(
-      () => localTracks.value.value.localStream.audio,
-    );
+    const videoStream = computed(() => app.$localTracks.localStream.video);
+    const audioStream = computed(() => app.$localTracks.localStream.audio);
     const displayName = computed(
       () => conferenceStatusStore.status.displayName,
     );
@@ -107,8 +102,8 @@ export default defineComponent({
         consola.log("newVal: ", newVal);
         if (
           newVal === true &&
-          (!localTracks.value.value.localStream.video ||
-            !localTracks.value.value.localStream.audio)
+          (!app.$localTracks.localStream.video ||
+            !app.$localTracks.localStream.audio)
         ) {
           consola.log("making new tracks");
           createLocalTracks();
@@ -132,8 +127,8 @@ export default defineComponent({
     }
 
     async function changeCamera(id) {
-      localTracks.value.value.localStream.video.dispose();
-      root.$set(localTracks.value.value.localStream, "video", null);
+      app.$localTracks.localStream.video.dispose();
+      app.$localTracks.localStream.video = null;
       try {
         const tracks = await app.$jitsi.createLocalTracks({
           devices: ["video"],
@@ -145,8 +140,7 @@ export default defineComponent({
       }
 
       if (conferenceStatusStore.status.isJoned) {
-        const room = root.$room;
-        room.addTrack(localTracks.value.value.localStream.video);
+        app.$room.addTrack(app.$localTracks.localStream.video);
       }
     }
 
@@ -155,8 +149,8 @@ export default defineComponent({
     }
 
     async function changeMicrophoneDevice(id) {
-      localTracks.value.value.localStream.audio.dispose();
-      root.$set(localTracks.value.value.localStream, "audio", null);
+      app.$localTracks.localStream.audio.dispose();
+      app.$localTracks.localStream.audio = null;
       // consola.log(event);
       try {
         const tracks = await app.$jitsi.createLocalTracks({
@@ -168,8 +162,7 @@ export default defineComponent({
         // consola.error("Exception:", err);
       }
       if (conferenceStatusStore.status.isJoned) {
-        const room = root.$room;
-        room.addTrack(localTracks.value.value.localStream.audio);
+        app.$room.addTrack(app.$localTracks.localStream.audio);
       }
     }
 
@@ -194,7 +187,7 @@ export default defineComponent({
         // consola.log(localTracks);
         if (type === "video") {
           conferenceStatusStore.updateCameraId(tracks[i].getDeviceId());
-          root.$set(localTracks.value.value.localStream, "video", tracks[i]);
+          app.$localTracks.localStream.video = tracks[i];
         }
         if (type === "audio") {
           tracks[i].addEventListener(
@@ -205,7 +198,7 @@ export default defineComponent({
             app.$jitsi.mediaDevices.getAudioOutputDevice(),
           );
           conferenceStatusStore.updateMicId(tracks[i].getDeviceId());
-          root.$set(localTracks.value.value.localStream, "audio", tracks[i]);
+          app.$localTracks.localStream.audio = tracks[i];
         }
       }
       consola.log("onLocalTracks done");

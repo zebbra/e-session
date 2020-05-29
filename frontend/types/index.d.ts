@@ -16,3 +16,10 @@ export interface IMessage {
   author: IUser;
   room: IRoom;
 }
+
+export interface ILocalTracks {
+  localStream: {
+    video: any;
+    audio: any;
+  };
+}

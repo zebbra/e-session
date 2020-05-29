@@ -34,7 +34,6 @@ import {
   ref,
   useContext,
 } from "nuxt-composition-api";
-import Vue from "vue";
 import consola from "consola";
 import { initOptions, options } from "~/utils/jitsi";
 import { conferenceStatusStore } from "~/store";
@@ -44,7 +43,6 @@ export default defineComponent({
   head: {},
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setup(props, context) {
-    const localTracks = ref({ localStream: ref({ video: null, audio: null }) });
     const roomName = ref("ExampleRoomName");
     const attendeeName = ref("");
     useMeta({ title: "Jitsi Meeting" });
@@ -79,8 +77,7 @@ export default defineComponent({
 
     function onConnectionSuccess() {
       consola.log("onConnectionSuccess");
-      Vue.prototype.$localTracks = localTracks;
-      Vue.prototype.$connection = connection;
+      app.$connection = connection;
       conferenceStatusStore.showSetup(true);
     }
 

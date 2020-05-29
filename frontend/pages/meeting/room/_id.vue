@@ -41,7 +41,6 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import {
   defineComponent,
   useMeta,
@@ -62,8 +61,8 @@ export default defineComponent({
       import("~/components/ESessionLocalMediaSettings.vue"),
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  setup(_, context) {
-    const { app, params } = useContext();
+  setup() {
+    const { app, params, redirect } = useContext();
     const roomName: any = computed(() => params.value.id);
     const displayName: any = computed(
       () => conferenceStatusStore.status.displayName,
@@ -72,7 +71,6 @@ export default defineComponent({
       () => conferenceStatusStore.deviceSettingsVisible,
     );
     const userId: any = ref(1);
-    const localTracks: any = computed(() => context.root.$localTracks);
     const remoteTracks: any = ref({});
 
     useMeta({ title: roomName.value });
@@ -89,13 +87,8 @@ export default defineComponent({
       }
     });
 
-    let connection: any;
-    let room: any;
-
     if (process.browser) {
-      connection = context.root.$connection;
-
-      room = connection.initJitsiConference(
+      const room = app.$connection.initJitsiConference(
         roomName.value.toLowerCase(),
         confOptions,
       );
@@ -110,7 +103,7 @@ export default defineComponent({
       );
       room.on(app.$jitsi.events.conference.USER_JOINED, (id: any) => {
         consola.log("user join", id);
-        context.root.$set(remoteTracks.value, id, ref({}));
+        remoteTracks.value[id] = ref({});
       });
       room.on(app.$jitsi.events.conference.USER_LEFT, (id: string) =>
         onUserLeft(id),
@@ -124,7 +117,7 @@ export default defineComponent({
       // room.on(app.$jitsi.events.conference.PHONE_NUMBER_CHANGED, _ => log(`${room.getPhoneNumber()} - ${room.getPhonePin()}`))
       room.setDisplayName(displayName);
       room.join();
-      Vue.prototype.$room = room;
+      app.$room = room;
     }
 
     function onRemoteTrackAdd(track: any) {
@@ -133,7 +126,7 @@ export default defineComponent({
 
       const id = track.getParticipantId();
       if (!remoteTracks.value[id]) {
-        context.root.$set(remoteTracks.value, id, ref({}));
+        remoteTracks.value[id] = ref({});
       }
 
       track.addEventListener(
@@ -154,12 +147,10 @@ export default defineComponent({
 
       const type = track.getType();
       if (type === "video") {
-        context.root.$set(remoteTracks.value[id].value, "video", track);
-        // consola.log("onRemoteTrackAdd type video", remoteTracks.value[id].value)
+        remoteTracks.value[id].value.video = track;
       }
       if (type === "audio") {
-        context.root.$set(remoteTracks.value[id].value, "audio", track);
-        // consola.log("onRemoteTrackAdd type audio", remoteTracks.value[id].value)
+        remoteTracks.value[id].value.audio = track;
       }
     }
 
@@ -187,40 +178,40 @@ export default defineComponent({
         );
 
         if (type === "video") {
-          context.root.$delete(remoteTracks.value[id].value, "video");
+          remoteTracks.value[id].value.video = null;
         }
         if (type === "audio") {
-          context.root.$delete(remoteTracks.value[id].value, "audio");
+          remoteTracks.value[id].value.audio = null;
         }
       }
     }
 
     function onConferenceJoined() {
-      consola.log("onConferenceJoined", localTracks);
+      consola.log("onConferenceJoined", app.$localTracks);
       conferenceStatusStore.updateJoined(true);
       /* TODO Desktop and check if stream available */
-      room.addTrack(localTracks.value.value.localStream.video);
-      room.addTrack(localTracks.value.value.localStream.audio);
+      app.$room.addTrack(app.$localTracks.localStream.video);
+      app.$room.addTrack(app.$localTracks.localStream.audio);
     }
 
     function onUserLeft(id: string) {
       consola.log("onUserLeft", id);
-      context.root.$delete(remoteTracks.value, id);
+      remoteTracks.value[id] = null;
     }
 
     function endCall() {
       consola.log("endcall");
-      if (room) {
-        localTracks.value.value.localStream.video.dispose();
-        localTracks.value.value.localStream.audio.dispose();
-        context.root.$delete(localTracks.value.value.localStream, "video");
-        context.root.$delete(localTracks.value.value.localStream, "audio");
-        room.leave();
-        connection.disconnect();
-        room = null;
-        connection = null;
+      if (app.$room) {
+        app.$localTracks.localStream.video.dispose();
+        app.$localTracks.localStream.video = null;
+        app.$localTracks.localStream.audio.dispose();
+        app.$localTracks.localStream.audio = null;
+        app.$room.leave();
+        app.$connection.disconnect();
+        app.$room = null;
+        app.$connection = null;
         conferenceStatusStore.updateJoined(false);
-        context.root.$options.router!.push({ path: "/meeting" });
+        redirect("/meeting");
       }
     }
 
@@ -232,7 +223,7 @@ export default defineComponent({
       roomName,
       userId,
       remoteTracks,
-      localTracks,
+      localTracks: app.$localTracks,
       displayName,
       peerWrapperClassName,
       endCall,
