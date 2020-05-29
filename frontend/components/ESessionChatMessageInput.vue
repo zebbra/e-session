@@ -53,9 +53,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style>
-.message-input input {
-  font-size: 0.8em;
-}
-</style>

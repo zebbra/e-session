@@ -8,6 +8,7 @@ query fetchRoom($name: String!) {
     users {
       id
       name
+      handRaised
     }
   }
 }

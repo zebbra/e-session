@@ -5,6 +5,7 @@ mutation createRoom($name: String!) {
     users {
       id
       name
+      handRaised
     }
     messages {
       text

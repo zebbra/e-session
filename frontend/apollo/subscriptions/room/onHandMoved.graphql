@@ -1,0 +1,7 @@
+subscription onHandMoved($userId: String!, $roomId: String!) {
+  handMoved(userId: $userId, roomId: $roomId) {
+    id
+    name
+    handRaised
+  }
+}

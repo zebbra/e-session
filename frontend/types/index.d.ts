@@ -1,7 +1,7 @@
 export interface IUser {
   id: string;
   name: string;
-  raised?: Boolean;
+  handRaised: Boolean;
 }
 
 export interface IRoom {

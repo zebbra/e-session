@@ -1,6 +1,6 @@
 import { useMutation, useSubscription } from "@vue/apollo-composable";
 import { Ref } from "@vue/composition-api";
-import { roomStore } from "~/store";
+import { roomStore, sessionStore } from "~/store";
 import { mutations, subscriptions } from "~/apollo";
 import { IUser, IRoom } from "~/types";
 
@@ -29,6 +29,24 @@ export function useLeave(user: Ref<IUser>, room: Ref<IRoom>) {
 
 export function useJoin(user: Ref<IUser>, room: Ref<IRoom>) {
   return useMutation(mutations.room.joinRoom, () => ({
+    variables: {
+      userId: user.value.id,
+      roomId: room.value.id,
+    },
+  }));
+}
+
+export function useRaiseHand(user: Ref<IUser>, room: Ref<IRoom>) {
+  return useMutation(mutations.room.raiseHand, () => ({
+    variables: {
+      userId: user.value.id,
+      roomId: room.value.id,
+    },
+  }));
+}
+
+export function useLowerHand(user: Ref<IUser>, room: Ref<IRoom>) {
+  return useMutation(mutations.room.lowerHand, () => ({
     variables: {
       userId: user.value.id,
       roomId: room.value.id,
@@ -73,6 +91,25 @@ export function useOnLeft(user: Ref<IUser>, room: Ref<IRoom>) {
 
     onResult((result) => {
       roomStore.removeUser(result.data.roomLeft);
+    });
+  }
+}
+
+export function useOnHandMoved(user: Ref<IUser>, room: Ref<IRoom>) {
+  if (process.browser) {
+    const { onResult } = useSubscription<{ handMoved: IUser }>(
+      subscriptions.room.onHandMoved,
+      () => ({
+        userId: user.value && user.value.id,
+        roomId: room.value && room.value.id,
+      }),
+    );
+
+    onResult((result) => {
+      roomStore.handMoved(result.data.handMoved);
+      if (result.data.handMoved.id === sessionStore.user.id) {
+        sessionStore.handMoved();
+      }
     });
   }
 }

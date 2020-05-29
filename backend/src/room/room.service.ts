@@ -60,7 +60,10 @@ export class RoomService {
     this.logger.info("join(%s %s)", userId, roomId);
     const user = this.userService.findOne(userId);
     if (user) {
-      this.findOne(roomId).userJoined(user);
+      const room = this.findOne(roomId);
+      if (room) {
+        room.userJoined(user);
+      }
     }
     return user;
   }

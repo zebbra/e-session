@@ -5,6 +5,7 @@
 type User {
   id: String!
   name: String!
+  handRaised: Boolean!
 }
 
 type Room {
@@ -32,9 +33,12 @@ type Mutation {
   say(text: String!, author: String!, room: String!): Message!
   join(roomId: String!, userId: String!): User!
   leave(roomId: String!, userId: String!): User
+  raiseHand(roomId: String!, userId: String!): User!
+  lowerHand(roomId: String!, userId: String!): User!
 }
 
 type Subscription {
+  handMoved(roomId: String!, userId: String!): User!
   roomJoined(roomId: String!, userId: String!): User!
   roomLeft(roomId: String!, userId: String!): User!
   signal(userId: String!, roomId: String!): User!
