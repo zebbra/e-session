@@ -52,6 +52,34 @@ export class RoomResolver {
     return user;
   }
 
+  @Mutation((returns) => User)
+  async raiseHand(
+    @Args("userId") userId: string,
+    @Args("roomId") roomId: string,
+  ) {
+    const user = this.userService.raiseHand(userId);
+    this.pubSub.publish("handMoved", { user, roomId });
+    return user;
+  }
+
+  @Mutation((returns) => User)
+  async lowerHand(
+    @Args("userId") userId: string,
+    @Args("roomId") roomId: string,
+  ) {
+    const user = this.userService.lowerHand(userId);
+    this.pubSub.publish("handMoved", { user, roomId });
+    return user;
+  }
+
+  @Subscription((returns) => User, {
+    filter: (payload, variables) => payload.roomId === variables.roomId,
+    resolve: (payload) => payload.user,
+  })
+  handMoved(@Args("userId") userId: string, @Args("roomId") roomId: string) {
+    return this.pubSub.asyncIterator("handMoved");
+  }
+
   @Subscription((returns) => User, {
     filter: (payload, variables) => payload.roomId === variables.roomId,
     resolve: (payload) => payload.user,

@@ -8,6 +8,7 @@
             v-model="userName"
             :rules="nameRules"
             :counter="32"
+            :disabled="!!user"
             required
             outlined
             label="Username"

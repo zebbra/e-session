@@ -25,4 +25,20 @@ export default class Session extends VuexModule {
     this.user = null;
     this.role = null;
   }
+
+  @Mutation
+  handMoved() {
+    this.user.handRaised = !this.user.handRaised;
+  }
+
+  get isModerator() {
+    return this.role === "moderator";
+  }
+
+  get userRole() {
+    if (this.role) {
+      return this.role.charAt(0).toUpperCase() + this.role.slice(1);
+    }
+    return "User";
+  }
 }

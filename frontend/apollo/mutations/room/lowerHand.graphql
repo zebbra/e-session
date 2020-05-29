@@ -1,0 +1,7 @@
+mutation lowerHand($userId: String!, $roomId: String!) {
+  lowerHand(userId: $userId, roomId: $roomId) {
+    id
+    name
+    handRaised
+  }
+}

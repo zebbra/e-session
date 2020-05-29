@@ -28,8 +28,9 @@
       </v-tab-item>
     </v-tabs>
 
-    <template v-if="selectedTab === 1" v-slot:append>
-      <e-session-chat-message-input />
+    <template v-slot:append>
+      <e-session-chat-message-input v-if="selectedTab === 1" />
+      <e-session-users-search-box v-else @onUsersFiltered="onUsersFiltered" />
     </template>
   </v-navigation-drawer>
 </template>
@@ -45,6 +46,8 @@ export default defineComponent({
     ESessionChatMessageInput: () =>
       import("~/components/ESessionChatMessageInput.vue"),
     ESessionUsers: () => import("~/components/ESessionUsers.vue"),
+    ESessionUsersSearchBox: () =>
+      import("~/components/ESessionUsersSearchBox.vue"),
     ESessionModerationDrawerHeader: () =>
       import("~/components/ESessionModerationDrawerHeader.vue"),
   },
@@ -54,11 +57,22 @@ export default defineComponent({
 
     const selectedTab = ref(0);
 
+    function onUsersFiltered(value) {
+      roomStore.setUsersFilter(value);
+    }
+
     return {
       moderationDrawer,
       room: roomRef,
       selectedTab,
+      onUsersFiltered,
     };
   },
 });
 </script>
+
+<style>
+.message-input input {
+  font-size: 0.8em;
+}
+</style>

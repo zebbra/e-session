@@ -26,7 +26,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, computed } from "nuxt-composition-api";
-import { roomStore, sessionStore } from "../store";
+import { roomStore, sessionStore } from "~/store";
 
 export default defineComponent({
   name: "ESessionChat",

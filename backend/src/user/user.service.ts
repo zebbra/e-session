@@ -37,4 +37,14 @@ export class UserService {
     this.logger.info("findOne(%s)", id);
     return this.users.find((user) => user.id === id);
   }
+
+  raiseHand(id: string): User {
+    this.logger.info("raiseHand(%s)", id);
+    return this.findOne(id).raiseHand();
+  }
+
+  lowerHand(id: string): User {
+    this.logger.info("lowerHand(%s)", id);
+    return this.findOne(id).lowerHand();
+  }
 }
