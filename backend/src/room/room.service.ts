@@ -69,9 +69,11 @@ export class RoomService {
     this.logger.info("leave(%s %s)", userId, roomId);
     const user = this.userService.findOne(userId);
     const room = this.findOne(roomId);
-    room.userLeft(userId);
-    if (room.users.length === 0) {
-      this.destroy(room.id);
+    if (room) {
+      room.userLeft(userId);
+      if (room.users.length === 0) {
+        this.destroy(room.id);
+      }
     }
     return user;
   }
