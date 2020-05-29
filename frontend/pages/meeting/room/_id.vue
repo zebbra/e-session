@@ -42,7 +42,14 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { defineComponent, useMeta, ref, computed } from "nuxt-composition-api";
+import {
+  defineComponent,
+  useMeta,
+  ref,
+  computed,
+  useContext,
+} from "nuxt-composition-api";
+import consola from "consola";
 import { confOptions } from "~/utils/jitsi";
 import { conferenceStatusStore } from "~/store";
 
@@ -55,8 +62,9 @@ export default defineComponent({
       import("~/components/ESessionLocalMediaSettings.vue"),
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  setup(props, context) {
-    const roomName: any = computed(() => context.root.$route.params.id);
+  setup(_, context) {
+    const { app, params } = useContext();
+    const roomName: any = computed(() => params.value.id);
     const displayName: any = computed(
       () => conferenceStatusStore.status.displayName,
     );
@@ -71,7 +79,7 @@ export default defineComponent({
 
     const peerWrapperClassName = computed(() => {
       const numOfPeers = Object.keys(remoteTracks.value).length;
-      // console.log("remoteTracks lenght: ", Object.keys(remoteTracks.value).length)
+      // consola.log("remoteTracks lenght: ", Object.keys(remoteTracks.value).length)
       if (numOfPeers > 0) {
         return "grid-" + numOfPeers;
       } else if (numOfPeers > 6) {
@@ -81,48 +89,46 @@ export default defineComponent({
       }
     });
 
-    let jitsi: any;
     let connection: any;
     let room: any;
 
     if (process.browser) {
       connection = context.root.$connection;
-      jitsi = context.root.$jitsi;
 
       room = connection.initJitsiConference(
         roomName.value.toLowerCase(),
         confOptions,
       );
-      room.on(jitsi.events.conference.TRACK_ADDED, (track: any) =>
+      room.on(app.$jitsi.events.conference.TRACK_ADDED, (track: any) =>
         onRemoteTrackAdd(track),
       );
-      room.on(jitsi.events.conference.TRACK_REMOVED, (track: any) =>
+      room.on(app.$jitsi.events.conference.TRACK_REMOVED, (track: any) =>
         onRemoteTrackRemove(track),
       );
-      room.on(jitsi.events.conference.CONFERENCE_JOINED, () =>
+      room.on(app.$jitsi.events.conference.CONFERENCE_JOINED, () =>
         onConferenceJoined(),
       );
-      room.on(jitsi.events.conference.USER_JOINED, (id: any) => {
-        console.log("user join", id);
+      room.on(app.$jitsi.events.conference.USER_JOINED, (id: any) => {
+        consola.log("user join", id);
         context.root.$set(remoteTracks.value, id, ref({}));
       });
-      room.on(jitsi.events.conference.USER_LEFT, (id: string) =>
+      room.on(app.$jitsi.events.conference.USER_LEFT, (id: string) =>
         onUserLeft(id),
       );
-      // room.on(jitsi.events.conference.TRACK_MUTE_CHANGED, track => console.log(`${track.getType()} - ${track.isMuted()}`))
-      // room.on(jitsi.events.conference.DISPLAY_NAME_CHANGED, (userID, displayName) => log(`${userID} - ${displayName}`))
+      // room.on(app.$jitsi.events.conference.TRACK_MUTE_CHANGED, track => consola.log(`${track.getType()} - ${track.isMuted()}`))
+      // room.on(app.$jitsi.events.conference.DISPLAY_NAME_CHANGED, (userID, displayName) => log(`${userID} - ${displayName}`))
       room.on(
-        jitsi.events.conference.TRACK_AUDIO_LEVEL_CHANGED,
-        (userID, audioLevel) => console.log(`${userID} - ${audioLevel}`),
+        app.$jitsi.events.conference.TRACK_AUDIO_LEVEL_CHANGED,
+        (userID, audioLevel) => consola.log(`${userID} - ${audioLevel}`),
       );
-      // room.on(jitsi.events.conference.PHONE_NUMBER_CHANGED, _ => log(`${room.getPhoneNumber()} - ${room.getPhonePin()}`))
+      // room.on(app.$jitsi.events.conference.PHONE_NUMBER_CHANGED, _ => log(`${room.getPhoneNumber()} - ${room.getPhonePin()}`))
       room.setDisplayName(displayName);
       room.join();
       Vue.prototype.$room = room;
     }
 
     function onRemoteTrackAdd(track: any) {
-      // console.log("onRemoteTrackAdd", track)
+      // consola.log("onRemoteTrackAdd", track)
       // if (track.isLocal()) return
 
       const id = track.getParticipantId();
@@ -131,51 +137,53 @@ export default defineComponent({
       }
 
       track.addEventListener(
-        jitsi.events.track.TRACK_AUDIO_LEVEL_CHANGED,
-        (audioLevel: any) => console.log(`Audio Level remote: ${audioLevel}`),
+        app.$jitsi.events.track.TRACK_AUDIO_LEVEL_CHANGED,
+        (audioLevel: any) => consola.log(`Audio Level remote: ${audioLevel}`),
       );
-      track.addEventListener(jitsi.events.track.TRACK_MUTE_CHANGED, () =>
-        console.log("remote track muted"),
+      track.addEventListener(app.$jitsi.events.track.TRACK_MUTE_CHANGED, () =>
+        consola.log("remote track muted"),
       );
-      track.addEventListener(jitsi.events.track.LOCAL_TRACK_STOPPED, () =>
-        console.log("remote track stoped"),
+      track.addEventListener(app.$jitsi.events.track.LOCAL_TRACK_STOPPED, () =>
+        consola.log("remote track stoped"),
       );
       track.addEventListener(
-        jitsi.events.track.TRACK_AUDIO_OUTPUT_CHANGED,
+        app.$jitsi.events.track.TRACK_AUDIO_OUTPUT_CHANGED,
         (deviceId: any) =>
-          console.log(`track audio output device was changed to ${deviceId}`),
+          consola.log(`track audio output device was changed to ${deviceId}`),
       );
 
       const type = track.getType();
       if (type === "video") {
         context.root.$set(remoteTracks.value[id].value, "video", track);
-        // console.log("onRemoteTrackAdd type video", remoteTracks.value[id].value)
+        // consola.log("onRemoteTrackAdd type video", remoteTracks.value[id].value)
       }
       if (type === "audio") {
         context.root.$set(remoteTracks.value[id].value, "audio", track);
-        // console.log("onRemoteTrackAdd type audio", remoteTracks.value[id].value)
+        // consola.log("onRemoteTrackAdd type audio", remoteTracks.value[id].value)
       }
     }
 
     function onRemoteTrackRemove(track: any) {
-      console.log("onRemoteTrackRemove", track);
+      consola.log("onRemoteTrackRemove", track);
       const id = track.getParticipantId();
       const type = track.getType();
       if (remoteTracks.value[id]) {
         track.removeEventListener(
-          jitsi.events.track.TRACK_AUDIO_LEVEL_CHANGED,
-          (audioLevel: any) => console.log(`Audio Level remote: ${audioLevel}`),
-        );
-        track.removeEventListener(jitsi.events.track.TRACK_MUTE_CHANGED, () =>
-          console.log("remote track muted"),
-        );
-        track.removeEventListener(jitsi.events.track.LOCAL_TRACK_STOPPED, () =>
-          console.log("remote track stoped"),
+          app.$jitsi.events.track.TRACK_AUDIO_LEVEL_CHANGED,
+          (audioLevel: any) => consola.log(`Audio Level remote: ${audioLevel}`),
         );
         track.removeEventListener(
-          jitsi.events.track.TRACK_AUDIO_OUTPUT_CHANGED,
+          app.$jitsi.events.track.TRACK_MUTE_CHANGED,
+          () => consola.log("remote track muted"),
+        );
+        track.removeEventListener(
+          app.$jitsi.events.track.LOCAL_TRACK_STOPPED,
+          () => consola.log("remote track stoped"),
+        );
+        track.removeEventListener(
+          app.$jitsi.events.track.TRACK_AUDIO_OUTPUT_CHANGED,
           (deviceId: any) =>
-            console.log(`track audio output device was changed to ${deviceId}`),
+            consola.log(`track audio output device was changed to ${deviceId}`),
         );
 
         if (type === "video") {
@@ -188,7 +196,7 @@ export default defineComponent({
     }
 
     function onConferenceJoined() {
-      console.log("onConferenceJoined", localTracks);
+      consola.log("onConferenceJoined", localTracks);
       conferenceStatusStore.updateJoined(true);
       /* TODO Desktop and check if stream available */
       room.addTrack(localTracks.value.value.localStream.video);
@@ -196,12 +204,12 @@ export default defineComponent({
     }
 
     function onUserLeft(id: string) {
-      console.log("onUserLeft", id);
+      consola.log("onUserLeft", id);
       context.root.$delete(remoteTracks.value, id);
     }
 
     function endCall() {
-      console.log("endcall");
+      consola.log("endcall");
       if (room) {
         localTracks.value.value.localStream.video.dispose();
         localTracks.value.value.localStream.audio.dispose();

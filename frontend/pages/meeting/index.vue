@@ -28,8 +28,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useMeta, ref } from "nuxt-composition-api";
+import {
+  defineComponent,
+  useMeta,
+  ref,
+  useContext,
+} from "nuxt-composition-api";
 import Vue from "vue";
+import consola from "consola";
 import { initOptions, options } from "~/utils/jitsi";
 import { conferenceStatusStore } from "~/store";
 
@@ -42,31 +48,29 @@ export default defineComponent({
     const roomName = ref("ExampleRoomName");
     const attendeeName = ref("");
     useMeta({ title: "Jitsi Meeting" });
+    const { app } = useContext();
 
     let connection: any;
-    let jitsi: any;
 
     function connect() {
       conferenceStatusStore.updateDisplayName(attendeeName.value);
       conferenceStatusStore.updateRoomName(roomName.value);
 
       if (process.browser) {
-        // console.log("jitsi connect", context);
-        jitsi = context.root.$jitsi;
-        jitsi.setLogLevel(jitsi.logLevels.WARN);
-        jitsi.init(initOptions);
+        app.$jitsi.setLogLevel(app.$jitsi.logLevels.WARN);
+        app.$jitsi.init(initOptions);
 
-        connection = new jitsi.JitsiConnection(null, null, options);
+        connection = new app.$jitsi.JitsiConnection(null, null, options);
         connection.addEventListener(
-          jitsi.events.connection.CONNECTION_ESTABLISHED,
+          app.$jitsi.events.connection.CONNECTION_ESTABLISHED,
           () => onConnectionSuccess(),
         );
         connection.addEventListener(
-          jitsi.events.connection.CONNECTION_FAILED,
+          app.$jitsi.events.connection.CONNECTION_FAILED,
           () => onConnectionFailed(),
         );
         connection.addEventListener(
-          jitsi.events.connection.CONNECTION_DISCONNECTED,
+          app.$jitsi.events.connection.CONNECTION_DISCONNECTED,
           () => onDisconnect(),
         );
         connection.connect();
@@ -74,7 +78,7 @@ export default defineComponent({
     }
 
     function onConnectionSuccess() {
-      console.log("onConnectionSuccess");
+      consola.log("onConnectionSuccess");
       Vue.prototype.$localTracks = localTracks;
       Vue.prototype.$connection = connection;
       conferenceStatusStore.showSetup(true);

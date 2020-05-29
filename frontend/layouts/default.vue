@@ -40,7 +40,6 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import {
   defineComponent,
   provide,
@@ -48,7 +47,6 @@ import {
   computed,
 } from "nuxt-composition-api";
 import { DefaultApolloClient } from "@vue/apollo-composable";
-
 import { useLeave } from "~/composable/useRoom";
 import {
   sessionStore,
@@ -70,9 +68,6 @@ export default defineComponent({
     const { app, redirect } = useContext();
     provide(DefaultApolloClient, app.apolloProvider.defaultClient);
 
-    if (process.browser) {
-      Vue.prototype.$jitsi = window.JitsiMeetJS;
-    }
     const setupDialog = computed(() => conferenceStatusStore.setupVisible);
     const moderationDrawer = computed(() => globalStore.moderationDrawer);
     const userRef = computed(() => sessionStore.user);

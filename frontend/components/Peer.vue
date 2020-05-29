@@ -15,6 +15,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from "nuxt-composition-api";
+import consola from "consola";
 
 export default defineComponent({
   name: "Peer",
@@ -27,7 +28,7 @@ export default defineComponent({
   },
 
   setup(props) {
-    console.log("Peer props", props);
+    consola.log("Peer props", props);
     const videoStream = computed(() =>
       props.mediaTracks.value.video ? props.mediaTracks.value.video : null,
     );

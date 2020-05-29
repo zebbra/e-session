@@ -45,7 +45,7 @@ const config: Configuration = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [],
+  plugins: [{ src: "~/plugins/jitsi.client", mode: "client" }],
 
   /*
    ** Nuxt.js dev-modules

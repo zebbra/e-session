@@ -45,7 +45,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from "nuxt-composition-api";
+import {
+  defineComponent,
+  computed,
+  ref,
+  watch,
+  useContext,
+} from "nuxt-composition-api";
+import consola from "consola";
 import { conferenceStatusStore } from "~/store";
 
 export default defineComponent({
@@ -53,10 +60,11 @@ export default defineComponent({
   components: {
     Media: () => import("~/components/Media.vue"),
     LocalAudioIndicator: () =>
-      import("~/components/ESessionLocalMediaAudioLevelIndicator"),
+      import("~/components/ESessionLocalMediaAudioLevelIndicator.vue"),
   },
 
   setup(_, { root }) {
+    const { app } = useContext();
     const localTracks: any = computed(() => root.$localTracks);
     const audioLevel: any = ref(0);
     const videoStream = computed(
@@ -80,13 +88,10 @@ export default defineComponent({
     const microphoneDevices = ref([]);
     const outputDevices = ref([]);
 
-    let jitsi: any;
-
     if (process.browser) {
-      jitsi = root.$jitsi;
-      if (jitsi.mediaDevices.isDeviceChangeAvailable("output")) {
-        jitsi.mediaDevices.enumerateDevices((devices) => {
-          console.log(devices);
+      if (app.$jitsi.mediaDevices.isDeviceChangeAvailable("output")) {
+        app.$jitsi.mediaDevices.enumerateDevices((devices) => {
+          consola.log(devices);
           outputDevices.value = devices.filter((d) => d.kind === "audiooutput");
           microphoneDevices.value = devices.filter(
             (d) => d.kind === "audioinput",
@@ -99,13 +104,13 @@ export default defineComponent({
     watch(
       () => conferenceStatusStore.setupVisible,
       (newVal) => {
-        console.log("newVal: ", newVal);
+        consola.log("newVal: ", newVal);
         if (
           newVal === true &&
           (!localTracks.value.value.localStream.video ||
             !localTracks.value.value.localStream.audio)
         ) {
-          console.log("making new tracks");
+          consola.log("making new tracks");
           createLocalTracks();
         }
       },
@@ -117,12 +122,12 @@ export default defineComponent({
 
     async function createLocalTracks() {
       try {
-        const tracks = await jitsi.createLocalTracks({
+        const tracks = await app.$jitsi.createLocalTracks({
           devices: ["audio", "video"],
         });
         onLocalTracks(tracks);
       } catch (err) {
-        console.error("Exception:", err);
+        consola.error("Exception:", err);
       }
     }
 
@@ -130,13 +135,13 @@ export default defineComponent({
       localTracks.value.value.localStream.video.dispose();
       root.$set(localTracks.value.value.localStream, "video", null);
       try {
-        const tracks = await jitsi.createLocalTracks({
+        const tracks = await app.$jitsi.createLocalTracks({
           devices: ["video"],
           cameraDeviceId: id,
         });
         onLocalTracks(tracks);
       } catch (err) {
-        // console.error("Exception:", err);
+        // consola.error("Exception:", err);
       }
 
       if (conferenceStatusStore.status.isJoned) {
@@ -146,21 +151,21 @@ export default defineComponent({
     }
 
     function changeOutputDevice(id) {
-      jitsi.mediaDevices.setAudioOutputDevice(id);
+      app.$jitsi.mediaDevices.setAudioOutputDevice(id);
     }
 
     async function changeMicrophoneDevice(id) {
       localTracks.value.value.localStream.audio.dispose();
       root.$set(localTracks.value.value.localStream, "audio", null);
-      // console.log(event);
+      // consola.log(event);
       try {
-        const tracks = await jitsi.createLocalTracks({
+        const tracks = await app.$jitsi.createLocalTracks({
           devices: ["audio"],
           micDeviceId: id,
         });
         onLocalTracks(tracks);
       } catch (err) {
-        // console.error("Exception:", err);
+        // consola.error("Exception:", err);
       }
       if (conferenceStatusStore.status.isJoned) {
         const room = root.$room;
@@ -169,42 +174,44 @@ export default defineComponent({
     }
 
     function onLocalTracks(tracks) {
-      // console.log("tracks: ", tracks);
+      // consola.log("tracks: ", tracks);
       for (let i = 0; i < tracks.length; i++) {
-        // console.log("track device id", tracks[i].getDeviceId());
-        tracks[i].addEventListener(jitsi.events.track.TRACK_MUTE_CHANGED, () =>
-          console.log("local track muted"),
-        );
-        tracks[i].addEventListener(jitsi.events.track.LOCAL_TRACK_STOPPED, () =>
-          console.log("local track stoped"),
+        // consola.log("track device id", tracks[i].getDeviceId());
+        tracks[i].addEventListener(
+          app.$jitsi.events.track.TRACK_MUTE_CHANGED,
+          () => consola.log("local track muted"),
         );
         tracks[i].addEventListener(
-          jitsi.events.track.TRACK_AUDIO_OUTPUT_CHANGED,
+          app.$jitsi.events.track.LOCAL_TRACK_STOPPED,
+          () => consola.log("local track stoped"),
+        );
+        tracks[i].addEventListener(
+          app.$jitsi.events.track.TRACK_AUDIO_OUTPUT_CHANGED,
           (deviceId: String) =>
-            console.log(`track audio output device was changed to ${deviceId}`),
+            consola.log(`track audio output device was changed to ${deviceId}`),
         );
         const type = tracks[i].getType();
-        // console.log(localTracks);
+        // consola.log(localTracks);
         if (type === "video") {
           conferenceStatusStore.updateCameraId(tracks[i].getDeviceId());
           root.$set(localTracks.value.value.localStream, "video", tracks[i]);
         }
         if (type === "audio") {
           tracks[i].addEventListener(
-            jitsi.events.track.TRACK_AUDIO_LEVEL_CHANGED,
+            app.$jitsi.events.track.TRACK_AUDIO_LEVEL_CHANGED,
             (level: any) => _onLocalAudioLevelChange(level),
           );
           conferenceStatusStore.updateOuputId(
-            jitsi.mediaDevices.getAudioOutputDevice(),
+            app.$jitsi.mediaDevices.getAudioOutputDevice(),
           );
           conferenceStatusStore.updateMicId(tracks[i].getDeviceId());
           root.$set(localTracks.value.value.localStream, "audio", tracks[i]);
         }
       }
-      console.log("onLocalTracks done");
+      consola.log("onLocalTracks done");
 
       function _onLocalAudioLevelChange(level) {
-        console.log("_onLocalAudioLevelChange", level);
+        consola.log("_onLocalAudioLevelChange", level);
         audioLevel.value = level;
       }
     }
