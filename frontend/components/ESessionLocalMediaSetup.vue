@@ -2,12 +2,12 @@
   <v-card class="text-center">
     <v-card-text>
       <e-session-local-media />
-      <v-row>
-        <div class="controllsWrapper mt-8">
-          <v-btn class="controll" outlined @click="confirm">
+      <v-row class="justify-center">
+        <div>
+          <v-btn outlined @click="confirm">
             <v-icon class="mr-2">mdi-check</v-icon>OK
           </v-btn>
-          <v-btn class="controll ml-2" outlined color="error" @click="cancel">
+          <v-btn outlined color="error" @click="cancel">
             <v-icon class="mr-2">mdi-cancel</v-icon>Cancel
           </v-btn>
         </div>

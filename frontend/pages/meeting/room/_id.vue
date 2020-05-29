@@ -41,6 +41,7 @@
 </template>
 
 <script lang="ts">
+import Vue from "vue";
 import { defineComponent, useMeta, ref, computed } from "nuxt-composition-api";
 import { confOptions } from "~/utils/jitsi";
 import { conferenceStatusStore } from "~/store";
@@ -114,6 +115,7 @@ export default defineComponent({
       // room.on(jitsi.events.conference.PHONE_NUMBER_CHANGED, _ => log(`${room.getPhoneNumber()} - ${room.getPhonePin()}`))
       room.setDisplayName(displayName);
       room.join();
+      Vue.prototype.$room = room;
     }
 
     function onRemoteTrackAdd(track: any) {

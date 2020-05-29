@@ -128,11 +128,16 @@ export default defineComponent({
       try {
         const tracks = await jitsi.createLocalTracks({
           devices: ["video"],
-          micDeviceId: id,
+          cameraDeviceId: id,
         });
         onLocalTracks(tracks);
       } catch (err) {
         // console.error("Exception:", err);
+      }
+
+      if (conferenceStatusStore.status.isJoned) {
+        const room = root.$room;
+        room.addTrack(localTracks.value.value.localStream.video);
       }
     }
 
@@ -152,6 +157,10 @@ export default defineComponent({
         onLocalTracks(tracks);
       } catch (err) {
         // console.error("Exception:", err);
+      }
+      if (conferenceStatusStore.status.isJoned) {
+        const room = root.$room;
+        room.addTrack(localTracks.value.value.localStream.audio);
       }
     }
 
