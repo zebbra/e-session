@@ -1,5 +1,5 @@
-subscription onHandMoved($userId: String!, $roomId: String!) {
-  handMoved(userId: $userId, roomId: $roomId) {
+subscription onHandMoved($roomId: String!) {
+  handMoved(roomId: $roomId) {
     id
     name
     handRaised

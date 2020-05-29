@@ -1,5 +1,5 @@
-subscription onRoomJoined($userId: String!, $roomId: String!) {
-  roomJoined(userId: $userId, roomId: $roomId) {
+subscription onRoomJoined($roomId: String!) {
+  roomJoined(roomId: $roomId) {
     id
     name
     handRaised

@@ -1,5 +1,5 @@
-subscription onRoomLeft($userId: String!, $roomId: String!) {
-  roomLeft(userId: $userId, roomId: $roomId) {
+subscription onRoomLeft($roomId: String!) {
+  roomLeft(roomId: $roomId) {
     id
     name
   }

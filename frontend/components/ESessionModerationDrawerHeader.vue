@@ -58,7 +58,7 @@ export default defineComponent({
 
     const { mutate: raiseHand } = useRaiseHand(userRef, roomRef);
     const { mutate: lowerHand } = useLowerHand(userRef, roomRef);
-    useOnHandMoved(userRef, roomRef);
+    useOnHandMoved(roomRef);
     function moveHand() {
       if (userRef.value.handRaised) {
         lowerHand();
