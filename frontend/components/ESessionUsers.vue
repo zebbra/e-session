@@ -68,15 +68,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "nuxt-composition-api";
+import {
+  defineComponent,
+  computed,
+  useContext,
+  ref,
+} from "nuxt-composition-api";
 import { useMutation } from "@vue/apollo-composable";
 import consola from "consola";
 import { mutations } from "~/apollo";
-import { roomStore, sessionStore } from "~/store";
+import { roomStore, sessionStore, conferenceStore } from "~/store";
 
 export default defineComponent({
   name: "ESessionUsers",
-  setup() {
+  setup(_, context) {
+    const { app } = useContext();
     const userRef = computed(() => sessionStore.user);
     const roomRef = computed(() => roomStore.room);
     const isModerator = computed(() => sessionStore.isModerator);
@@ -85,6 +91,18 @@ export default defineComponent({
 
     function join(user) {
       consola.log("join", user.id);
+      if (user.id === sessionStore.user.id) {
+        context.root.$set(
+          app.$remoteTracks.value,
+          conferenceStore.status.id,
+          ref({}),
+        );
+        conferenceStore.updateJoined(true);
+        /* TODO Desktop and check if stream available */
+        consola.log(app.$localTracks);
+        app.$room.addTrack(app.$localTracks.value.localStream.video);
+        app.$room.addTrack(app.$localTracks.value.localStream.audio);
+      }
     }
 
     const { mutate: lowerHand } = useMutation(mutations.room.lowerHand);

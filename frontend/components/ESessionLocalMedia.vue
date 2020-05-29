@@ -53,7 +53,7 @@ import {
   useContext,
 } from "nuxt-composition-api";
 import consola from "consola";
-import { conferenceStatusStore } from "~/store";
+import { conferenceStore } from "~/store";
 
 export default defineComponent({
   name: "ESessionLocalMedia",
@@ -65,7 +65,7 @@ export default defineComponent({
 
   setup(_, { root }) {
     const { app } = useContext();
-    const localTracks: any = computed(() => root.$localTracks);
+    const localTracks: any = computed(() => app.$localTracks);
     const audioLevel: any = ref(0);
     const videoStream = computed(
       () => localTracks.value.value.localStream.video,
@@ -73,14 +73,12 @@ export default defineComponent({
     const audioStream = computed(
       () => localTracks.value.value.localStream.audio,
     );
-    const displayName = computed(
-      () => conferenceStatusStore.status.displayName,
-    );
+    const displayName = computed(() => conferenceStore.status.displayName);
     const initialDeviceSelection = computed(() => {
       return {
-        camera: conferenceStatusStore.devices.cameraId,
-        mic: conferenceStatusStore.devices.micId,
-        output: conferenceStatusStore.devices.outputId,
+        camera: conferenceStore.devices.cameraId,
+        mic: conferenceStore.devices.micId,
+        output: conferenceStore.devices.outputId,
       };
     });
 
@@ -102,7 +100,7 @@ export default defineComponent({
     }
 
     watch(
-      () => conferenceStatusStore.setupVisible,
+      () => conferenceStore.setupVisible,
       (newVal) => {
         consola.log("newVal: ", newVal);
         if (
@@ -144,7 +142,7 @@ export default defineComponent({
         // consola.error("Exception:", err);
       }
 
-      if (conferenceStatusStore.status.isJoned) {
+      if (conferenceStore.status.isJoned) {
         const room = root.$room;
         room.addTrack(localTracks.value.value.localStream.video);
       }
@@ -167,7 +165,7 @@ export default defineComponent({
       } catch (err) {
         // consola.error("Exception:", err);
       }
-      if (conferenceStatusStore.status.isJoned) {
+      if (conferenceStore.status.isJoned) {
         const room = root.$room;
         room.addTrack(localTracks.value.value.localStream.audio);
       }
@@ -193,7 +191,7 @@ export default defineComponent({
         const type = tracks[i].getType();
         // consola.log(localTracks);
         if (type === "video") {
-          conferenceStatusStore.updateCameraId(tracks[i].getDeviceId());
+          conferenceStore.updateCameraId(tracks[i].getDeviceId());
           root.$set(localTracks.value.value.localStream, "video", tracks[i]);
         }
         if (type === "audio") {
@@ -201,10 +199,10 @@ export default defineComponent({
             app.$jitsi.events.track.TRACK_AUDIO_LEVEL_CHANGED,
             (level: any) => _onLocalAudioLevelChange(level),
           );
-          conferenceStatusStore.updateOuputId(
+          conferenceStore.updateOuputId(
             app.$jitsi.mediaDevices.getAudioOutputDevice(),
           );
-          conferenceStatusStore.updateMicId(tracks[i].getDeviceId());
+          conferenceStore.updateMicId(tracks[i].getDeviceId());
           root.$set(localTracks.value.value.localStream, "audio", tracks[i]);
         }
       }

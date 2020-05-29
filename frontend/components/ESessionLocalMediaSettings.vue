@@ -13,7 +13,7 @@
 
 <script lang="ts">
 import { defineComponent } from "nuxt-composition-api";
-import { conferenceStatusStore } from "~/store";
+import { conferenceStore } from "~/store";
 
 export default defineComponent({
   name: "ESessionLocalMediaSettings",
@@ -23,7 +23,7 @@ export default defineComponent({
 
   setup() {
     function hideSettings() {
-      conferenceStatusStore.showDeviceSettings(false);
+      conferenceStore.showDeviceSettings(false);
     }
 
     return {

@@ -7,14 +7,14 @@ import Room from "~/store/Room";
 
 /* eslint-disable import/no-mutable-exports */
 let globalStore: Global;
-let conferenceStatusStore: ConferenceStatus;
+let conferenceStore: ConferenceStatus;
 let roomStore: Room;
 let sessionStore: Session;
 /* eslint-enable import/no-mutable-exports */
 
 function initialiseStores(store: Store<any>): void {
   globalStore = getModule(Global, store);
-  conferenceStatusStore = getModule(ConferenceStatus, store);
+  conferenceStore = getModule(ConferenceStatus, store);
   roomStore = getModule(Room, store);
   sessionStore = getModule(Session, store);
 }
@@ -24,5 +24,5 @@ export {
   globalStore,
   roomStore,
   sessionStore,
-  conferenceStatusStore,
+  conferenceStore,
 };

@@ -48,12 +48,7 @@ import {
 } from "nuxt-composition-api";
 import { DefaultApolloClient } from "@vue/apollo-composable";
 import { useLeave } from "~/composable/useRoom";
-import {
-  sessionStore,
-  roomStore,
-  globalStore,
-  conferenceStatusStore,
-} from "~/store";
+import { sessionStore, roomStore, globalStore, conferenceStore } from "~/store";
 
 export default defineComponent({
   name: "DefaultLayout",
@@ -68,7 +63,7 @@ export default defineComponent({
     const { app, redirect } = useContext();
     provide(DefaultApolloClient, app.apolloProvider.defaultClient);
 
-    const setupDialog = computed(() => conferenceStatusStore.setupVisible);
+    const setupDialog = computed(() => conferenceStore.setupVisible);
     const moderationDrawer = computed(() => globalStore.moderationDrawer);
     const userRef = computed(() => sessionStore.user);
     const roomRef = computed(() => roomStore.room);
