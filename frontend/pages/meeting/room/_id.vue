@@ -111,7 +111,10 @@ export default defineComponent({
       );
       // room.on(jitsi.events.conference.TRACK_MUTE_CHANGED, track => console.log(`${track.getType()} - ${track.isMuted()}`))
       // room.on(jitsi.events.conference.DISPLAY_NAME_CHANGED, (userID, displayName) => log(`${userID} - ${displayName}`))
-      // room.on(jitsi.events.conference.TRACK_AUDIO_LEVEL_CHANGED, (userID, audioLevel) => log(`${userID} - ${audioLevel}`))
+      room.on(
+        jitsi.events.conference.TRACK_AUDIO_LEVEL_CHANGED,
+        (userID, audioLevel) => console.log(`${userID} - ${audioLevel}`),
+      );
       // room.on(jitsi.events.conference.PHONE_NUMBER_CHANGED, _ => log(`${room.getPhoneNumber()} - ${room.getPhonePin()}`))
       room.setDisplayName(displayName);
       room.join();

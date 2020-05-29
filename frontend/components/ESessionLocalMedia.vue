@@ -3,6 +3,7 @@
     <v-row>
       <v-col>
         <media :video-stream="videoStream" :audio-stream="null" />
+        <local-audio-indicator :audio-level="audioLevel" />
       </v-col>
     </v-row>
     <v-row>
@@ -51,10 +52,13 @@ export default defineComponent({
   name: "ESessionLocalMedia",
   components: {
     Media: () => import("~/components/Media.vue"),
+    LocalAudioIndicator: () =>
+      import("~/components/ESessionLocalMediaAudioLevelIndicator"),
   },
 
   setup(_, { root }) {
     const localTracks: any = computed(() => root.$localTracks);
+    const audioLevel: any = ref(0);
     const videoStream = computed(
       () => localTracks.value.value.localStream.video,
     );
@@ -168,19 +172,17 @@ export default defineComponent({
       // console.log("tracks: ", tracks);
       for (let i = 0; i < tracks.length; i++) {
         // console.log("track device id", tracks[i].getDeviceId());
-
-        // this.localTracks[i].addEventListener( JitsiMeetJS.events.track.TRACK_AUDIO_LEVEL_CHANGED, audioLevel => console.log(`Audio Level local: ${audioLevel}`));
         tracks[i].addEventListener(jitsi.events.track.TRACK_MUTE_CHANGED, () =>
           console.log("local track muted"),
         );
         tracks[i].addEventListener(jitsi.events.track.LOCAL_TRACK_STOPPED, () =>
           console.log("local track stoped"),
         );
-        /* tracks[i].addEventListener(
+        tracks[i].addEventListener(
           jitsi.events.track.TRACK_AUDIO_OUTPUT_CHANGED,
           (deviceId: String) =>
             console.log(`track audio output device was changed to ${deviceId}`),
-        ); */
+        );
         const type = tracks[i].getType();
         // console.log(localTracks);
         if (type === "video") {
@@ -188,6 +190,10 @@ export default defineComponent({
           root.$set(localTracks.value.value.localStream, "video", tracks[i]);
         }
         if (type === "audio") {
+          tracks[i].addEventListener(
+            jitsi.events.track.TRACK_AUDIO_LEVEL_CHANGED,
+            (level: any) => _onLocalAudioLevelChange(level),
+          );
           conferenceStatusStore.updateOuputId(
             jitsi.mediaDevices.getAudioOutputDevice(),
           );
@@ -196,6 +202,11 @@ export default defineComponent({
         }
       }
       console.log("onLocalTracks done");
+
+      function _onLocalAudioLevelChange(level) {
+        console.log("_onLocalAudioLevelChange", level);
+        audioLevel.value = level;
+      }
     }
 
     return {
@@ -209,6 +220,7 @@ export default defineComponent({
       changeOutputDevice,
       changeMicrophoneDevice,
       initialDeviceSelection,
+      audioLevel,
     };
   },
 });

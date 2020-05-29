@@ -27,7 +27,7 @@ const options = {
   },
   useStunTurn: true,
   enableLipSync: true,
-  clientNode: "http://localhost/jitsimeet",
+  clientNode: "http://jitsi.org/jitsimeet",
 };
 
 const confOptions = {
