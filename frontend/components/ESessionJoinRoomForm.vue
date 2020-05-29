@@ -61,7 +61,7 @@ export default defineComponent({
       sessionStore.setRole(query.value.role.toString());
     }
     const userRef = computed(() => sessionStore.user);
-    const userName = ref(userRef.value ? userRef.value.name : "Michael");
+    const userName = ref(userRef.value ? userRef.value.name : "");
     const { mutate: login } = useLogin(userName);
     const { mutate: logout } = useLogout(userRef);
 
@@ -71,7 +71,7 @@ export default defineComponent({
         ? roomRef.value.name
         : query.value.room
         ? query.value.room.toString()
-        : "Room 1",
+        : "",
     );
     const { mutate: create } = useCreate(roomName);
 
@@ -88,7 +88,7 @@ export default defineComponent({
       if (user && room) {
         redirect(`/rooms/${room.name}`);
       } else if (!user) {
-        userName.value = "Michael";
+        userName.value = "";
       }
     });
 
