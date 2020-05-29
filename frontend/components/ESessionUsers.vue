@@ -112,6 +112,11 @@ export default defineComponent({
 
     function exit(user) {
       consola.log("exit", user.id);
+      if (user.id === sessionStore.user.id) {
+        conferenceStore.updateJoined(false);
+        app.$localTracks.value.localStream.video.dispose();
+        app.$localTracks.value.localStream.video.dispose();
+      }
     }
 
     return {

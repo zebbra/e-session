@@ -143,8 +143,7 @@ export default defineComponent({
       }
 
       if (conferenceStore.status.isJoned) {
-        const room = root.$room;
-        room.addTrack(localTracks.value.value.localStream.video);
+        app.$room.addTrack(localTracks.value.value.localStream.video);
       }
     }
 
@@ -166,8 +165,7 @@ export default defineComponent({
         // consola.error("Exception:", err);
       }
       if (conferenceStore.status.isJoned) {
-        const room = root.$room;
-        room.addTrack(localTracks.value.value.localStream.audio);
+        app.$room.addTrack(localTracks.value.value.localStream.audio);
       }
     }
 
