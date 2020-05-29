@@ -1,4 +1,4 @@
-query getRoom($name: String!) {
+query fetchRoom($name: String!) {
   room(name: $name) {
     id
     name
@@ -8,6 +8,7 @@ query getRoom($name: String!) {
     users {
       id
       name
+      handRaised
     }
   }
 }

@@ -2,9 +2,6 @@ subscription onRoomJoined($userId: String!, $roomId: String!) {
   roomJoined(userId: $userId, roomId: $roomId) {
     id
     name
-    room {
-      id
-      name
-    }
+    handRaised
   }
 }

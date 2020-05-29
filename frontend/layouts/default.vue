@@ -1,46 +1,20 @@
 <template>
   <v-app dark>
     <e-session-snackbar />
-    <v-navigation-drawer
-      v-model="drawer"
-      :mini-variant="miniVariant"
-      :clipped="clipped"
-      fixed
-      app
-    >
-      <v-list>
-        <v-list-item
-          v-for="(item, i) in items"
-          :key="i"
-          :to="item.to"
-          router
-          exact
-        >
-          <v-list-item-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title v-text="item.title" />
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-    <v-app-bar :clipped-left="clipped" fixed app>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-btn icon @click.stop="miniVariant = !miniVariant">
-        <v-icon>mdi-{{ `chevron-${miniVariant ? "right" : "left"}` }}</v-icon>
-      </v-btn>
-      <v-btn icon @click.stop="clipped = !clipped">
-        <v-icon>mdi-application</v-icon>
-      </v-btn>
-      <v-btn icon @click.stop="fixed = !fixed">
-        <v-icon>mdi-minus</v-icon>
-      </v-btn>
+    <v-app-bar fixed app>
       <v-toolbar-title v-text="title" />
-      <v-spacer />
-      <v-btn icon @click.stop="rightDrawer = !rightDrawer">
+      <v-spacer></v-spacer>
+      <v-btn v-if="roomJoined" icon @click.stop="toggleModerationDrawer">
         <v-icon>mdi-menu</v-icon>
       </v-btn>
+      <v-tooltip v-if="roomJoined && !moderationDrawer" bottom>
+        <template v-slot:activator="{ on }">
+          <v-btn icon @click.stop="leaveRoom">
+            <v-icon v-on="on">mdi-exit-to-app</v-icon>
+          </v-btn>
+        </template>
+        <span>Leave Room</span>
+      </v-tooltip>
     </v-app-bar>
     <v-content>
       <div>
@@ -50,20 +24,14 @@
         <e-session-local-media-setup />
       </v-dialog>
     </v-content>
-    <v-navigation-drawer v-model="rightDrawer" :right="right" temporary fixed>
-      <v-list>
-        <v-list-item @click.native="right = !right">
-          <v-list-item-action>
-            <v-icon light>
-              mdi-repeat
-            </v-icon>
-          </v-list-item-action>
-          <v-list-item-title>Switch drawer (click me)</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-    <v-footer :fixed="fixed" app>
-      <span>&copy; {{ new Date().getFullYear() }}</span>
+    <e-session-moderation-drawer v-if="roomJoined" />
+    <v-footer fixed>
+      <span
+        >&#9994; e-session
+        <a href="https://github.com/zebbra/e-session" target="_blank"
+          >prototype</a
+        ></span
+      >
     </v-footer>
   </v-app>
 </template>
@@ -77,48 +45,57 @@ import {
   computed,
 } from "nuxt-composition-api";
 import { DefaultApolloClient } from "@vue/apollo-composable";
-import ESessionSnackbar from "~/components/ESessionSnackbar.vue";
-import ESessionLocalMediaSetup from "~/components/ESessionLocalMediaSetup.vue";
-import { conferenceStatusStore } from "~/store";
+
+import { useLeave } from "~/composable/useRoom";
+import {
+  sessionStore,
+  roomStore,
+  globalStore,
+  conferenceStatusStore,
+} from "~/store";
 
 export default defineComponent({
   name: "DefaultLayout",
-  components: { ESessionSnackbar, ESessionLocalMediaSetup },
+  components: {
+    ESessionSnackbar: () => import("~/components/ESessionSnackbar.vue"),
+    ESessionModerationDrawer: () =>
+      import("~/components/ESessionModerationDrawer.vue"),
+    ESessionLocalMediaSetup: () =>
+      import("~/components/ESessionLocalMediaSetup.vue"),
+  },
   setup() {
+    const { app, redirect } = useContext();
+    provide(DefaultApolloClient, app.apolloProvider.defaultClient);
+
     if (process.browser) {
       Vue.prototype.$jitsi = window.JitsiMeetJS;
     }
     const setupDialog = computed(() => conferenceStatusStore.setupVisible);
+    const moderationDrawer = computed(() => globalStore.moderationDrawer);
+    const userRef = computed(() => sessionStore.user);
+    const roomRef = computed(() => roomStore.room);
+    const roomJoined = computed(
+      () => userRef.value !== null && roomRef.value !== null,
+    );
 
-    const { app } = useContext();
-    provide(DefaultApolloClient, app.apolloProvider.defaultClient);
+    function toggleModerationDrawer() {
+      globalStore.toggleModerationDrawer();
+    }
 
+    const { mutate: leave, onDone } = useLeave(userRef, roomRef);
+    function leaveRoom() {
+      onDone(() => {
+        redirect("/");
+      });
+      leave();
+    }
     return {
+      title: "E-Session",
+      roomJoined,
+      moderationDrawer,
+      toggleModerationDrawer,
+      leaveRoom,
       setupDialog,
-      clipped: false,
-      drawer: true,
-      fixed: false,
-      items: [
-        {
-          icon: "mdi-apps",
-          title: "Welcome",
-          to: "/",
-        },
-        {
-          icon: "mdi-information",
-          title: "Apollo API Example",
-          to: "/apollo",
-        },
-        {
-          icon: "mdi-video",
-          title: "Jitsi Meeting",
-          to: "/meeting",
-        },
-      ],
-      miniVariant: false,
-      right: true,
-      rightDrawer: false,
-      title: "Vuetify.js",
     };
   },
 });

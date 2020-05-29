@@ -1,5 +1,5 @@
 import { Module, VuexModule, Mutation } from "vuex-module-decorators";
-import { IUser, IRoom } from "~/types";
+import { IUser } from "~/types";
 
 @Module({
   name: "Session",
@@ -8,6 +8,12 @@ import { IUser, IRoom } from "~/types";
 })
 export default class Session extends VuexModule {
   public user: IUser = null;
+  public role: string = null;
+
+  @Mutation
+  setRole(role: string) {
+    this.role = role;
+  }
 
   @Mutation
   login(value: IUser) {
@@ -17,15 +23,22 @@ export default class Session extends VuexModule {
   @Mutation
   logout() {
     this.user = null;
+    this.role = null;
   }
 
   @Mutation
-  joinRoom(room: IRoom) {
-    this.user.room = room;
+  handMoved() {
+    this.user.handRaised = !this.user.handRaised;
   }
 
-  @Mutation
-  leaveRoom() {
-    this.user.room = null;
+  get isModerator() {
+    return this.role === "moderator";
+  }
+
+  get userRole() {
+    if (this.role) {
+      return this.role.charAt(0).toUpperCase() + this.role.slice(1);
+    }
+    return "User";
   }
 }

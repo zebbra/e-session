@@ -2,9 +2,6 @@ mutation joinRoom($userId: String!, $roomId: String!) {
   join(userId: $userId, roomId: $roomId) {
     id
     name
-    room {
-      id
-      name
-    }
+    handRaised
   }
 }

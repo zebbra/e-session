@@ -1,0 +1,9 @@
+mutation postMessage($room: String!, $author: String!, $text: String!) {
+  say(text: $text, author: $author, room: $room) {
+    text
+    author {
+      id
+      name
+    }
+  }
+}

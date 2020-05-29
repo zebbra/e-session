@@ -1,5 +1,3 @@
-import path from "path";
-import fs from "fs";
 import { Configuration } from "@nuxt/types";
 
 const config: Configuration = {
@@ -9,8 +7,8 @@ const config: Configuration = {
    ** Headers of the page
    */
   head: {
-    titleTemplate: "%s - " + process.env.npm_package_name,
-    title: process.env.npm_package_name || "",
+    titleTemplate: "%s - E-Session",
+    title: "Join Room",
     meta: [
       { charset: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
@@ -34,6 +32,10 @@ const config: Configuration = {
    ** Customize the progress-bar color
    */
   loading: { color: "red" },
+
+  router: {
+    middleware: ["roomContext"],
+  },
 
   /*
    ** Global CSS
@@ -67,6 +69,12 @@ const config: Configuration = {
     ["@nuxtjs/pwa", { meta: false, icon: false, manifest: false }],
     // Doc: https://github.com/nuxt-community/dotenv-module
     "@nuxtjs/dotenv",
+    [
+      "nuxt-env",
+      {
+        keys: ["HTTP_GRAPHQL_ENDPOINT", "WS_GRAPHQL_ENDPOINT"],
+      },
+    ],
   ],
 
   /**
@@ -132,13 +140,13 @@ const config: Configuration = {
   //    */
   //   extend(config, ctx) {}
   // }
-  server: {
+  /* server: {
     host: "0.0.0.0",
     https: {
       key: fs.readFileSync(path.resolve(__dirname, "server.key")),
       cert: fs.readFileSync(path.resolve(__dirname, "server.crt")),
     },
-  },
+  }, */
 };
 
 export default config;

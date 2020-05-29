@@ -1,3 +1,4 @@
+import consola from "consola";
 import { ErrorLink } from "apollo-link-error";
 import { globalStore } from "~/store";
 
@@ -14,17 +15,18 @@ const errorLink = new ErrorLink((error) => {
         "",
       )}`;
 
-  globalStore.showErrorMessage(errorMessage);
+  consola.error(errorMessage);
+  globalStore.showErrorMessage("Server Error");
 });
 
-export default function () {
+export default function ({ req, nuxtState }) {
+  const { env } = req || nuxtState;
+
   return {
     link: errorLink,
     // required
-    httpEndpoint:
-      process.env.HTTP_GRAPHQL_ENDPOINT || "http://localhost:3001/graphql",
+    httpEndpoint: env.HTTP_GRAPHQL_ENDPOINT || "http://localhost:3001/graphql",
     // optional
-    wsEndpoint:
-      process.env.WS_GRAPHQL_ENDPOINT || "ws://localhost:3001/graphql",
+    wsEndpoint: env.WS_GRAPHQL_ENDPOINT || "ws://localhost:3001/graphql",
   };
 }

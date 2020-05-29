@@ -1,5 +1,0 @@
-mutation postMessage($room: String!, $text: String!) {
-  say(text: $text, room: $room) {
-    text
-  }
-}

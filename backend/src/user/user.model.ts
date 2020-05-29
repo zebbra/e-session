@@ -1,6 +1,5 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { v4 as uuidv4 } from "uuid";
-import { Room } from "../room/room.model";
 
 @ObjectType()
 export class User {
@@ -10,25 +9,22 @@ export class User {
   @Field((type) => String)
   name: string;
 
-  @Field((type) => Room, { nullable: true })
-  room: Room;
+  @Field((type) => Boolean)
+  handRaised: boolean;
 
   constructor(name: string) {
     this.id = uuidv4();
     this.name = name;
+    this.handRaised = false;
   }
 
-  joinRoom(room: Room): User {
-    this.room = room;
-    room.userJoined(this);
+  raiseHand(): User {
+    this.handRaised = true;
     return this;
   }
 
-  leaveRoom(): User {
-    if (this.room) {
-      this.room.userLeft(this);
-      this.room = null;
-    }
+  lowerHand(): User {
+    this.handRaised = false;
     return this;
   }
 }

@@ -2,6 +2,12 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type User {
+  id: String!
+  name: String!
+  handRaised: Boolean!
+}
+
 type Room {
   id: String!
   name: String!
@@ -11,13 +17,8 @@ type Room {
 
 type Message {
   room: Room!
+  author: User!
   text: String!
-}
-
-type User {
-  id: String!
-  name: String!
-  room: Room
 }
 
 type Query {
@@ -28,14 +29,18 @@ type Query {
 type Mutation {
   login(name: String!): User!
   logout(id: String!): User!
+  createRoom(name: String!): Room!
+  say(text: String!, author: String!, room: String!): Message!
   join(roomId: String!, userId: String!): User!
-  leave(roomId: String!, userId: String!): User!
-  say(text: String!, room: String!): Message!
+  leave(roomId: String!, userId: String!): User
+  raiseHand(roomId: String!, userId: String!): User!
+  lowerHand(roomId: String!, userId: String!): User!
 }
 
 type Subscription {
+  handMoved(roomId: String!, userId: String!): User!
   roomJoined(roomId: String!, userId: String!): User!
   roomLeft(roomId: String!, userId: String!): User!
-  userConnected(userId: String!, roomId: String!): User!
+  signal(userId: String!, roomId: String!): User!
   messagePosted(room: String!): Message!
 }

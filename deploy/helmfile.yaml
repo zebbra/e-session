@@ -1,6 +1,6 @@
 releases:
-  - name: pandemia
-    namespace: pandemia
+  - name: e-session
+    namespace: e-session
     chart: ./helm
     values:
       - production.yaml

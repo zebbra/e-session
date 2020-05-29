@@ -22,6 +22,10 @@ export class Room {
     this.name = name;
   }
 
+  findUser(id: string) {
+    return this.users.find((user) => user.id === id);
+  }
+
   userJoined(user: User): Room {
     if (!this.users.includes(user)) {
       this.users.push(user);
@@ -29,14 +33,17 @@ export class Room {
     return this;
   }
 
-  userLeft(user: User): Room {
-    remove(this.users, { id: user.id });
+  userLeft(id: string): Room {
+    remove(this.users, { id });
     return this;
   }
 
-  say(text: string): Message {
-    const message = new Message(this, text);
-    this.messages.push(message);
+  say(author: User, text: string): Message {
+    const message = new Message(this, author, text);
+    this.messages.unshift(message);
+    if (this.messages.length > 50) {
+      this.messages = this.messages.slice(0, 50);
+    }
     return message;
   }
 }
@@ -46,11 +53,15 @@ export class Message {
   @Field((type) => Room)
   room: Room;
 
+  @Field((type) => User)
+  author: User;
+
   @Field()
   text: string;
 
-  constructor(room: Room, text: string) {
+  constructor(room: Room, author: User, text: string) {
     this.room = room;
+    this.author = author;
     this.text = text;
   }
 }

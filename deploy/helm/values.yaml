@@ -1,11 +1,11 @@
-# Default values for meraki-root-cause.
+# Default values for e-session.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
 image:
-  repository: quay.io/zebbra/meraki-root-cause
+  repository: quay.io/zebbra/e-session
   tag: latest
   pullPolicy: Always
 
