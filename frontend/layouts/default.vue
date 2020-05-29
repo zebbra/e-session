@@ -46,8 +46,8 @@
       <div>
         <nuxt />
       </div>
-      <v-dialog v-model="localMediaCheckDialog" persistent max-width="600">
-        <local-media-check />
+      <v-dialog v-model="setupDialog" persistent max-width="600">
+        <e-session-local-media-setup />
       </v-dialog>
     </v-content>
     <v-navigation-drawer v-model="rightDrawer" :right="right" temporary fixed>
@@ -78,25 +78,23 @@ import {
 } from "nuxt-composition-api";
 import { DefaultApolloClient } from "@vue/apollo-composable";
 import ESessionSnackbar from "~/components/ESessionSnackbar.vue";
-import LocalMediaCheck from "~/components/LocalMediaCheck.vue";
-import { globalStore } from "~/store";
+import ESessionLocalMediaSetup from "~/components/ESessionLocalMediaSetup.vue";
+import { conferenceStatusStore } from "~/store";
 
 export default defineComponent({
   name: "DefaultLayout",
-  components: { ESessionSnackbar, LocalMediaCheck },
+  components: { ESessionSnackbar, ESessionLocalMediaSetup },
   setup() {
     if (process.browser) {
       Vue.prototype.$jitsi = window.JitsiMeetJS;
     }
-    const localMediaCheckDialog = computed(
-      () => globalStore.deviceSettingsVisible,
-    );
+    const setupDialog = computed(() => conferenceStatusStore.setupVisible);
 
     const { app } = useContext();
     provide(DefaultApolloClient, app.apolloProvider.defaultClient);
 
     return {
-      localMediaCheckDialog,
+      setupDialog,
       clipped: false,
       drawer: true,
       fixed: false,

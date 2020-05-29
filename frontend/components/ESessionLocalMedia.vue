@@ -1,74 +1,66 @@
 <template>
-  <v-card class="text-center">
-    <v-card-text>
-      <v-row>
-        <v-col>
-          <media :video-stream="videoStream" :audio-stream="null" />
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <div class="mb-4 blue--text">{{ displayName }}</div>
-          <v-select
-            v-model="initialDeviceSelection.camera"
-            :items="cameraDevices"
-            label="Camera"
-            dense
-            item-text="label"
-            item-value="deviceId"
-            prepend-icon="mdi-camera"
-            @change="changeCamera"
-          ></v-select>
-          <v-select
-            v-model="initialDeviceSelection.mic"
-            :items="microphoneDevices"
-            label="Microphone"
-            dense
-            item-text="label"
-            item-value="deviceId"
-            prepend-icon="mdi-microphone"
-            @change="changeMicrophoneDevice"
-          ></v-select>
-          <v-select
-            v-model="initialDeviceSelection.output"
-            :items="outputDevices"
-            label="Audio Output"
-            dense
-            item-text="label"
-            item-value="deviceId"
-            prepend-icon="mdi-speaker"
-            @change="changeOutputDevice"
-          ></v-select>
-          <div class="controllsWrapper mt-8">
-            <v-btn class="controll" outlined @click="confirm">
-              <v-icon class="mr-2">mdi-check</v-icon>OK
-            </v-btn>
-            <v-btn class="controll ml-2" outlined color="error" @click="cancel">
-              <v-icon class="mr-2">mdi-cancel</v-icon>Cancel
-            </v-btn>
-          </div>
-        </v-col>
-      </v-row>
-    </v-card-text>
-  </v-card>
+  <div>
+    <v-row>
+      <v-col>
+        <media :video-stream="videoStream" :audio-stream="null" />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <div class="mb-4 blue--text">{{ displayName }}</div>
+        <v-select
+          v-model="initialDeviceSelection.camera"
+          :items="cameraDevices"
+          label="Camera"
+          dense
+          item-text="label"
+          item-value="deviceId"
+          prepend-icon="mdi-camera"
+          @change="changeCamera"
+        ></v-select>
+        <v-select
+          v-model="initialDeviceSelection.mic"
+          :items="microphoneDevices"
+          label="Microphone"
+          dense
+          item-text="label"
+          item-value="deviceId"
+          prepend-icon="mdi-microphone"
+          @change="changeMicrophoneDevice"
+        ></v-select>
+        <v-select
+          v-model="initialDeviceSelection.output"
+          :items="outputDevices"
+          label="Audio Output"
+          dense
+          item-text="label"
+          item-value="deviceId"
+          prepend-icon="mdi-speaker"
+          @change="changeOutputDevice"
+        ></v-select>
+      </v-col>
+    </v-row>
+  </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { defineComponent, computed, ref } from "nuxt-composition-api";
-import { conferenceStatusStore, globalStore } from "~/store";
+import { defineComponent, computed, ref, watch } from "nuxt-composition-api";
+import { conferenceStatusStore } from "~/store";
 
 export default defineComponent({
-  name: "LocalMediaCheck",
+  name: "ESessionLocalMedia",
   components: {
     Media: () => import("~/components/Media.vue"),
   },
 
   setup(_, { root }) {
-    const localTracks = ref({ localStream: ref({ video: null, audio: null }) });
-
-    const videoStream = computed(() => localTracks.value.localStream.video);
-    const audioStream = computed(() => localTracks.value.localStream.audio);
+    const localTracks: any = computed(() => root.$localTracks);
+    const videoStream = computed(
+      () => localTracks.value.value.localStream.video,
+    );
+    const audioStream = computed(
+      () => localTracks.value.value.localStream.audio,
+    );
     const displayName = computed(
       () => conferenceStatusStore.status.displayName,
     );
@@ -98,23 +90,26 @@ export default defineComponent({
           cameraDevices.value = devices.filter((d) => d.kind === "videoinput");
         });
       }
-      createLocalTracks();
     }
 
-    function confirm() {
-      globalStore.showDeviceSettings(false);
-      // root.$options.router.push({ path: roomUrl.value });
-    }
-
-    function cancel() {
-      globalStore.showDeviceSettings(false);
-      // Vue.prototype.$localTracks = null;
-      // localTracks.value.localStream.video.dispose();
-      // localTracks.value.localStream.audio.dispose();
-      // root.$delete(localTracks, "localStream");
-      // root.$connection.disconnect();
-      // globalStore.showDeviceSettings(false);
-    }
+    watch(
+      () => conferenceStatusStore.setupVisible,
+      (newVal) => {
+        console.log("newVal: ", newVal);
+        if (
+          newVal === true &&
+          (!localTracks.value.value.localStream.video ||
+            !localTracks.value.value.localStream.audio)
+        ) {
+          console.log("making new tracks");
+          createLocalTracks();
+        }
+      },
+      // watch Options
+      {
+        lazy: false, // immediate: true
+      },
+    );
 
     async function createLocalTracks() {
       try {
@@ -128,8 +123,8 @@ export default defineComponent({
     }
 
     async function changeCamera(id) {
-      localTracks.value.localStream.video.dispose();
-      root.$set(localTracks.value.localStream, "video", null);
+      localTracks.value.value.localStream.video.dispose();
+      root.$set(localTracks.value.value.localStream, "video", null);
       try {
         const tracks = await jitsi.createLocalTracks({
           devices: ["video"],
@@ -146,8 +141,8 @@ export default defineComponent({
     }
 
     async function changeMicrophoneDevice(id) {
-      localTracks.value.localStream.audio.dispose();
-      root.$set(localTracks.value.localStream, "audio", null);
+      localTracks.value.value.localStream.audio.dispose();
+      root.$set(localTracks.value.value.localStream, "audio", null);
       // console.log(event);
       try {
         const tracks = await jitsi.createLocalTracks({
@@ -181,25 +176,22 @@ export default defineComponent({
         // console.log(localTracks);
         if (type === "video") {
           conferenceStatusStore.updateCameraId(tracks[i].getDeviceId());
-          root.$set(localTracks.value.localStream, "video", tracks[i]);
+          root.$set(localTracks.value.value.localStream, "video", tracks[i]);
         }
         if (type === "audio") {
           conferenceStatusStore.updateOuputId(
             jitsi.mediaDevices.getAudioOutputDevice(),
           );
           conferenceStatusStore.updateMicId(tracks[i].getDeviceId());
-          root.$set(localTracks.value.localStream, "audio", tracks[i]);
+          root.$set(localTracks.value.value.localStream, "audio", tracks[i]);
         }
       }
       console.log("onLocalTracks done");
-      Vue.prototype.$localTracks = localTracks;
     }
 
     return {
       videoStream,
       audioStream,
-      confirm,
-      cancel,
       displayName,
       cameraDevices,
       microphoneDevices,

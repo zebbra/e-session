@@ -24,6 +24,9 @@ export default class ConferenceStatus extends VuexModule {
     outputId: "",
   };
 
+  public deviceSettingsVisible: boolean = false;
+  public setupVisible: boolean = false;
+
   // -------DEVICES-------
 
   @Mutation
@@ -96,5 +99,27 @@ export default class ConferenceStatus extends VuexModule {
   @Action
   updateRoomName(roomName: string) {
     this.setRoomName(roomName);
+  }
+
+  // ------SETUP/SETTINGS---------
+
+  @Mutation
+  setDeviceSettingsVisible(state: boolean) {
+    this.deviceSettingsVisible = state;
+  }
+
+  @Mutation
+  setSetupVisible(state: boolean) {
+    this.setupVisible = state;
+  }
+
+  @Action
+  showDeviceSettings(state: boolean) {
+    this.setDeviceSettingsVisible(state);
+  }
+
+  @Action
+  showSetup(state: boolean) {
+    this.setSetupVisible(state);
   }
 }

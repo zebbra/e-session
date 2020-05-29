@@ -18,7 +18,7 @@
       <v-btn class="ma-2" outlined fab small disabled>
         <v-icon small>mdi-monitor</v-icon>
       </v-btn>
-      <v-btn class="ma-2" outlined fab small disabled>
+      <v-btn class="ma-2" outlined fab small @click="showSettings">
         <v-icon small>mdi-cog</v-icon>
       </v-btn>
     </v-row>
@@ -34,6 +34,9 @@
         </div>
       </v-row>
     </div>
+    <v-dialog v-model="settingsDialog" persistent max-width="600">
+      <e-session-local-media-settings />
+    </v-dialog>
   </div>
 </template>
 
@@ -47,6 +50,8 @@ export default defineComponent({
   head: {},
   components: {
     Peer: () => import("~/components/Peer.vue"),
+    ESessionLocalMediaSettings: () =>
+      import("~/components/ESessionLocalMediaSettings.vue"),
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setup(props, context) {
@@ -54,7 +59,9 @@ export default defineComponent({
     const displayName: any = computed(
       () => conferenceStatusStore.status.displayName,
     );
-
+    const settingsDialog = computed(
+      () => conferenceStatusStore.deviceSettingsVisible,
+    );
     const userId: any = ref(1);
     const localTracks: any = computed(() => context.root.$localTracks);
     const remoteTracks: any = ref({});
@@ -179,8 +186,8 @@ export default defineComponent({
       console.log("onConferenceJoined", localTracks);
       conferenceStatusStore.updateJoined(true);
       /* TODO Desktop and check if stream available */
-      room.addTrack(localTracks.value.value.localStream.value.video);
-      room.addTrack(localTracks.value.value.localStream.value.audio);
+      room.addTrack(localTracks.value.value.localStream.video);
+      room.addTrack(localTracks.value.value.localStream.audio);
     }
 
     function onUserLeft(id: string) {
@@ -191,8 +198,10 @@ export default defineComponent({
     function endCall() {
       console.log("endcall");
       if (room) {
-        localTracks.value.value.localStream.value.video.dispose();
-        localTracks.value.value.localStream.value.audio.dispose();
+        localTracks.value.value.localStream.video.dispose();
+        localTracks.value.value.localStream.audio.dispose();
+        context.root.$delete(localTracks.value.value.localStream, "video");
+        context.root.$delete(localTracks.value.value.localStream, "audio");
         room.leave();
         connection.disconnect();
         room = null;
@@ -200,6 +209,10 @@ export default defineComponent({
         conferenceStatusStore.updateJoined(false);
         context.root.$options.router!.push({ path: "/meeting" });
       }
+    }
+
+    function showSettings() {
+      conferenceStatusStore.showDeviceSettings(true);
     }
 
     return {
@@ -210,6 +223,8 @@ export default defineComponent({
       displayName,
       peerWrapperClassName,
       endCall,
+      settingsDialog,
+      showSettings,
     };
   },
 });

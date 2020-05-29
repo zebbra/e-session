@@ -31,13 +31,14 @@
 import { defineComponent, useMeta, ref } from "nuxt-composition-api";
 import Vue from "vue";
 import { initOptions, options } from "~/utils/jitsi";
-import { conferenceStatusStore, globalStore } from "~/store";
+import { conferenceStatusStore } from "~/store";
 
 export default defineComponent({
   name: "Index",
   head: {},
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setup(props, context) {
+    const localTracks = ref({ localStream: ref({ video: null, audio: null }) });
     const roomName = ref("ExampleRoomName");
     const attendeeName = ref("");
     useMeta({ title: "Jitsi Meeting" });
@@ -74,8 +75,9 @@ export default defineComponent({
 
     function onConnectionSuccess() {
       console.log("onConnectionSuccess");
+      Vue.prototype.$localTracks = localTracks;
       Vue.prototype.$connection = connection;
-      globalStore.showDeviceSettings(true);
+      conferenceStatusStore.showSetup(true);
     }
 
     function onConnectionFailed() {}
