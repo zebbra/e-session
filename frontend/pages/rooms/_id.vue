@@ -23,7 +23,6 @@ import {
   useJoin,
 } from "~/composable/useRoom";
 import { roomStore, sessionStore, conferenceStore } from "~/store";
-import { initOptions, options } from "~/utils/jitsi";
 
 export default defineComponent({
   name: "Room",
@@ -48,23 +47,7 @@ export default defineComponent({
     conferenceStore.updateRoomName(roomRef.value.name);
 
     if (process.browser) {
-      app.$jitsi.setLogLevel(app.$jitsi.logLevels.WARN);
-      app.$jitsi.init(initOptions);
-
-      app.$connection = new app.$jitsi.JitsiConnection(null, null, options);
-      app.$connection.addEventListener(
-        app.$jitsi.events.connection.CONNECTION_ESTABLISHED,
-        () => app.$onConnectionSuccess(),
-      );
-      app.$connection.addEventListener(
-        app.$jitsi.events.connection.CONNECTION_FAILED,
-        () => app.$onConnectionFailed(),
-      );
-      app.$connection.addEventListener(
-        app.$jitsi.events.connection.CONNECTION_DISCONNECTED,
-        () => app.$onDisconnect(),
-      );
-      app.$connection.connect();
+      app.$initJitsi();
     }
     return {
       room: roomRef,

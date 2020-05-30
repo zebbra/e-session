@@ -2,7 +2,7 @@ import { ref } from "@vue/composition-api";
 import consola from "consola";
 import Vue from "vue";
 import { roomStore, sessionStore, conferenceStore } from "~/store";
-import { confOptions } from "~/utils/jitsi";
+import { options, initOptions, confOptions } from "~/utils/jitsi";
 
 export default ({ app }) => {
   const jitsi = (window as any).JitsiMeetJS;
@@ -13,6 +13,26 @@ export default ({ app }) => {
   });
   app.$remoteTracks = ref({});
   app.$room = null;
+
+  app.$initJitsi = () => {
+    app.$jitsi.setLogLevel(app.$jitsi.logLevels.WARN);
+    app.$jitsi.init(initOptions);
+
+    app.$connection = new app.$jitsi.JitsiConnection(null, null, options);
+    app.$connection.addEventListener(
+      app.$jitsi.events.connection.CONNECTION_ESTABLISHED,
+      () => app.$onConnectionSuccess(),
+    );
+    app.$connection.addEventListener(
+      app.$jitsi.events.connection.CONNECTION_FAILED,
+      () => app.$onConnectionFailed(),
+    );
+    app.$connection.addEventListener(
+      app.$jitsi.events.connection.CONNECTION_DISCONNECTED,
+      () => app.$onDisconnect(),
+    );
+    app.$connection.connect();
+  };
 
   app.$onConferenceJoined = () => {
     consola.log("yo haave joned");
