@@ -17,12 +17,17 @@
       </v-tooltip>
     </v-app-bar>
     <v-content>
-      <v-container>
-        <div id="stars"></div>
-        <div id="stars2"></div>
-        <div id="stars3"></div>
+      <v-container fluid>
+        <div>
+          <div id="stars"></div>
+          <div id="stars2"></div>
+          <div id="stars3"></div>
+        </div>
         <nuxt />
       </v-container>
+      <v-dialog v-model="setupDialog" persistent max-width="600">
+        <e-session-local-media-setup />
+      </v-dialog>
     </v-content>
     <e-session-moderation-drawer v-if="roomJoined" />
     <v-footer fixed>
@@ -45,7 +50,7 @@ import {
 } from "nuxt-composition-api";
 import { DefaultApolloClient } from "@vue/apollo-composable";
 import { useLeave } from "~/composable/useRoom";
-import { sessionStore, roomStore, globalStore } from "~/store";
+import { sessionStore, roomStore, globalStore, conferenceStore } from "~/store";
 
 export default defineComponent({
   name: "DefaultLayout",
@@ -53,11 +58,14 @@ export default defineComponent({
     ESessionSnackbar: () => import("~/components/ESessionSnackbar.vue"),
     ESessionModerationDrawer: () =>
       import("~/components/ESessionModerationDrawer.vue"),
+    ESessionLocalMediaSetup: () =>
+      import("~/components/ESessionLocalMediaSetup.vue"),
   },
   setup() {
     const { app, redirect } = useContext();
     provide(DefaultApolloClient, app.apolloProvider.defaultClient);
 
+    const setupDialog = computed(() => conferenceStore.setupVisible);
     const moderationDrawer = computed(() => globalStore.moderationDrawer);
     const userRef = computed(() => sessionStore.user);
     const roomRef = computed(() => roomStore.room);
@@ -83,7 +91,9 @@ export default defineComponent({
       moderationDrawer,
       toggleModerationDrawer,
       leaveRoom,
+      setupDialog,
     };
   },
 });
 </script>
+<style scoped></style>>

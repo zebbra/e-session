@@ -19,6 +19,13 @@ const config: Configuration = {
       },
     ],
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
+    script: [
+      { src: "https://meet.jit.si/libs/lib-jitsi-meet.min.js" },
+      {
+        src:
+          "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js",
+      },
+    ],
   },
 
   /*
@@ -38,7 +45,7 @@ const config: Configuration = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [],
+  plugins: [{ src: "~/plugins/jitsi.client", mode: "client" }],
 
   /*
    ** Nuxt.js dev-modules
@@ -139,6 +146,13 @@ const config: Configuration = {
   //    */
   //   extend(config, ctx) {}
   // }
+  /* server: {
+    host: "0.0.0.0",
+    https: {
+      key: fs.readFileSync(path.resolve(__dirname, "server.key")),
+      cert: fs.readFileSync(path.resolve(__dirname, "server.crt")),
+    },
+  }, */
 };
 
 export default config;
