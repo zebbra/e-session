@@ -52,6 +52,7 @@ export default defineComponent({
     function leaveRoom() {
       onDone(() => {
         app.$deinitJitsi();
+        roomStore.setUsersFilter("");
         redirect("/");
       });
       leave();
