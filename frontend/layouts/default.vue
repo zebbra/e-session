@@ -17,10 +17,12 @@
       </v-tooltip>
     </v-app-bar>
     <v-content>
-      <v-container>
-        <div id="stars"></div>
-        <div id="stars2"></div>
-        <div id="stars3"></div>
+      <v-container fluid>
+        <div>
+          <div id="stars"></div>
+          <div id="stars2"></div>
+          <div id="stars3"></div>
+        </div>
         <nuxt />
       </v-container>
       <v-dialog v-model="setupDialog" persistent max-width="600">

@@ -80,6 +80,95 @@ export default ({ app }) => {
   app.$onDisconnect = () => {
     consola.log("you have disconnected");
   };
+  app.$disposeAndRecreateLocalTracks = () => {
+    app.$localTracks.value.localStream.video.dispose();
+    app.$localTracks.value.localStream.audio.dispose();
+    Vue.set(app.$localTracks.value.localStream, "video", null);
+    Vue.set(app.$localTracks.value.localStream, "audio", null);
+    app.$createLocalTracks();
+  };
+
+  app.$createLocalTracks = async () => {
+    try {
+      const tracks = await app.$jitsi.createLocalTracks({
+        devices: ["audio", "video"],
+      });
+      _onLocalTracks(tracks);
+    } catch (err) {
+      consola.error("Exception:", err);
+    }
+  };
+
+  app.$disposeAndRecreateVideoTrack = async (id: string) => {
+    app.$localTracks.value.localStream.video.dispose();
+    Vue.set(app.$localTracks.value.localStream, "video", null);
+    try {
+      const tracks = await app.$jitsi.createLocalTracks({
+        devices: ["video"],
+        cameraDeviceId: id,
+      });
+      _onLocalTracks(tracks);
+    } catch (err) {
+      consola.error("Exception:", err);
+    }
+  };
+
+  app.$disposeAndRecreateAudioTrack = async (id: string) => {
+    app.$localTracks.value.localStream.audio.dispose();
+    Vue.set(app.$localTracks.value.localStream, "audio", null);
+    // consola.log(event);
+    try {
+      const tracks = await app.$jitsi.createLocalTracks({
+        devices: ["audio"],
+        micDeviceId: id,
+      });
+      _onLocalTracks(tracks);
+    } catch (err) {
+      // consola.error("Exception:", err);
+    }
+  };
+
+  function _onLocalTracks(tracks) {
+    // consola.log("tracks: ", tracks);
+    for (let i = 0; i < tracks.length; i++) {
+      // consola.log("track device id", tracks[i].getDeviceId());
+      tracks[i].addEventListener(
+        app.$jitsi.events.track.TRACK_MUTE_CHANGED,
+        () => consola.log("local track muted"),
+      );
+      tracks[i].addEventListener(
+        app.$jitsi.events.track.LOCAL_TRACK_STOPPED,
+        () => consola.log("local track stoped"),
+      );
+      tracks[i].addEventListener(
+        app.$jitsi.events.track.TRACK_AUDIO_OUTPUT_CHANGED,
+        (deviceId: String) =>
+          consola.log(`track audio output device was changed to ${deviceId}`),
+      );
+      const type = tracks[i].getType();
+      // consola.log(localTracks);
+      if (type === "video") {
+        conferenceStore.updateCameraId(tracks[i].getDeviceId());
+        Vue.set(app.$localTracks.value.localStream, "video", tracks[i]);
+      }
+      if (type === "audio") {
+        tracks[i].addEventListener(
+          app.$jitsi.events.track.TRACK_AUDIO_LEVEL_CHANGED,
+          (level: any) => consola.log(level),
+        );
+        conferenceStore.updateOuputId(
+          app.$jitsi.mediaDevices.getAudioOutputDevice(),
+        );
+        conferenceStore.updateMicId(tracks[i].getDeviceId());
+        Vue.set(app.$localTracks.value.localStream, "audio", tracks[i]);
+      }
+    }
+    consola.log("onLocalTracks done");
+    if (conferenceStore.status.isJoned) {
+      app.$room.addTrack(app.$localTracks.value.localStream.video);
+      app.$room.addTrack(app.$localTracks.value.localStream.audio);
+    }
+  }
 
   function _onUserLeft(id: string) {
     consola.log(id);
