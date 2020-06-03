@@ -32,8 +32,7 @@ export default class Session extends VuexModule {
   }
 
   get isModerator() {
-    // return this.role === "moderator";
-    return true;
+    return this.role === "moderator";
   }
 
   get userRole() {
