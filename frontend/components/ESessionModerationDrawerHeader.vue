@@ -46,11 +46,12 @@ export default defineComponent({
     const userRef = computed(() => sessionStore.user);
     const isModerator = computed(() => sessionStore.isModerator);
 
-    const { redirect } = useContext();
+    const { redirect, app } = useContext();
 
     const { mutate: leave, onDone } = useLeave(userRef, roomRef);
     function leaveRoom() {
       onDone(() => {
+        app.$deinitJitsi();
         redirect("/");
       });
       leave();

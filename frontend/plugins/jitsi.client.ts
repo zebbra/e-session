@@ -33,6 +33,18 @@ export default ({ app }) => {
     );
     app.$connection.connect();
   };
+  app.$deinitJitsi = () => {
+    app.$localTracks.value.localStream.video.dispose();
+    app.$localTracks.value.localStream.audio.dispose();
+    Vue.delete(app.$localTracks.value.localStream, "video");
+    Vue.delete(app.$localTracks.value.localStream, "audio");
+    app.$room.leave();
+    app.$connection.disconnect();
+    app.$room = null;
+    app.$connection = null;
+    conferenceStore.updateJoined(false);
+    app.$jitsi = null;
+  };
 
   app.$onConferenceJoined = () => {
     consola.log("yo haave joned");
@@ -247,24 +259,4 @@ export default ({ app }) => {
       }
     }
   }
-  /* function onUserLeft(id: string) {
-      consola.log("onUserLeft", id);
-      context.root.$delete(remoteTracks.value, id);
-    } */
-
-  /* function endCall() {
-      consola.log("endcall");
-      if (room) {
-        localTracks.value.value.localStream.video.dispose();
-        localTracks.value.value.localStream.audio.dispose();
-        context.root.$delete(localTracks.value.value.localStream, "video");
-        context.root.$delete(localTracks.value.value.localStream, "audio");
-        room.leave();
-        connection.disconnect();
-        room = null;
-        connection = null;
-        conferenceStore.updateJoined(false);
-        context.root.$options.router!.push({ path: "/meeting" });
-      }
-    } */
 };
