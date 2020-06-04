@@ -4,6 +4,8 @@
     <v-app-bar fixed app>
       <v-toolbar-title v-text="title" />
       <v-spacer></v-spacer>
+      <span class="title">{{ room && room.name }}</span>
+      <v-spacer></v-spacer>
       <v-btn v-if="roomJoined" icon @click.stop="toggleModerationDrawer">
         <v-icon>mdi-menu</v-icon>
       </v-btn>
@@ -17,7 +19,7 @@
       </v-tooltip>
     </v-app-bar>
     <v-content id="start-background">
-      <v-container fluid>
+      <v-container fluid class="d-flex align-center" style="height: 100%;">
         <div>
           <div id="stars"></div>
           <div id="stars2"></div>
@@ -92,6 +94,7 @@ export default defineComponent({
       toggleModerationDrawer,
       leaveRoom,
       setupDialog,
+      room: roomRef,
     };
   },
 });

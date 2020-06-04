@@ -68,22 +68,16 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  computed,
-  useContext,
-  ref,
-} from "nuxt-composition-api";
+import { defineComponent, computed } from "nuxt-composition-api";
 import { useMutation } from "@vue/apollo-composable";
 import consola from "consola";
 import { mutations } from "~/apollo";
 import { useJoinConference, useLeaveConference } from "~/composable/useSession";
-import { roomStore, sessionStore, conferenceStore } from "~/store";
+import { roomStore, sessionStore } from "~/store";
 
 export default defineComponent({
   name: "ESessionUsers",
-  setup(_, context) {
-    const { app } = useContext();
+  setup() {
     const userRef = computed(() => sessionStore.user);
     const roomRef = computed(() => roomStore.room);
     const isModerator = computed(() => sessionStore.isModerator);
@@ -100,19 +94,6 @@ export default defineComponent({
         userId: user.id,
         roomId: roomRef.value.id,
       });
-
-      if (user.id === sessionStore.user.id) {
-        context.root.$set(
-          app.$remoteTracks.value,
-          conferenceStore.status.id,
-          ref({}),
-        );
-        conferenceStore.updateIsSpeaker(true);
-        /* TODO Desktop and check if stream available */
-        consola.log(app.$localTracks);
-        app.$room.addTrack(app.$localTracks.value.localStream.video);
-        app.$room.addTrack(app.$localTracks.value.localStream.audio);
-      }
     }
 
     const { mutate: lowerHand } = useMutation(mutations.room.lowerHand);
@@ -127,11 +108,6 @@ export default defineComponent({
         userId: user.id,
         roomId: roomRef.value.id,
       });
-
-      if (user.id === sessionStore.user.id) {
-        conferenceStore.updateIsSpeaker(false);
-        app.$disposeAndRecreateLocalTracks();
-      }
     }
 
     return {

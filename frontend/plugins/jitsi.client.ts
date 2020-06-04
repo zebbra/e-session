@@ -211,9 +211,13 @@ export default ({ app }) => {
 
   function _onRemoteTrackAdd(track: any) {
     consola.log("onRemoteTrackAdd", track);
-    // if (track.isLocal()) return
-
-    const id = track.getParticipantId();
+    let id: string = "";
+    if (track.isLocal()) {
+      id = "localStream";
+    } else {
+      id = track.getParticipantId();
+    }
+    // consola.log("id: ", id);
     if (!app.$remoteTracks.value[id]) {
       Vue.set(app.$remoteTracks.value, id, ref({}));
     }
@@ -252,22 +256,33 @@ export default ({ app }) => {
   }
 
   function _onRemoteTrackRemove(track: any) {
-    consola.log("onRemoteTrackRemove", track);
-    const id = track.getParticipantId();
+    consola.log("onRemoteTrackRemove track: ", track);
+    // const id = track.getParticipantId();
     const type = track.getType();
+
+    let id: string = "";
+    if (track.isLocal()) {
+      id = "localStream";
+    } else {
+      id = track.getParticipantId();
+    }
+
     if (app.$remoteTracks.value[id]) {
       track.removeEventListener(
         app.$jitsi.events.track.TRACK_AUDIO_LEVEL_CHANGED,
         (audioLevel: any) => consola.log(`Audio Level remote: ${audioLevel}`),
       );
+
       track.removeEventListener(
         app.$jitsi.events.track.TRACK_MUTE_CHANGED,
         () => consola.log("remote track muted"),
       );
+
       track.removeEventListener(
         app.$jitsi.events.track.LOCAL_TRACK_STOPPED,
         () => consola.log("remote track stoped"),
       );
+
       track.removeEventListener(
         app.$jitsi.events.track.TRACK_AUDIO_OUTPUT_CHANGED,
         (deviceId: any) =>
@@ -277,8 +292,16 @@ export default ({ app }) => {
       if (type === "video") {
         Vue.delete(app.$remoteTracks.value[id].value, "video");
       }
+
       if (type === "audio") {
         Vue.delete(app.$remoteTracks.value[id].value, "audio");
+      }
+
+      if (
+        !app.$remoteTracks.value[id].value.video &&
+        !app.$remoteTracks.value[id].value.audio
+      ) {
+        Vue.delete(app.$remoteTracks.value, id);
       }
     }
   }
