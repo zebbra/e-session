@@ -51,7 +51,7 @@ export default defineComponent({
     const { mutate: leave, onDone } = useLeave(userRef, roomRef);
     function leaveRoom() {
       onDone(() => {
-        app.$deinitJitsi();
+        app.$closeJitsiConnection();
         roomStore.setUsersFilter("");
         redirect("/");
       });

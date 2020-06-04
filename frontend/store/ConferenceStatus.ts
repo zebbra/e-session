@@ -24,6 +24,7 @@ export default class ConferenceStatus extends VuexModule {
     outputId: "",
   };
 
+  public devicePremissionPromptShown: string = "";
   public deviceSettingsVisible: boolean = false;
   public setupVisible: boolean = false;
 
@@ -121,5 +122,15 @@ export default class ConferenceStatus extends VuexModule {
   @Action
   showSetup(state: boolean) {
     this.setSetupVisible(state);
+  }
+
+  @Mutation
+  setDevicePremissionPromptShown(type: string) {
+    this.devicePremissionPromptShown = type;
+  }
+
+  @Action
+  premissionPromptShown(type: string) {
+    this.setDevicePremissionPromptShown(type);
   }
 }

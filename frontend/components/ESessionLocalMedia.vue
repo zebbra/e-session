@@ -49,7 +49,6 @@ import {
   defineComponent,
   computed,
   ref,
-  watch,
   useContext,
 } from "nuxt-composition-api";
 import consola from "consola";
@@ -86,37 +85,16 @@ export default defineComponent({
     const microphoneDevices = ref([]);
     const outputDevices = ref([]);
 
-    if (process.browser) {
-      if (app.$jitsi.mediaDevices.isDeviceChangeAvailable("output")) {
-        app.$jitsi.mediaDevices.enumerateDevices((devices) => {
-          consola.log(devices);
-          outputDevices.value = devices.filter((d) => d.kind === "audiooutput");
-          microphoneDevices.value = devices.filter(
-            (d) => d.kind === "audioinput",
-          );
-          cameraDevices.value = devices.filter((d) => d.kind === "videoinput");
-        });
-      }
+    if (app.$jitsi.mediaDevices.isDeviceChangeAvailable("output")) {
+      app.$jitsi.mediaDevices.enumerateDevices((devices) => {
+        consola.log(devices);
+        outputDevices.value = devices.filter((d) => d.kind === "audiooutput");
+        microphoneDevices.value = devices.filter(
+          (d) => d.kind === "audioinput",
+        );
+        cameraDevices.value = devices.filter((d) => d.kind === "videoinput");
+      });
     }
-
-    watch(
-      () => conferenceStore.setupVisible,
-      (newVal) => {
-        consola.log("newVal: ", newVal);
-        if (
-          newVal === true &&
-          (!localTracks.value.value.localStream.video ||
-            !localTracks.value.value.localStream.audio)
-        ) {
-          consola.log("making new tracks");
-          app.$createLocalTracks();
-        }
-      },
-      // watch Options
-      {
-        lazy: false, // immediate: true
-      },
-    );
 
     function changeCamera(id) {
       app.$disposeAndRecreateVideoTrack(id);

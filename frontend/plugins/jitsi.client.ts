@@ -31,9 +31,18 @@ export default ({ app }) => {
       app.$jitsi.events.connection.CONNECTION_DISCONNECTED,
       () => app.$onDisconnect(),
     );
+    app.$jitsi.mediaDevices.addEventListener(
+      app.$jitsi.events.mediaDevices.DEVICE_LIST_CHANGED,
+      () => _onDeviceListChanged(),
+    );
+    app.$jitsi.mediaDevices.addEventListener(
+      app.$jitsi.events.mediaDevices.PERMISSION_PROMPT_IS_SHOWN,
+      (type: string) => _onDevicePremissionPropmtShown(type),
+    );
     app.$connection.connect();
   };
-  app.$deinitJitsi = () => {
+
+  app.$closeJitsiConnection = () => {
     app.$localTracks.value.localStream.video.dispose();
     app.$localTracks.value.localStream.audio.dispose();
     Vue.delete(app.$localTracks.value.localStream, "video");
@@ -43,7 +52,6 @@ export default ({ app }) => {
     app.$room = null;
     app.$connection = null;
     conferenceStore.updateJoined(false);
-    app.$jitsi = null;
   };
 
   app.$onConferenceJoined = () => {
@@ -52,7 +60,6 @@ export default ({ app }) => {
 
   app.$onConnectionSuccess = () => {
     consola.log("onConnectionSuccess");
-    conferenceStore.showSetup(true);
 
     app.$room = app.$connection.initJitsiConference(
       roomStore.room.name.toLowerCase(),
@@ -83,6 +90,7 @@ export default ({ app }) => {
     app.$room.setDisplayName(sessionStore.user.name);
     app.$room.join();
     conferenceStore.setId(app.$room.myUserId());
+    app.$createLocalTracks();
   };
 
   app.$onConnectionFailed = () => {
@@ -102,10 +110,14 @@ export default ({ app }) => {
 
   app.$createLocalTracks = async () => {
     try {
-      const tracks = await app.$jitsi.createLocalTracks({
-        devices: ["audio", "video"],
-      });
+      const tracks = await app.$jitsi.createLocalTracks(
+        {
+          devices: ["audio", "video"],
+        },
+        true,
+      );
       _onLocalTracks(tracks);
+      conferenceStore.showSetup(true);
     } catch (err) {
       consola.error("Exception:", err);
     }
@@ -139,6 +151,14 @@ export default ({ app }) => {
       // consola.error("Exception:", err);
     }
   };
+  function _onDeviceListChanged() {
+    consola.log("device list has changed");
+  }
+
+  function _onDevicePremissionPropmtShown(type: string) {
+    consola.log("_onDevicePremissionPropmtShown: ", type);
+    conferenceStore.premissionPromptShown(type);
+  }
 
   function _onLocalTracks(tracks) {
     // consola.log("tracks: ", tracks);
