@@ -97,7 +97,7 @@ export default defineComponent({
           conferenceStore.status.id,
           ref({}),
         );
-        conferenceStore.updateJoined(true);
+        conferenceStore.updateIsSpeaker(true);
         /* TODO Desktop and check if stream available */
         consola.log(app.$localTracks);
         app.$room.addTrack(app.$localTracks.value.localStream.video);
@@ -113,7 +113,7 @@ export default defineComponent({
     function exit(user) {
       consola.log("exit", user.id);
       if (user.id === sessionStore.user.id) {
-        conferenceStore.updateJoined(false);
+        conferenceStore.updateIsSpeaker(false);
         app.$disposeAndRecreateLocalTracks();
       }
     }

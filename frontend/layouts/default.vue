@@ -16,7 +16,7 @@
         <span>Leave Room</span>
       </v-tooltip>
     </v-app-bar>
-    <v-content>
+    <v-content id="start-background">
       <v-container fluid>
         <div>
           <div id="stars"></div>

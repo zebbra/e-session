@@ -90,7 +90,8 @@ export default ({ app }) => {
     app.$room.setDisplayName(sessionStore.user.name);
     app.$room.join();
     conferenceStore.setId(app.$room.myUserId());
-    app.$createLocalTracks();
+    conferenceStore.updateJoined(true);
+    app.$createLocalTracks(true);
   };
 
   app.$onConnectionFailed = () => {
@@ -108,7 +109,7 @@ export default ({ app }) => {
     app.$createLocalTracks();
   };
 
-  app.$createLocalTracks = async () => {
+  app.$createLocalTracks = async (showSetuo: boolean) => {
     try {
       const tracks = await app.$jitsi.createLocalTracks(
         {
@@ -117,7 +118,9 @@ export default ({ app }) => {
         true,
       );
       _onLocalTracks(tracks);
-      conferenceStore.showSetup(true);
+      if (showSetuo) {
+        conferenceStore.showSetup(true);
+      }
     } catch (err) {
       consola.error("Exception:", err);
     }
@@ -196,7 +199,7 @@ export default ({ app }) => {
       }
     }
     consola.log("onLocalTracks done");
-    if (conferenceStore.status.isJoned) {
+    if (conferenceStore.status.isSpeaker) {
       app.$room.addTrack(app.$localTracks.value.localStream.video);
       app.$room.addTrack(app.$localTracks.value.localStream.audio);
     }

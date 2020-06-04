@@ -7,12 +7,14 @@ import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators";
 })
 export default class ConferenceStatus extends VuexModule {
   public status: {
-    isJoned: boolean;
+    isJoined: boolean;
+    isSpeaker: boolean;
     id: string;
     displayName: string;
     roomName: string;
   } = {
-    isJoned: false,
+    isJoined: false,
+    isSpeaker: false,
     id: "",
     displayName: "",
     roomName: "",
@@ -63,8 +65,13 @@ export default class ConferenceStatus extends VuexModule {
   // -------STATUS-------
 
   @Mutation
-  setJoned(isJoned: boolean) {
-    this.status.isJoned = isJoned;
+  setJoined(isJoined: boolean) {
+    this.status.isJoined = isJoined;
+  }
+
+  @Mutation
+  setIsSpeaker(isSpeaker: boolean) {
+    this.status.isSpeaker = isSpeaker;
   }
 
   @Mutation
@@ -84,7 +91,12 @@ export default class ConferenceStatus extends VuexModule {
 
   @Action
   updateJoined(joined: boolean) {
-    this.setJoned(joined);
+    this.setJoined(joined);
+  }
+
+  @Action
+  updateIsSpeaker(isSpeaker: boolean) {
+    this.setIsSpeaker(isSpeaker);
   }
 
   @Action
