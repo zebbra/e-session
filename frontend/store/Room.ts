@@ -56,9 +56,10 @@ export default class Room extends VuexModule {
   }
 
   @Mutation
-  handMoved(user: IUser) {
+  updateUser(user: IUser) {
     for (let i = this.room.users.length - 1; i >= 0; --i) {
       if (this.room.users[i].id === user.id) {
+        this.room.users[i].conferenceJoined = user.conferenceJoined;
         this.room.users[i].handRaised = user.handRaised;
         i = 0;
       }

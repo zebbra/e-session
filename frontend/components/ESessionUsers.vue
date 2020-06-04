@@ -29,7 +29,7 @@
           <v-card flat tile>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-tooltip left>
+              <v-tooltip v-if="!user.conferenceJoined" left>
                 <template v-slot:activator="{ on }">
                   <v-btn icon @click.stop="join(user)">
                     <v-icon color="success darken-1" v-on="on">
@@ -38,6 +38,16 @@
                   </v-btn>
                 </template>
                 <span>Join {{ user.name }}</span>
+              </v-tooltip>
+              <v-tooltip v-else left>
+                <template v-slot:activator="{ on }">
+                  <v-btn icon @click.stop="exit(user)">
+                    <v-icon color="warning darken-1" v-on="on">
+                      mdi-arrow-right-bold-circle
+                    </v-icon>
+                  </v-btn>
+                </template>
+                <span>Exit {{ user.name }}</span>
               </v-tooltip>
               <v-tooltip v-if="user.handRaised" left>
                 <template v-slot:activator="{ on }">
@@ -48,16 +58,6 @@
                   </v-btn>
                 </template>
                 <span>Decline {{ user.name }}</span>
-              </v-tooltip>
-              <v-tooltip left>
-                <template v-slot:activator="{ on }">
-                  <v-btn icon @click.stop="exit(user)">
-                    <v-icon color="warning darken-1" v-on="on">
-                      mdi-arrow-right-bold-circle
-                    </v-icon>
-                  </v-btn>
-                </template>
-                <span>Exit {{ user.name }}</span>
               </v-tooltip>
             </v-card-actions>
           </v-card>
@@ -77,6 +77,7 @@ import {
 import { useMutation } from "@vue/apollo-composable";
 import consola from "consola";
 import { mutations } from "~/apollo";
+import { useJoinConference, useLeaveConference } from "~/composable/useSession";
 import { roomStore, sessionStore, conferenceStore } from "~/store";
 
 export default defineComponent({
@@ -89,8 +90,17 @@ export default defineComponent({
     const role = computed(() => sessionStore.userRole);
     const processedUsers = computed(() => roomStore.processedUsers);
 
+    const { mutate: joinConference } = useJoinConference();
+    const { mutate: leaveConference } = useLeaveConference();
+
     function join(user) {
       consola.log("join", user.id);
+
+      joinConference({
+        userId: user.id,
+        roomId: roomRef.value.id,
+      });
+
       if (user.id === sessionStore.user.id) {
         context.root.$set(
           app.$remoteTracks.value,
@@ -112,6 +122,12 @@ export default defineComponent({
 
     function exit(user) {
       consola.log("exit", user.id);
+
+      leaveConference({
+        userId: user.id,
+        roomId: roomRef.value.id,
+      });
+
       if (user.id === sessionStore.user.id) {
         conferenceStore.updateIsSpeaker(false);
         app.$disposeAndRecreateLocalTracks();

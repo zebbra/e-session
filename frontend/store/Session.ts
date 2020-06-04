@@ -31,6 +31,11 @@ export default class Session extends VuexModule {
     this.user.handRaised = !this.user.handRaised;
   }
 
+  @Mutation
+  toggleConferenceJoined() {
+    this.user.conferenceJoined = !this.user.conferenceJoined;
+  }
+
   get isModerator() {
     return this.role === "moderator";
   }

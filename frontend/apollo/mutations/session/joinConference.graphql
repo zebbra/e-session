@@ -1,0 +1,8 @@
+mutation joinConference($roomId: String!, $userId: String!) {
+  joinConference(roomId: $roomId, userId: $userId) {
+    id
+    name
+    handRaised
+    conferenceJoined
+  }
+}

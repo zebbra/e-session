@@ -3,5 +3,6 @@ mutation lowerHand($userId: String!, $roomId: String!) {
     id
     name
     handRaised
+    conferenceJoined
   }
 }

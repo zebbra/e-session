@@ -26,3 +26,19 @@ export function useLogout(user: Ref<IUser>) {
     },
   }));
 }
+
+export function useJoinConference() {
+  return useMutation(mutations.session.joinConference, () => ({
+    update: () => {
+      sessionStore.toggleConferenceJoined();
+    },
+  }));
+}
+
+export function useLeaveConference() {
+  return useMutation(mutations.session.leaveConference, () => ({
+    update: () => {
+      sessionStore.toggleConferenceJoined();
+    },
+  }));
+}

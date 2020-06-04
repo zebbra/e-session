@@ -9,6 +9,7 @@ query fetchRoom($name: String!) {
       id
       name
       handRaised
+      conferenceJoined
     }
   }
 }

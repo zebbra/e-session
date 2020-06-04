@@ -4,6 +4,9 @@
       <v-card-title>
         <span>{{ room && room.name }}</span>
       </v-card-title>
+      <v-card-text>
+        {{ usersInConference }}
+      </v-card-text>
     </v-card>
     <e-session-conference />
   </v-container>
@@ -21,6 +24,7 @@ import {
   useOnJoined,
   useOnLeft,
   useJoin,
+  useUsersInConference,
 } from "~/composable/useRoom";
 import { roomStore, sessionStore, conferenceStore } from "~/store";
 
@@ -46,11 +50,14 @@ export default defineComponent({
     conferenceStore.updateDisplayName(userRef.value.name);
     conferenceStore.updateRoomName(roomRef.value.name);
 
+    const usersInConference = useUsersInConference(roomRef);
+
     if (process.browser) {
       app.$initJitsi();
     }
     return {
       room: roomRef,
+      usersInConference,
     };
   },
 });

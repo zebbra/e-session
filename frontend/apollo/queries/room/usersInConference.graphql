@@ -1,0 +1,8 @@
+query fetchUsersInConference($room: String!) {
+  usersInConference(room: $room) {
+    id
+    name
+    handRaised
+    conferenceJoined
+  }
+}
