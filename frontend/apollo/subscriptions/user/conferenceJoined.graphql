@@ -1,0 +1,8 @@
+subscription onConferenceJoined($roomId: String!) {
+  conferenceJoined(roomId: $roomId) {
+    id
+    name
+    handRaised
+    conferenceJoined
+  }
+}

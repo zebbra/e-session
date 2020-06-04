@@ -1,0 +1,8 @@
+mutation leaveConference($roomId: String!, $userId: String!) {
+  leaveConference(roomId: $roomId, userId: $userId) {
+    id
+    name
+    handRaised
+    conferenceJoined
+  }
+}

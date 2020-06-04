@@ -6,6 +6,7 @@ type User {
   id: String!
   name: String!
   handRaised: Boolean!
+  conferenceJoined: Boolean!
 }
 
 type Room {
@@ -24,11 +25,14 @@ type Message {
 type Query {
   user(id: String!): User
   room(name: String!): Room!
+  usersInConference(room: String!): [User!]!
 }
 
 type Mutation {
   login(name: String!): User!
   logout(id: String!): User!
+  joinConference(roomId: String!, userId: String!): User!
+  leaveConference(roomId: String!, userId: String!): User!
   createRoom(name: String!): Room!
   say(text: String!, author: String!, room: String!): Message!
   join(roomId: String!, userId: String!): User!
@@ -38,6 +42,8 @@ type Mutation {
 }
 
 type Subscription {
+  conferenceJoined(roomId: String!): User!
+  conferenceLeft(roomId: String!): User!
   handMoved(roomId: String!): User!
   roomJoined(roomId: String!): User!
   roomLeft(roomId: String!): User!

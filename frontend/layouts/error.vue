@@ -18,6 +18,8 @@
 </template>
 
 <script lang="ts">
+import consola from "consola";
+
 export default {
   name: "ErrorLayout",
   layout: "empty",
@@ -28,6 +30,7 @@ export default {
     },
   },
   data() {
+    consola.error(this.error);
     return {
       pageNotFound: "404 Not Found",
       otherError: "An error occurred",

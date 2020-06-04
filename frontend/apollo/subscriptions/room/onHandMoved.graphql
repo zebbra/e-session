@@ -3,5 +3,6 @@ subscription onHandMoved($roomId: String!) {
     id
     name
     handRaised
+    conferenceJoined
   }
 }

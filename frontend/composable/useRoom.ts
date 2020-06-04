@@ -1,8 +1,59 @@
-import { useMutation, useSubscription } from "@vue/apollo-composable";
+import {
+  useMutation,
+  useSubscription,
+  useQuery,
+  useResult,
+} from "@vue/apollo-composable";
 import { Ref } from "@vue/composition-api";
 import { roomStore, sessionStore } from "~/store";
-import { mutations, subscriptions } from "~/apollo";
+import { queries, mutations, subscriptions } from "~/apollo";
 import { IUser, IRoom } from "~/types";
+
+export function useUsersInConference(room: Ref<IRoom>) {
+  const { result: users, subscribeToMore } = useQuery<{
+    usersInConference: IUser[];
+  }>(queries.room.fetchUsersInConference, () => ({
+    room: room.value.name,
+  }));
+
+  if (process.client) {
+    subscribeToMore<{}, { conferenceJoined: IUser }>(() => ({
+      document: subscriptions.user.onConferenceJoined,
+      variables: {
+        roomId: room.value.id,
+      },
+      updateQuery: (previousResult, { subscriptionData }) => {
+        roomStore.updateUser(subscriptionData.data.conferenceJoined);
+        previousResult.usersInConference.push(
+          subscriptionData.data.conferenceJoined,
+        );
+        return previousResult;
+      },
+    }));
+
+    subscribeToMore<{}, { conferenceLeft: IUser }>(() => ({
+      document: subscriptions.user.onConferenceLeft,
+      variables: {
+        roomId: room.value.id,
+      },
+      updateQuery: (previousResult, { subscriptionData }) => {
+        roomStore.updateUser(subscriptionData.data.conferenceLeft);
+        for (let i = previousResult.usersInConference.length - 1; i >= 0; --i) {
+          if (
+            previousResult.usersInConference[i].id ===
+            subscriptionData.data.conferenceLeft.id
+          ) {
+            previousResult.usersInConference.splice(i, 1);
+            i = 0;
+          }
+        }
+        return previousResult;
+      },
+    }));
+  }
+
+  return useResult(users, [] as IUser[], (data) => data.usersInConference);
+}
 
 export function useCreate(roomName: Ref<string>) {
   return useMutation(mutations.room.createRoom, () => ({
@@ -103,7 +154,7 @@ export function useOnHandMoved(room: Ref<IRoom>) {
     );
 
     onResult((result) => {
-      roomStore.handMoved(result.data.handMoved);
+      roomStore.updateUser(result.data.handMoved);
       if (result.data.handMoved.id === sessionStore.user.id) {
         sessionStore.handMoved();
       }

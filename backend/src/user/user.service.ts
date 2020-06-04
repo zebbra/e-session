@@ -47,4 +47,14 @@ export class UserService {
     this.logger.info("lowerHand(%s)", id);
     return this.findOne(id).lowerHand();
   }
+
+  joinConference(id: string): User {
+    this.logger.info("joinConference(%s)", id);
+    return this.findOne(id).joinConference();
+  }
+
+  leaveConference(id: string): User {
+    this.logger.info("leaveConference(%s)", id);
+    return this.findOne(id).leaveConference();
+  }
 }

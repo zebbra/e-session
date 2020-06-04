@@ -3,5 +3,6 @@ mutation loginUser($name: String!) {
     id
     name
     handRaised
+    conferenceJoined
   }
 }

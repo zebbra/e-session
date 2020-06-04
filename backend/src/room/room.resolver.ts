@@ -21,6 +21,13 @@ export class RoomResolver {
     return this.roomService.lookup(name);
   }
 
+  @Query((returns) => [User])
+  async usersInConference(@Args("room") room: string) {
+    return this.roomService
+      .lookup(room)
+      .users.filter((user) => user.conferenceJoined);
+  }
+
   @Mutation((returns) => Room)
   async createRoom(@Args("name") name: string) {
     return this.roomService.lookup(name);

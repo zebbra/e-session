@@ -2,6 +2,7 @@ export interface IUser {
   id: string;
   name: string;
   handRaised: Boolean;
+  conferenceJoined: Boolean;
 }
 
 export interface IRoom {

@@ -1,10 +1,5 @@
 <template>
   <v-container fluid>
-    <v-card>
-      <v-card-title>
-        <span>{{ room && room.name }}</span>
-      </v-card-title>
-    </v-card>
     <e-session-conference />
   </v-container>
 </template>
@@ -15,12 +10,14 @@ import {
   useMeta,
   computed,
   useContext,
+  watch,
 } from "nuxt-composition-api";
 import {
   useSignal,
   useOnJoined,
   useOnLeft,
   useJoin,
+  useUsersInConference,
 } from "~/composable/useRoom";
 import { roomStore, sessionStore, conferenceStore } from "~/store";
 
@@ -33,7 +30,9 @@ export default defineComponent({
   setup() {
     const roomRef = computed(() => roomStore.room);
     const userRef = computed(() => sessionStore.user);
+
     useMeta({ title: roomRef.value.name });
+
     const { app } = useContext();
 
     useSignal(userRef, roomRef);
@@ -45,6 +44,33 @@ export default defineComponent({
 
     conferenceStore.updateDisplayName(userRef.value.name);
     conferenceStore.updateRoomName(roomRef.value.name);
+
+    const usersInConference = useUsersInConference(roomRef);
+
+    watch(
+      () => usersInConference.value,
+      (newVal) => {
+        const speaker = newVal.filter(
+          (item) => item.id === sessionStore.user.id,
+        );
+        if (speaker.length > 0) {
+          conferenceStore.updateIsSpeaker(true);
+          app.$room.addTrack(app.$localTracks.value.localStream.video);
+          app.$room.addTrack(app.$localTracks.value.localStream.audio);
+        } else {
+          // console.log("you are NOT a speaker: ", speaker);
+          // eslint-disable-next-line no-lonely-if
+          if (conferenceStore.status.isSpeaker) {
+            conferenceStore.updateIsSpeaker(false);
+            app.$disposeAndRecreateLocalTracks();
+          }
+        }
+      },
+      // watch Options
+      {
+        lazy: true, // immediate: false
+      },
+    );
 
     if (process.browser) {
       app.$initJitsi();

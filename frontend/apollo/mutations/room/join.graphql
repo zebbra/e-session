@@ -3,5 +3,6 @@ mutation joinRoom($userId: String!, $roomId: String!) {
     id
     name
     handRaised
+    conferenceJoined
   }
 }

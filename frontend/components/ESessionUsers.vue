@@ -29,7 +29,7 @@
           <v-card flat tile>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-tooltip left>
+              <v-tooltip v-if="!user.conferenceJoined" left>
                 <template v-slot:activator="{ on }">
                   <v-btn icon @click.stop="join(user)">
                     <v-icon color="success darken-1" v-on="on">
@@ -38,6 +38,16 @@
                   </v-btn>
                 </template>
                 <span>Join {{ user.name }}</span>
+              </v-tooltip>
+              <v-tooltip v-else left>
+                <template v-slot:activator="{ on }">
+                  <v-btn icon @click.stop="exit(user)">
+                    <v-icon color="warning darken-1" v-on="on">
+                      mdi-arrow-right-bold-circle
+                    </v-icon>
+                  </v-btn>
+                </template>
+                <span>Exit {{ user.name }}</span>
               </v-tooltip>
               <v-tooltip v-if="user.handRaised" left>
                 <template v-slot:activator="{ on }">
@@ -49,16 +59,6 @@
                 </template>
                 <span>Decline {{ user.name }}</span>
               </v-tooltip>
-              <v-tooltip left>
-                <template v-slot:activator="{ on }">
-                  <v-btn icon @click.stop="exit(user)">
-                    <v-icon color="warning darken-1" v-on="on">
-                      mdi-arrow-right-bold-circle
-                    </v-icon>
-                  </v-btn>
-                </template>
-                <span>Exit {{ user.name }}</span>
-              </v-tooltip>
             </v-card-actions>
           </v-card>
         </v-expansion-panel-content>
@@ -68,41 +68,32 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  computed,
-  useContext,
-  ref,
-} from "nuxt-composition-api";
+import { defineComponent, computed } from "nuxt-composition-api";
 import { useMutation } from "@vue/apollo-composable";
 import consola from "consola";
 import { mutations } from "~/apollo";
-import { roomStore, sessionStore, conferenceStore } from "~/store";
+import { useJoinConference, useLeaveConference } from "~/composable/useSession";
+import { roomStore, sessionStore } from "~/store";
 
 export default defineComponent({
   name: "ESessionUsers",
-  setup(_, context) {
-    const { app } = useContext();
+  setup() {
     const userRef = computed(() => sessionStore.user);
     const roomRef = computed(() => roomStore.room);
     const isModerator = computed(() => sessionStore.isModerator);
     const role = computed(() => sessionStore.userRole);
     const processedUsers = computed(() => roomStore.processedUsers);
 
+    const { mutate: joinConference } = useJoinConference();
+    const { mutate: leaveConference } = useLeaveConference();
+
     function join(user) {
       consola.log("join", user.id);
-      if (user.id === sessionStore.user.id) {
-        context.root.$set(
-          app.$remoteTracks.value,
-          conferenceStore.status.id,
-          ref({}),
-        );
-        conferenceStore.updateIsSpeaker(true);
-        /* TODO Desktop and check if stream available */
-        consola.log(app.$localTracks);
-        app.$room.addTrack(app.$localTracks.value.localStream.video);
-        app.$room.addTrack(app.$localTracks.value.localStream.audio);
-      }
+
+      joinConference({
+        userId: user.id,
+        roomId: roomRef.value.id,
+      });
     }
 
     const { mutate: lowerHand } = useMutation(mutations.room.lowerHand);
@@ -112,10 +103,11 @@ export default defineComponent({
 
     function exit(user) {
       consola.log("exit", user.id);
-      if (user.id === sessionStore.user.id) {
-        conferenceStore.updateIsSpeaker(false);
-        app.$disposeAndRecreateLocalTracks();
-      }
+
+      leaveConference({
+        userId: user.id,
+        roomId: roomRef.value.id,
+      });
     }
 
     return {
