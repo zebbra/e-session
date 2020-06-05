@@ -34,7 +34,7 @@ export class UserService {
   }
 
   findOne(id: string): User {
-    this.logger.info("findOne(%s)", id);
+    this.logger.debug("findOne(%s)", id);
     return this.users.find((user) => user.id === id);
   }
 

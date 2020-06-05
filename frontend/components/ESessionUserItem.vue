@@ -13,7 +13,7 @@
         <v-tooltip v-if="user.handRaised && isModerator" left>
           <template v-slot:activator="{ on }">
             <v-list-item-icon>
-              <v-icon color="grey" v-on="on" @click.stop="decline">
+              <v-icon color="grey" v-on="on" @click.stop="decline(user)">
                 mdi-hand-left
               </v-icon>
             </v-list-item-icon>
@@ -23,7 +23,7 @@
         <v-tooltip v-if="!user.conferenceJoined" left>
           <template v-slot:activator="{ on }">
             <v-list-item-icon>
-              <v-icon color="grey" v-on="on" @click.stop="join">
+              <v-icon color="grey" v-on="on" @click.stop="join(user)">
                 mdi-arrow-left-bold-circle-outline
               </v-icon>
             </v-list-item-icon>
@@ -33,7 +33,7 @@
         <v-tooltip v-else left>
           <template v-slot:activator="{ on }">
             <v-list-item-icon>
-              <v-icon color="grey" v-on="on" @click.stop="exit">
+              <v-icon color="grey" v-on="on" @click.stop="exit(user)">
                 mdi-arrow-right-bold-circle-outline
               </v-icon>
             </v-list-item-icon>
@@ -70,23 +70,30 @@ export default defineComponent({
     role: String,
     isModerator: Boolean,
   },
-  setup({ room, user }) {
-    const { mutate: joinConference } = useJoinConference(user, room);
-    const { mutate: leaveConference } = useLeaveConference(user, room);
+  setup({ room }) {
+    const { mutate: joinConference } = useJoinConference();
+    const { mutate: leaveConference } = useLeaveConference();
 
-    function join() {
+    function join(user) {
       consola.log("join", user.id);
-      joinConference();
+      joinConference({
+        userId: user.id,
+        roomId: room.id,
+      });
     }
 
     const { mutate: lowerHand } = useMutation(mutations.room.lowerHand);
-    function decline() {
+    function decline(user) {
+      consola.log("decline", user.id);
       lowerHand({ userId: user.id, roomId: room.id });
     }
 
-    function exit() {
+    function exit(user) {
       consola.log("exit", user.id);
-      leaveConference();
+      leaveConference({
+        userId: user.id,
+        roomId: room.id,
+      });
     }
 
     return {

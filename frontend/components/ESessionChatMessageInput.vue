@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "nuxt-composition-api";
-import { useOnMessagePosted, useSend } from "~/composable/useMessage";
+import { useSend } from "~/composable/useMessage";
 import { IRoom, IUser } from "~/types";
 
 export default defineComponent({
@@ -43,8 +43,6 @@ export default defineComponent({
         message.value = "";
       }
     }
-
-    useOnMessagePosted(room);
 
     return {
       message,

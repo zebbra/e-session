@@ -31,12 +31,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, useContext } from "nuxt-composition-api";
-import {
-  useLeave,
-  useRaiseHand,
-  useLowerHand,
-  useOnHandMoved,
-} from "~/composable/useRoom";
+import { useLeave, useRaiseHand, useLowerHand } from "~/composable/useRoom";
 import { roomStore, sessionStore } from "~/store";
 import { IUser, IRoom } from "~/types";
 
@@ -60,7 +55,6 @@ export default defineComponent({
       leave();
     }
 
-    useOnHandMoved(room);
     const { mutate: raiseHand } = useRaiseHand(user, room);
     const { mutate: lowerHand } = useLowerHand(user, room);
     function moveHand() {

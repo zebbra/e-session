@@ -18,7 +18,9 @@ import {
   useOnLeft,
   useJoin,
   useUsersInConference,
+  useOnHandMoved,
 } from "~/composable/useRoom";
+import { useOnMessagePosted } from "~/composable/useMessage";
 import { roomStore, sessionStore, conferenceStore } from "~/store";
 
 export default defineComponent({
@@ -38,6 +40,8 @@ export default defineComponent({
     useSignal(userRef.value, roomRef.value);
     useOnJoined(roomRef.value);
     useOnLeft(roomRef.value);
+    useOnMessagePosted(roomRef.value);
+    useOnHandMoved(roomRef.value);
 
     const { mutate: join } = useJoin(userRef.value, roomRef.value);
     join();

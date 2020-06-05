@@ -37,12 +37,12 @@ export class RoomService {
   }
 
   findOne(id: string): Room {
-    this.logger.info("findOne(%s)", id);
+    this.logger.debug("findOne(%s)", id);
     return this.rooms.find((room) => room.id === id);
   }
 
   findByName(name: string): Room | null {
-    this.logger.info("findByName(%s)", name);
+    this.logger.debug("findByName(%s)", name);
     return this.rooms.find((room) => room.name == name);
   }
 
