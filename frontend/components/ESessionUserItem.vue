@@ -13,7 +13,7 @@
         <v-tooltip v-if="user.handRaised && isModerator" left>
           <template v-slot:activator="{ on }">
             <v-list-item-icon>
-              <v-icon color="grey" v-on="on" @click.stop="decline(user)">
+              <v-icon color="grey" v-on="on" @click.stop="decline">
                 mdi-hand-left
               </v-icon>
             </v-list-item-icon>
@@ -23,7 +23,7 @@
         <v-tooltip v-if="!user.conferenceJoined" left>
           <template v-slot:activator="{ on }">
             <v-list-item-icon>
-              <v-icon color="grey" v-on="on" @click.stop="join(user)">
+              <v-icon color="grey" v-on="on" @click.stop="join">
                 mdi-arrow-left-bold-circle-outline
               </v-icon>
             </v-list-item-icon>
@@ -33,7 +33,7 @@
         <v-tooltip v-else left>
           <template v-slot:activator="{ on }">
             <v-list-item-icon>
-              <v-icon color="grey" v-on="on" @click.stop="exit(user)">
+              <v-icon color="grey" v-on="on" @click.stop="exit">
                 mdi-arrow-right-bold-circle-outline
               </v-icon>
             </v-list-item-icon>
@@ -54,47 +54,39 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "nuxt-composition-api";
+import { defineComponent } from "nuxt-composition-api";
 import { useMutation } from "@vue/apollo-composable";
 import consola from "consola";
 import { mutations } from "~/apollo";
 import { useJoinConference, useLeaveConference } from "~/composable/useSession";
-import { roomStore } from "~/store";
+import { IUser, IRoom } from "~/types";
 
 export default defineComponent({
   name: "ESessionUserItem",
   props: {
-    user: Object,
-    currentUser: Object,
+    user: Object as () => IUser,
+    room: Object as () => IRoom,
+    currentUser: Object as () => IUser,
     role: String,
     isModerator: Boolean,
   },
-  setup() {
-    const roomRef = computed(() => roomStore.room);
-    const { mutate: joinConference } = useJoinConference();
-    const { mutate: leaveConference } = useLeaveConference();
+  setup({ room, user }) {
+    const { mutate: joinConference } = useJoinConference(user, room);
+    const { mutate: leaveConference } = useLeaveConference(user, room);
 
-    function join(user) {
+    function join() {
       consola.log("join", user.id);
-
-      joinConference({
-        userId: user.id,
-        roomId: roomRef.value.id,
-      });
+      joinConference();
     }
 
     const { mutate: lowerHand } = useMutation(mutations.room.lowerHand);
-    function decline(user) {
-      lowerHand({ userId: user.id, roomId: roomRef.value.id });
+    function decline() {
+      lowerHand({ userId: user.id, roomId: room.id });
     }
 
-    function exit(user) {
+    function exit() {
       consola.log("exit", user.id);
-
-      leaveConference({
-        userId: user.id,
-        roomId: roomRef.value.id,
-      });
+      leaveConference();
     }
 
     return {

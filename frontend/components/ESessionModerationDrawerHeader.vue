@@ -38,17 +38,19 @@ import {
   useOnHandMoved,
 } from "~/composable/useRoom";
 import { roomStore, sessionStore } from "~/store";
+import { IUser, IRoom } from "~/types";
 
 export default defineComponent({
   name: "ESessionModerationDrawerHeader",
-  setup() {
-    const roomRef = computed(() => roomStore.room);
-    const userRef = computed(() => sessionStore.user);
+  props: {
+    user: Object as () => IUser,
+    room: Object as () => IRoom,
+  },
+  setup({ user, room }) {
     const isModerator = computed(() => sessionStore.isModerator);
-
     const { redirect, app } = useContext();
 
-    const { mutate: leave, onDone } = useLeave(userRef, roomRef);
+    const { mutate: leave, onDone } = useLeave(user, room);
     function leaveRoom() {
       onDone(() => {
         app.$closeJitsiConnection();
@@ -58,11 +60,11 @@ export default defineComponent({
       leave();
     }
 
-    const { mutate: raiseHand } = useRaiseHand(userRef, roomRef);
-    const { mutate: lowerHand } = useLowerHand(userRef, roomRef);
-    useOnHandMoved(roomRef);
+    useOnHandMoved(room);
+    const { mutate: raiseHand } = useRaiseHand(user, room);
+    const { mutate: lowerHand } = useLowerHand(user, room);
     function moveHand() {
-      if (userRef.value.handRaised) {
+      if (user.handRaised) {
         lowerHand();
       } else {
         raiseHand();
@@ -70,8 +72,6 @@ export default defineComponent({
     }
 
     return {
-      room: roomRef,
-      user: userRef,
       isModerator,
       leaveRoom,
       moveHand,

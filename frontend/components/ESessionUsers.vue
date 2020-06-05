@@ -11,6 +11,7 @@
       <v-expansion-panel v-for="(user, index) in processedUsers" :key="index">
         <e-session-user-item
           :user="user"
+          :room="room"
           :current-user="currentUser"
           :role="role"
           :is-moderator="isModerator"
@@ -23,20 +24,23 @@
 <script lang="ts">
 import { defineComponent, computed } from "nuxt-composition-api";
 import { roomStore, sessionStore } from "~/store";
+import { IUser, IRoom } from "~/types";
 
 export default defineComponent({
   name: "ESessionUsers",
   components: {
     ESessionUserItem: () => import("~/components/ESessionUserItem.vue"),
   },
+  props: {
+    currentUser: Object as () => IUser,
+    room: Object as () => IRoom,
+  },
   setup() {
-    const userRef = computed(() => sessionStore.user);
     const isModerator = computed(() => sessionStore.isModerator);
     const role = computed(() => sessionStore.userRole);
     const processedUsers = computed(() => roomStore.processedUsers);
 
     return {
-      currentUser: userRef,
       isModerator,
       role,
       processedUsers,

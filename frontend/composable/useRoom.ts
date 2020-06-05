@@ -17,7 +17,7 @@ export function useUsersInConference(room: IRoom) {
   }));
 
   if (process.client) {
-    subscribeToMore<{}, { conferenceJoined: IUser }>(() => ({
+    subscribeToMore<{}, { conferenceJoined: IUser }>({
       document: subscriptions.user.onConferenceJoined,
       variables: {
         roomId: room.id,
@@ -29,9 +29,9 @@ export function useUsersInConference(room: IRoom) {
         );
         return previousResult;
       },
-    }));
+    });
 
-    subscribeToMore<{}, { conferenceLeft: IUser }>(() => ({
+    subscribeToMore<{}, { conferenceLeft: IUser }>({
       document: subscriptions.user.onConferenceLeft,
       variables: {
         roomId: room.id,
@@ -49,7 +49,7 @@ export function useUsersInConference(room: IRoom) {
         }
         return previousResult;
       },
-    }));
+    });
   }
 
   return useResult(users, [] as IUser[], (data) => data.usersInConference);
@@ -66,76 +66,77 @@ export function useCreate(roomName: Ref<string>) {
   }));
 }
 
-export function useLeave(user: Ref<IUser>, room: Ref<IRoom>) {
-  return useMutation(mutations.room.leaveRoom, () => ({
+export function useLeave(user: IUser, room: IRoom) {
+  return useMutation(mutations.room.leaveRoom, {
     variables: {
-      userId: user.value.id,
-      roomId: room.value.id,
+      userId: user.id,
+      roomId: room.id,
     },
     update: () => {
       roomStore.clearRoom();
     },
-  }));
+  });
 }
 
-export function useJoin(user: Ref<IUser>, room: Ref<IRoom>) {
-  return useMutation(mutations.room.joinRoom, () => ({
+export function useJoin(user: IUser, room: IRoom) {
+  return useMutation(mutations.room.joinRoom, {
     variables: {
-      userId: user.value.id,
-      roomId: room.value.id,
+      userId: user.id,
+      roomId: room.id,
     },
-  }));
+    update: (_cache, { data }) => {
+      roomStore.addUser(data.join);
+    },
+  });
 }
 
-export function useRaiseHand(user: Ref<IUser>, room: Ref<IRoom>) {
-  return useMutation(mutations.room.raiseHand, () => ({
+export function useRaiseHand(user: IUser, room: IRoom) {
+  return useMutation(mutations.room.raiseHand, {
     variables: {
-      userId: user.value.id,
-      roomId: room.value.id,
+      userId: user.id,
+      roomId: room.id,
     },
-  }));
+  });
 }
 
-export function useLowerHand(user: Ref<IUser>, room: Ref<IRoom>) {
-  return useMutation(mutations.room.lowerHand, () => ({
+export function useLowerHand(user: IUser, room: IRoom) {
+  return useMutation(mutations.room.lowerHand, {
     variables: {
-      userId: user.value.id,
-      roomId: room.value.id,
+      userId: user.id,
+      roomId: room.id,
     },
-  }));
+  });
 }
 
-export function useSignal(user: Ref<IUser>, room: Ref<IRoom>) {
+export function useSignal(user: IUser, room: IRoom) {
   if (process.browser) {
-    useSubscription(subscriptions.room.signal, () => ({
-      userId: user.value && user.value.id,
-      roomId: room.value && room.value.id,
-    }));
-  }
-}
-
-export function useOnJoined(room: Ref<IRoom>) {
-  if (process.browser) {
-    const { onResult } = useSubscription<{ roomJoined: IUser }>(
-      subscriptions.room.onRoomJoined,
-      () => ({
-        roomId: room.value && room.value.id,
-      }),
-    );
-
-    onResult((result) => {
-      roomStore.addUser(result.data.roomJoined);
+    useSubscription(subscriptions.room.signal, {
+      userId: user.id,
+      roomId: room.id,
     });
   }
 }
 
-export function useOnLeft(room: Ref<IRoom>) {
+export function useOnJoined(room: IRoom) {
+  if (process.browser) {
+    const { onResult } = useSubscription<{ roomJoined: IUser }>(
+      subscriptions.room.onRoomJoined,
+      { roomId: room.id },
+    );
+
+    onResult((result) => {
+      if (result.data.roomJoined.id !== sessionStore.user.id) {
+        roomStore.addUser(result.data.roomJoined);
+      }
+    });
+  }
+}
+
+export function useOnLeft(room: IRoom) {
   if (process.browser) {
     const { onResult } = useSubscription<{ roomLeft: IUser }>(
       subscriptions.room.onRoomLeft,
-      () => ({
-        roomId: room.value && room.value.id,
-      }),
+      { roomId: room.id },
     );
 
     onResult((result) => {
@@ -144,13 +145,11 @@ export function useOnLeft(room: Ref<IRoom>) {
   }
 }
 
-export function useOnHandMoved(room: Ref<IRoom>) {
+export function useOnHandMoved(room: IRoom) {
   if (process.browser) {
     const { onResult } = useSubscription<{ handMoved: IUser }>(
       subscriptions.room.onHandMoved,
-      () => ({
-        roomId: room.value && room.value.id,
-      }),
+      { roomId: room.id },
     );
 
     onResult((result) => {

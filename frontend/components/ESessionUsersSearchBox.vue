@@ -8,9 +8,7 @@
           placeholder="Filter Users"
           type="text"
           class="message-input"
-          append-outer-icon="mdi-account-search"
-          hide-details
-          @input="emitToParent"
+          @input="$emit('onUsersFiltered', filter)"
         >
         </v-text-field>
       </v-form>
@@ -23,16 +21,11 @@ import { defineComponent, ref } from "nuxt-composition-api";
 
 export default defineComponent({
   name: "ESessionUsersSearchBox",
-  setup(_, { emit }) {
+  setup() {
     const filter = ref("");
-
-    function emitToParent() {
-      emit("onUsersFiltered", filter.value);
-    }
 
     return {
       filter,
-      emitToParent,
     };
   },
 });

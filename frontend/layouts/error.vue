@@ -11,7 +11,7 @@
       </v-card-title>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="primary" outlined nuxt to="/">Home page</v-btn>
+        <v-btn color="primary" outlined @click.stop="reset">Home page</v-btn>
       </v-card-actions>
     </v-card>
   </v-container>
@@ -19,6 +19,7 @@
 
 <script lang="ts">
 import consola from "consola";
+import { roomStore } from "~/store";
 
 export default {
   name: "ErrorLayout",
@@ -35,6 +36,12 @@ export default {
       pageNotFound: "404 Not Found",
       otherError: "An error occurred",
     };
+  },
+  methods: {
+    reset() {
+      roomStore.clearRoom();
+      this.$root.context.redirect("/");
+    },
   },
   head(this: any) {
     const title =

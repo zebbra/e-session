@@ -22,19 +22,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from "nuxt-composition-api";
+import { defineComponent, ref } from "nuxt-composition-api";
 import { useOnMessagePosted, useSend } from "~/composable/useMessage";
-import { roomStore, sessionStore } from "~/store";
+import { IRoom, IUser } from "~/types";
 
 export default defineComponent({
   name: "ESessionChatMessageInput",
-  setup() {
-    const userRef = computed(() => sessionStore.user);
-    const roomRef = computed(() => roomStore.room);
+  props: {
+    room: Object as () => IRoom,
+    user: Object as () => IUser,
+  },
+  setup({ room, user }) {
     const message = ref("");
     const valid = ref(false);
 
-    const { mutate: postMessage } = useSend(roomRef, userRef, message);
+    const { mutate: postMessage } = useSend(room, user, message);
     function sendMessage() {
       if (valid.value && message.value.length) {
         postMessage();
@@ -42,7 +44,7 @@ export default defineComponent({
       }
     }
 
-    useOnMessagePosted(roomRef);
+    useOnMessagePosted(room);
 
     return {
       message,

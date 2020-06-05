@@ -19,19 +19,14 @@
   </v-list>
 </template>
 <script lang="ts">
-import { defineComponent, computed } from "nuxt-composition-api";
-import { roomStore, sessionStore } from "~/store";
+import { defineComponent } from "nuxt-composition-api";
+import { IRoom, IUser } from "~/types";
 
 export default defineComponent({
   name: "ESessionChat",
-  setup() {
-    const roomRef = computed(() => roomStore.room);
-    const userRef = computed(() => sessionStore.user);
-
-    return {
-      room: roomRef,
-      user: userRef,
-    };
+  props: {
+    room: Object as () => IRoom,
+    user: Object as () => IUser,
   },
 });
 </script>
