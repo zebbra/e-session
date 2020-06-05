@@ -45,7 +45,7 @@ export default defineComponent({
     conferenceStore.updateDisplayName(userRef.value.name);
     conferenceStore.updateRoomName(roomRef.value.name);
 
-    const usersInConference = useUsersInConference(roomRef);
+    const usersInConference = useUsersInConference(roomRef.value);
 
     watch(
       () => usersInConference.value,

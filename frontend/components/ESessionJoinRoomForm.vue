@@ -26,15 +26,16 @@
             outlined
             label="Room"
           />
+          <v-checkbox v-model="moderator" label="Moderator"></v-checkbox>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn v-if="user" color="primary" outlined @click="logout"
-            >Logout</v-btn
-          >
-          <v-btn color="primary" outlined :disabled="!valid" @click="submit"
-            >Join</v-btn
-          >
+          <v-btn v-if="user" color="primary" outlined @click="logout">
+            Logout
+          </v-btn>
+          <v-btn color="primary" outlined :disabled="!valid" @click="submit">
+            Join
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-form>
@@ -61,18 +62,24 @@ export default defineComponent({
       sessionStore.setRole(query.value.role.toString());
     }
     const userRef = computed(() => sessionStore.user);
-    const userName = ref(userRef.value ? userRef.value.name : "");
+    const userName = ref("");
+    if (userRef.value) {
+      userName.value = userRef.value.name;
+    } else if (process.client && localStorage.getItem("username")) {
+      userName.value = localStorage.getItem("username");
+    }
     const { mutate: login } = useLogin(userName);
     const { mutate: logout } = useLogout(userRef);
 
     const roomRef = computed(() => roomStore.room);
-    const roomName = ref(
-      roomRef.value
-        ? roomRef.value.name
-        : query.value.room
-        ? query.value.room.toString()
-        : "",
-    );
+    const roomName = ref("");
+    if (roomRef.value) {
+      roomName.value = roomRef.value.name;
+    } else if (query.value.room) {
+      roomName.value = query.value.room.toString();
+    } else if (process.client && localStorage.getItem("roomname")) {
+      roomName.value = localStorage.getItem("roomname");
+    }
     const { mutate: create } = useCreate(roomName);
 
     function submit() {
@@ -86,9 +93,18 @@ export default defineComponent({
 
     watch([userRef, roomRef], ([user, room]) => {
       if (user && room) {
+        localStorage.setItem("username", user.name);
+        localStorage.setItem("roomname", room.name);
         redirect(`/rooms/${room.name}`);
-      } else if (!user) {
-        userName.value = "";
+      }
+    });
+
+    const moderator = ref(true);
+    watch(moderator, (isModerator) => {
+      if (isModerator) {
+        sessionStore.setRole("moderator");
+      } else {
+        sessionStore.setRole("User");
       }
     });
 
@@ -104,6 +120,7 @@ export default defineComponent({
       ],
       submit,
       logout,
+      moderator,
     };
   },
 });

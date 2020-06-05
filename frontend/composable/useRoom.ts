@@ -9,18 +9,18 @@ import { roomStore, sessionStore } from "~/store";
 import { queries, mutations, subscriptions } from "~/apollo";
 import { IUser, IRoom } from "~/types";
 
-export function useUsersInConference(room: Ref<IRoom>) {
+export function useUsersInConference(room: IRoom) {
   const { result: users, subscribeToMore } = useQuery<{
     usersInConference: IUser[];
   }>(queries.room.fetchUsersInConference, () => ({
-    room: room.value.name,
+    room: room.name,
   }));
 
   if (process.client) {
     subscribeToMore<{}, { conferenceJoined: IUser }>(() => ({
       document: subscriptions.user.onConferenceJoined,
       variables: {
-        roomId: room.value.id,
+        roomId: room.id,
       },
       updateQuery: (previousResult, { subscriptionData }) => {
         roomStore.updateUser(subscriptionData.data.conferenceJoined);
@@ -34,7 +34,7 @@ export function useUsersInConference(room: Ref<IRoom>) {
     subscribeToMore<{}, { conferenceLeft: IUser }>(() => ({
       document: subscriptions.user.onConferenceLeft,
       variables: {
-        roomId: room.value.id,
+        roomId: room.id,
       },
       updateQuery: (previousResult, { subscriptionData }) => {
         roomStore.updateUser(subscriptionData.data.conferenceLeft);
