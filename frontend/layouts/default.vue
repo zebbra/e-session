@@ -24,7 +24,7 @@
       </v-dialog>
     </v-content>
     <e-session-moderation-drawer v-if="roomJoined" />
-    <v-footer fixed>
+    <v-footer app fixed>
       <span
         >&#9994; e-session
         <a href="https://github.com/zebbra/e-session" target="_blank"
