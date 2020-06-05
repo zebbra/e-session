@@ -19,12 +19,12 @@
       </v-tooltip>
     </v-app-bar>
     <v-content id="start-background">
+      <div>
+        <div id="stars"></div>
+        <div id="stars2"></div>
+        <div id="stars3"></div>
+      </div>
       <v-container fluid class="d-flex align-center" style="height: 100%;">
-        <div>
-          <div id="stars"></div>
-          <div id="stars2"></div>
-          <div id="stars3"></div>
-        </div>
         <nuxt />
       </v-container>
       <v-dialog v-model="setupDialog" persistent max-width="600">
