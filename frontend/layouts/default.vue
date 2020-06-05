@@ -9,14 +9,6 @@
       <v-btn v-if="roomJoined" icon @click.stop="toggleModerationDrawer">
         <v-icon>mdi-menu</v-icon>
       </v-btn>
-      <v-tooltip v-if="roomJoined && !moderationDrawer" bottom>
-        <template v-slot:activator="{ on }">
-          <v-btn icon @click.stop="leaveRoom">
-            <v-icon v-on="on">mdi-exit-to-app</v-icon>
-          </v-btn>
-        </template>
-        <span>Leave Room</span>
-      </v-tooltip>
     </v-app-bar>
     <v-content id="start-background">
       <div>
@@ -51,7 +43,6 @@ import {
   computed,
 } from "nuxt-composition-api";
 import { DefaultApolloClient } from "@vue/apollo-composable";
-import { useLeave } from "~/composable/useRoom";
 import { sessionStore, roomStore, globalStore, conferenceStore } from "~/store";
 
 export default defineComponent({
@@ -64,7 +55,7 @@ export default defineComponent({
       import("~/components/ESessionLocalMediaSetup.vue"),
   },
   setup() {
-    const { app, redirect } = useContext();
+    const { app } = useContext();
     provide(DefaultApolloClient, app.apolloProvider.defaultClient);
 
     const setupDialog = computed(() => conferenceStore.setupVisible);
@@ -79,20 +70,11 @@ export default defineComponent({
       globalStore.toggleModerationDrawer();
     }
 
-    const { mutate: leave, onDone } = useLeave(userRef, roomRef);
-    function leaveRoom() {
-      onDone(() => {
-        roomStore.setUsersFilter("");
-        redirect("/");
-      });
-      leave();
-    }
     return {
       title: "E-Session",
       roomJoined,
       moderationDrawer,
       toggleModerationDrawer,
-      leaveRoom,
       setupDialog,
       room: roomRef,
     };

@@ -2,7 +2,7 @@ import { useMutation } from "@vue/apollo-composable";
 import { Ref } from "@vue/composition-api";
 import { sessionStore, roomStore } from "~/store";
 import { mutations } from "~/apollo";
-import { IUser } from "~/types";
+import { IUser, IRoom } from "~/types";
 
 export function useLogin(userName: Ref<string>) {
   return useMutation(mutations.session.login, () => ({
@@ -27,18 +27,26 @@ export function useLogout(user: Ref<IUser>) {
   }));
 }
 
-export function useJoinConference() {
-  return useMutation(mutations.session.joinConference, () => ({
+export function useJoinConference(user: IUser, room: IRoom) {
+  return useMutation(mutations.session.joinConference, {
+    variables: {
+      userId: user.id,
+      roomId: room.id,
+    },
     update: () => {
       sessionStore.toggleConferenceJoined();
     },
-  }));
+  });
 }
 
-export function useLeaveConference() {
-  return useMutation(mutations.session.leaveConference, () => ({
+export function useLeaveConference(user: IUser, room: IRoom) {
+  return useMutation(mutations.session.leaveConference, {
+    variables: {
+      userId: user.id,
+      roomId: room.id,
+    },
     update: () => {
       sessionStore.toggleConferenceJoined();
     },
-  }));
+  });
 }

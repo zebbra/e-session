@@ -35,11 +35,11 @@ export default defineComponent({
 
     const { app } = useContext();
 
-    useSignal(userRef, roomRef);
-    useOnJoined(roomRef);
-    useOnLeft(roomRef);
+    useSignal(userRef.value, roomRef.value);
+    useOnJoined(roomRef.value);
+    useOnLeft(roomRef.value);
 
-    const { mutate: join } = useJoin(userRef, roomRef);
+    const { mutate: join } = useJoin(userRef.value, roomRef.value);
     join();
 
     conferenceStore.updateDisplayName(userRef.value.name);

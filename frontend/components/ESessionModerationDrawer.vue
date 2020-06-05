@@ -1,7 +1,7 @@
 <template>
   <v-navigation-drawer :value="moderationDrawer" :width="300" app right fixed>
     <template v-slot:prepend>
-      <e-session-moderation-drawer-header />
+      <e-session-moderation-drawer-header :room="room" :user="user" />
     </template>
 
     <v-divider></v-divider>
@@ -13,16 +13,20 @@
         }})
       </v-tab>
       <v-tab-item :transition="false" :reverse-transition="false">
-        <e-session-users />
+        <e-session-users :current-user="user" :room="room" />
       </v-tab-item>
       <v-tab> <v-icon>mdi-message</v-icon> Chat </v-tab>
       <v-tab-item :transition="false" :reverse-transition="false">
-        <e-session-chat />
+        <e-session-chat :room="room" :user="user" />
       </v-tab-item>
     </v-tabs>
 
     <template v-slot:append>
-      <e-session-chat-message-input v-if="selectedTab === 1" />
+      <e-session-chat-message-input
+        v-if="selectedTab === 1"
+        :room="room"
+        :user="user"
+      />
       <e-session-users-search-box v-else @onUsersFiltered="onUsersFiltered" />
     </template>
   </v-navigation-drawer>
@@ -30,7 +34,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, watch } from "nuxt-composition-api";
-import { globalStore, roomStore } from "~/store";
+import { globalStore, roomStore, sessionStore } from "~/store";
 
 export default defineComponent({
   name: "ESessionModerationDrawer",
@@ -47,6 +51,7 @@ export default defineComponent({
   setup() {
     const moderationDrawer = computed(() => globalStore.moderationDrawer);
     const roomRef = computed(() => roomStore.room);
+    const userRef = computed(() => sessionStore.user);
 
     const selectedTab = ref(0);
     watch(selectedTab, (tab) => {
@@ -62,6 +67,7 @@ export default defineComponent({
     return {
       moderationDrawer,
       room: roomRef,
+      user: userRef,
       selectedTab,
       onUsersFiltered,
     };
