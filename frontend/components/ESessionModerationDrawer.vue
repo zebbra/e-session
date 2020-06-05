@@ -1,5 +1,12 @@
 <template>
-  <v-navigation-drawer :value="moderationDrawer" :width="300" app right fixed>
+  <v-navigation-drawer
+    :value="moderationDrawer"
+    :width="300"
+    app
+    right
+    fixed
+    bottom
+  >
     <template v-slot:prepend>
       <e-session-moderation-drawer-header :room="room" :user="user" />
     </template>
