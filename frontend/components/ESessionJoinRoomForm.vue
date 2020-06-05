@@ -17,6 +17,7 @@
             required
             outlined
             label="Username"
+            @keydown.enter="valid && submit()"
           />
           <v-text-field
             v-model="roomName"
@@ -25,6 +26,7 @@
             required
             outlined
             label="Room"
+            @keydown.enter="valid && submit()"
           />
           <v-checkbox v-model="moderator" label="Moderator"></v-checkbox>
         </v-card-text>
