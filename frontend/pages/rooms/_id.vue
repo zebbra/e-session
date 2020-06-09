@@ -1,6 +1,7 @@
 <template>
   <v-container fluid>
     <e-session-conference />
+    <e-session-control-toolbar class="toolbar" />
   </v-container>
 </template>
 
@@ -28,6 +29,8 @@ export default defineComponent({
   head: {},
   components: {
     ESessionConference: () => import("~/components/ESessionConference.vue"),
+    ESessionControlToolbar: () =>
+      import("~/components/ESessionControlToolbar.vue"),
   },
   setup() {
     const roomRef = computed(() => roomStore.room);
@@ -85,3 +88,12 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.toolbar {
+  bottom: 60px;
+  position: absolute;
+  float: right;
+  left: 32%;
+}
+</style>

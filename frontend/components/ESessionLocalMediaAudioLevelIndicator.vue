@@ -4,14 +4,12 @@
 
 <script lang="ts">
 import { defineComponent, computed } from "nuxt-composition-api";
+import { conferenceStore } from "~/store";
 
 export default defineComponent({
   name: "ESessionLocalMediaAudioLevelIndicator",
-  props: {
-    audioLevel: Number,
-  },
-  setup(props) {
-    const value = computed(() => props.audioLevel * 100);
+  setup() {
+    const value = computed(() => conferenceStore.status.localAudioLevel * 100);
     return {
       value,
     };

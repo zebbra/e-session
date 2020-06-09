@@ -3,7 +3,7 @@
     <v-row>
       <v-col>
         <media :video-stream="videoStream" :audio-stream="null" />
-        <local-audio-indicator :audio-level="audioLevel" />
+        <local-audio-indicator />
       </v-col>
     </v-row>
     <v-row>
@@ -65,7 +65,6 @@ export default defineComponent({
   setup() {
     const { app } = useContext();
     const localTracks: any = computed(() => app.$localTracks);
-    const audioLevel: any = ref(0);
     const videoStream = computed(
       () => localTracks.value.value.localStream.video,
     );
@@ -108,11 +107,6 @@ export default defineComponent({
       app.$disposeAndRecreateAudioTrack(id);
     }
 
-    /* function _onLocalAudioLevelChange(level) {
-      consola.log("_onLocalAudioLevelChange", level);
-      audioLevel.value = level;
-    } */
-
     return {
       videoStream,
       audioStream,
@@ -124,7 +118,6 @@ export default defineComponent({
       changeOutputDevice,
       changeMicrophoneDevice,
       initialDeviceSelection,
-      audioLevel,
     };
   },
 });

@@ -189,7 +189,7 @@ export default ({ app }) => {
       if (type === "audio") {
         tracks[i].addEventListener(
           app.$jitsi.events.track.TRACK_AUDIO_LEVEL_CHANGED,
-          (level: any) => consola.log(level),
+          (level: number) => conferenceStore.updateLocalAudioLevel(level),
         );
         conferenceStore.updateOuputId(
           app.$jitsi.mediaDevices.getAudioOutputDevice(),
@@ -222,10 +222,6 @@ export default ({ app }) => {
       Vue.set(app.$remoteTracks.value, id, ref({}));
     }
 
-    track.addEventListener(
-      app.$jitsi.events.track.TRACK_AUDIO_LEVEL_CHANGED,
-      (audioLevel: any) => consola.log(`Audio Level remote: ${audioLevel}`),
-    );
     track.addEventListener(app.$jitsi.events.track.TRACK_MUTE_CHANGED, () =>
       consola.log("remote track muted"),
     );
@@ -268,11 +264,6 @@ export default ({ app }) => {
     }
 
     if (app.$remoteTracks.value[id]) {
-      track.removeEventListener(
-        app.$jitsi.events.track.TRACK_AUDIO_LEVEL_CHANGED,
-        (audioLevel: any) => consola.log(`Audio Level remote: ${audioLevel}`),
-      );
-
       track.removeEventListener(
         app.$jitsi.events.track.TRACK_MUTE_CHANGED,
         () => consola.log("remote track muted"),
