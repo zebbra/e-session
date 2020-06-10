@@ -207,11 +207,16 @@ export default ({ app }) => {
   };
 
   app.$switchShare = async () => {
-    conferenceStore.updateIsSharing(!conferenceStore.status.isSharing);
+    consola.log("$switchShare 1 isSharing: ", conferenceStore.status.isSharing);
+
     if (app.$localTracks.value.localStream.video) {
-      app.$localTracks.value.localStream.video.dispose();
+      await app.$localTracks.value.localStream.video.dispose();
+      conferenceStore.updateIsSharing(!conferenceStore.status.isSharing);
+    } else {
+      conferenceStore.updateIsSharing(!conferenceStore.status.isSharing);
     }
 
+    consola.log("$switchShare 2 isSharing: ", conferenceStore.status.isSharing);
     try {
       const tracks = await app.$jitsi.createLocalTracks({
         devices: [conferenceStore.status.isSharing ? "desktop" : "video"],
@@ -278,6 +283,11 @@ export default ({ app }) => {
 
   function _localTrackEnded() {
     // If you were screensharing the local track stop indicates you are not anymore
+    consola.log(
+      "_localTrackEnded, isSharing: ",
+      conferenceStore.status.isSharing,
+    );
+
     if (conferenceStore.status.isSharing) {
       app.$switchShare();
     }
