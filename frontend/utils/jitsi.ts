@@ -1,5 +1,5 @@
 const initOptions = {
-  disableAudioLevels: true,
+  disableAudioLevels: false,
 
   // The ID of the jidesha extension for Chrome.
   desktopSharingChromeExtId: "mbocklcggfhnbahlnepmldehdhpjfcjp",

@@ -8,20 +8,6 @@
     </v-col>
   </v-row> -->
   <div>
-    <!-- <v-row class="d-flex justify-center align-center mt-2">
-      <v-btn class="ma-2" outlined fab small disabled>
-        <v-icon small>mdi-hand-right</v-icon>
-      </v-btn>
-      <v-btn class="ma-2" outlined fab small color="error" @click="endCall">
-        <v-icon small>mdi-phone-hangup</v-icon>
-      </v-btn>
-      <v-btn class="ma-2" outlined fab small disabled>
-        <v-icon small>mdi-monitor</v-icon>
-      </v-btn>
-      <v-btn class="ma-2" outlined fab small @click="showSettings">
-        <v-icon small>mdi-cog</v-icon>
-      </v-btn>
-    </v-row> -->
     <div class="my-container">
       <v-row class="d-flex justify-center align-center ma-2">
         <div :class="peerWrapperClassName">

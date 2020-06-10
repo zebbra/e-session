@@ -16,7 +16,11 @@
         <div id="stars2"></div>
         <div id="stars3"></div>
       </div>
-      <v-container fluid class="d-flex align-center" style="height: 100%;">
+      <v-container
+        fluid
+        class="d-flex align-center"
+        style="height: calc(100% - 36px);"
+      >
         <nuxt />
       </v-container>
       <v-dialog v-model="setupDialog" persistent max-width="600">

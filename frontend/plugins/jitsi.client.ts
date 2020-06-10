@@ -122,7 +122,10 @@ export default ({ app }) => {
         conferenceStore.showSetup(true);
       }
     } catch (err) {
-      consola.error("Exception:", err);
+      consola.error("Exception createLocalTracks:", err);
+      if (showSetuo) {
+        conferenceStore.showSetup(true);
+      }
     }
   };
 
@@ -136,7 +139,7 @@ export default ({ app }) => {
       });
       _onLocalTracks(tracks);
     } catch (err) {
-      consola.error("Exception:", err);
+      consola.error("Exception disposeAndRecreateVideoTrack:", err);
     }
   };
 
@@ -151,9 +154,26 @@ export default ({ app }) => {
       });
       _onLocalTracks(tracks);
     } catch (err) {
-      // consola.error("Exception:", err);
+      consola.error("Exception disposeAndRecreateAudioTrack:", err);
     }
   };
+
+  app.$switchShare = async () => {
+    conferenceStore.updateIsSharing(!conferenceStore.status.isSharing);
+    if (app.$localTracks.value.localStream.video) {
+      app.$localTracks.value.localStream.video.dispose();
+    }
+
+    try {
+      const tracks = await app.$jitsi.createLocalTracks({
+        devices: [conferenceStore.status.isSharing ? "desktop" : "video"],
+      });
+      _onLocalTracks(tracks);
+    } catch (err) {
+      consola.error("Exception:", err);
+    }
+  };
+
   function _onDeviceListChanged() {
     consola.log("device list has changed");
   }
@@ -173,7 +193,7 @@ export default ({ app }) => {
       );
       tracks[i].addEventListener(
         app.$jitsi.events.track.LOCAL_TRACK_STOPPED,
-        () => consola.log("local track stoped"),
+        () => _localTrackEnded(),
       );
       tracks[i].addEventListener(
         app.$jitsi.events.track.TRACK_AUDIO_OUTPUT_CHANGED,
@@ -186,10 +206,13 @@ export default ({ app }) => {
         conferenceStore.updateCameraId(tracks[i].getDeviceId());
         Vue.set(app.$localTracks.value.localStream, "video", tracks[i]);
       }
+      if (type === "desktop") {
+        Vue.set(app.$localTracks.value.localStream, "video", tracks[i]);
+      }
       if (type === "audio") {
         tracks[i].addEventListener(
           app.$jitsi.events.track.TRACK_AUDIO_LEVEL_CHANGED,
-          (level: any) => consola.log(level),
+          (level: number) => conferenceStore.updateLocalAudioLevel(level),
         );
         conferenceStore.updateOuputId(
           app.$jitsi.mediaDevices.getAudioOutputDevice(),
@@ -202,6 +225,13 @@ export default ({ app }) => {
     if (conferenceStore.status.isSpeaker) {
       app.$room.addTrack(app.$localTracks.value.localStream.video);
       app.$room.addTrack(app.$localTracks.value.localStream.audio);
+    }
+  }
+
+  function _localTrackEnded() {
+    // If you were screensharing the local track stop indicates you are not anymore
+    if (conferenceStore.status.isSharing) {
+      app.$switchShare();
     }
   }
 
@@ -223,11 +253,8 @@ export default ({ app }) => {
     }
 
     track.addEventListener(
-      app.$jitsi.events.track.TRACK_AUDIO_LEVEL_CHANGED,
-      (audioLevel: any) => consola.log(`Audio Level remote: ${audioLevel}`),
-    );
-    track.addEventListener(app.$jitsi.events.track.TRACK_MUTE_CHANGED, () =>
-      consola.log("remote track muted"),
+      app.$jitsi.events.track.TRACK_MUTE_CHANGED,
+      (track: any) => _onRemoteTrackMuted(track),
     );
     track.addEventListener(app.$jitsi.events.track.LOCAL_TRACK_STOPPED, () =>
       consola.log("remote track stoped"),
@@ -269,13 +296,8 @@ export default ({ app }) => {
 
     if (app.$remoteTracks.value[id]) {
       track.removeEventListener(
-        app.$jitsi.events.track.TRACK_AUDIO_LEVEL_CHANGED,
-        (audioLevel: any) => consola.log(`Audio Level remote: ${audioLevel}`),
-      );
-
-      track.removeEventListener(
         app.$jitsi.events.track.TRACK_MUTE_CHANGED,
-        () => consola.log("remote track muted"),
+        (track: any) => _onRemoteTrackMuted(track),
       );
 
       track.removeEventListener(
@@ -303,6 +325,22 @@ export default ({ app }) => {
       ) {
         Vue.delete(app.$remoteTracks.value, id);
       }
+    }
+  }
+
+  function _onRemoteTrackMuted(track: any) {
+    const type = track.getType();
+    let id: string = "";
+    if (track.isLocal()) {
+      id = "localStream";
+    } else {
+      id = track.getParticipantId();
+    }
+    const muted = track.isMuted();
+    consola.log(`${type} track from participant "${id}": muted="${muted}"`);
+    if (type === "video") {
+    }
+    if (type === "audio") {
     }
   }
 };
