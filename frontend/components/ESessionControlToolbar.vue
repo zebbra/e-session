@@ -6,18 +6,20 @@
         mdi-hand-right
       </v-icon>
     </v-btn>
-    <v-btn tile large @click.stop="toggleMic">
+    <v-btn tile large :disabled="!isSpeaker" @click.stop="toggleMic">
       <v-icon :color="micMuted ? 'red' : 'white'"
         >{{ micMuted ? "mdi-microphone-off" : "mdi-microphone" }}
       </v-icon>
     </v-btn>
-    <v-btn tile large @click.stop="toggleCam">
+    <v-btn tile large :disabled="!isSpeaker" @click.stop="toggleCam">
       <v-icon :color="camMuted ? 'red' : 'white'">{{
         camMuted ? "mdi-video-off" : "mdi-video"
       }}</v-icon>
     </v-btn>
-    <v-btn tile large>
-      <v-icon>mdi-monitor-share</v-icon>
+    <v-btn tile large :disabled="!isSpeaker" @click.stop="toggleShare">
+      <v-icon :color="isSharing ? 'secondary' : 'white'"
+        >mdi-monitor-share</v-icon
+      >
     </v-btn>
     <v-btn tile large>
       <v-icon>mdi-cog</v-icon>
@@ -44,6 +46,8 @@ export default defineComponent({
     const room = computed(() => roomStore.room);
     const micMuted = computed(() => conferenceStore.status.micMuted);
     const camMuted = computed(() => conferenceStore.status.camMuted);
+    const isSharing = computed(() => conferenceStore.status.isSharing);
+    const isSpeaker = computed(() => conferenceStore.status.isSpeaker);
 
     const { mutate: leave, onDone } = useLeave(user.value, room.value);
     function leaveRoom() {
@@ -86,6 +90,10 @@ export default defineComponent({
       }
     }
 
+    function toggleShare() {
+      app.$switchShare();
+    }
+
     return {
       leaveRoom,
       moveHand,
@@ -93,8 +101,11 @@ export default defineComponent({
       room,
       micMuted,
       camMuted,
+      isSharing,
       toggleMic,
       toggleCam,
+      toggleShare,
+      isSpeaker,
     };
   },
 });

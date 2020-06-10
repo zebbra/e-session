@@ -15,6 +15,7 @@ export default class ConferenceStatus extends VuexModule {
     localAudioLevel: number;
     micMuted: boolean;
     camMuted: boolean;
+    isSharing: boolean;
   } = {
     isJoined: false,
     isSpeaker: false,
@@ -24,6 +25,7 @@ export default class ConferenceStatus extends VuexModule {
     localAudioLevel: 0,
     micMuted: false,
     camMuted: false,
+    isSharing: false,
   };
 
   public devices: { cameraId: string; micId: string; outputId: string } = {
@@ -152,6 +154,17 @@ export default class ConferenceStatus extends VuexModule {
   @Action
   updateCamMuted(status: boolean) {
     this.setCamMuted(status);
+  }
+
+  // ------SHARING---------
+  @Mutation
+  setIsSharing(status: boolean) {
+    this.status.isSharing = status;
+  }
+
+  @Action
+  updateIsSharing(status: boolean) {
+    this.setIsSharing(status);
   }
 
   // ------SETUP/SETTINGS---------

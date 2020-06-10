@@ -151,7 +151,23 @@ export default ({ app }) => {
       });
       _onLocalTracks(tracks);
     } catch (err) {
-      // consola.error("Exception:", err);
+      consola.error("Exception:", err);
+    }
+  };
+
+  app.$switchShare = async () => {
+    conferenceStore.updateIsSharing(!conferenceStore.status.isSharing);
+    if (app.$localTracks.value.localStream.video) {
+      app.$localTracks.value.localStream.video.dispose();
+    }
+
+    try {
+      const tracks = await app.$jitsi.createLocalTracks({
+        devices: [conferenceStore.status.isSharing ? "desktop" : "video"],
+      });
+      _onLocalTracks(tracks);
+    } catch (err) {
+      consola.error("Exception:", err);
     }
   };
 
@@ -174,7 +190,7 @@ export default ({ app }) => {
       );
       tracks[i].addEventListener(
         app.$jitsi.events.track.LOCAL_TRACK_STOPPED,
-        () => consola.log("local track stoped"),
+        () => _localTrackEnded(),
       );
       tracks[i].addEventListener(
         app.$jitsi.events.track.TRACK_AUDIO_OUTPUT_CHANGED,
@@ -185,6 +201,9 @@ export default ({ app }) => {
       // consola.log(localTracks);
       if (type === "video") {
         conferenceStore.updateCameraId(tracks[i].getDeviceId());
+        Vue.set(app.$localTracks.value.localStream, "video", tracks[i]);
+      }
+      if (type === "desktop") {
         Vue.set(app.$localTracks.value.localStream, "video", tracks[i]);
       }
       if (type === "audio") {
@@ -203,6 +222,13 @@ export default ({ app }) => {
     if (conferenceStore.status.isSpeaker) {
       app.$room.addTrack(app.$localTracks.value.localStream.video);
       app.$room.addTrack(app.$localTracks.value.localStream.audio);
+    }
+  }
+
+  function _localTrackEnded() {
+    // If you were screensharing the local track stop indicates you are not anymore
+    if (conferenceStore.status.isSharing) {
+      app.$switchShare();
     }
   }
 
