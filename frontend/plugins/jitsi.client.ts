@@ -82,16 +82,27 @@ export default ({ app }) => {
     );
     // room.on(app.$jitsi.events.conference.TRACK_MUTE_CHANGED, track => consola.log(`${track.getType()} - ${track.isMuted()}`))
     // room.on(app.$jitsi.events.conference.DISPLAY_NAME_CHANGED, (userID, displayName) => log(`${userID} - ${displayName}`))
-    app.$room.on(
+    /* app.$room.on(
       app.$jitsi.events.conference.TRACK_AUDIO_LEVEL_CHANGED,
       (userID, audioLevel) => consola.log(`${userID} - ${audioLevel}`),
-    );
+    ); */
     // room.on(app.$jitsi.events.conference.PHONE_NUMBER_CHANGED, _ => log(`${room.getPhoneNumber()} - ${room.getPhonePin()}`))
     app.$room.setDisplayName(sessionStore.user.name);
     app.$room.join();
     conferenceStore.setId(app.$room.myUserId());
     conferenceStore.updateJoined(true);
-    app.$createLocalTracks(true);
+    const options: {
+      setup: boolean;
+      video: boolean;
+      desktop: boolean;
+      audio: boolean;
+    } = {
+      setup: true,
+      video: true,
+      desktop: false,
+      audio: true,
+    };
+    app.$createLocalTracks(options);
   };
 
   app.$onConnectionFailed = () => {
@@ -106,24 +117,61 @@ export default ({ app }) => {
     app.$localTracks.value.localStream.audio.dispose();
     Vue.set(app.$localTracks.value.localStream, "video", null);
     Vue.set(app.$localTracks.value.localStream, "audio", null);
-    app.$createLocalTracks();
+    const options: {
+      setup: boolean;
+      video: boolean;
+      desktop: boolean;
+      audio: boolean;
+    } = {
+      setup: false,
+      video: true,
+      desktop: false,
+      audio: true,
+    };
+    app.$createLocalTracks(options);
   };
 
-  app.$createLocalTracks = async (showSetuo: boolean) => {
+  app.$createLocalTracks = async (options: any) => {
+    const devices: Array<string> = [];
+
+    if (options.audio) {
+      devices.push("audio");
+    }
+
+    if (options.video) {
+      devices.push("video");
+    }
+
+    if (options.desktop) {
+      devices.push("desktop");
+    }
+
     try {
       const tracks = await app.$jitsi.createLocalTracks(
         {
-          devices: ["audio", "video"],
+          devices,
         },
         true,
       );
       _onLocalTracks(tracks);
-      if (showSetuo) {
+      if (options.setup) {
         conferenceStore.showSetup(true);
       }
     } catch (err) {
       consola.error("Exception createLocalTracks:", err);
-      if (showSetuo) {
+      const options: {
+        setup: boolean;
+        video: boolean;
+        desktop: boolean;
+        audio: boolean;
+      } = {
+        setup: true,
+        video: false,
+        desktop: false,
+        audio: true,
+      };
+      app.$createLocalTracks(options);
+      if (options.setup) {
         conferenceStore.showSetup(true);
       }
     }
