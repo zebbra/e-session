@@ -6,11 +6,15 @@
         mdi-hand-right
       </v-icon>
     </v-btn>
-    <v-btn tile large>
-      <v-icon>mdi-microphone</v-icon>
+    <v-btn tile large @click.stop="toggleMic">
+      <v-icon :color="micMuted ? 'red' : 'white'"
+        >{{ micMuted ? "mdi-microphone-off" : "mdi-microphone" }}
+      </v-icon>
     </v-btn>
-    <v-btn tile large>
-      <v-icon>mdi-video</v-icon>
+    <v-btn tile large @click.stop="toggleCam">
+      <v-icon :color="camMuted ? 'red' : 'white'">{{
+        camMuted ? "mdi-video-off" : "mdi-video"
+      }}</v-icon>
     </v-btn>
     <v-btn tile large>
       <v-icon>mdi-monitor-share</v-icon>
@@ -28,7 +32,7 @@
 <script lang="ts">
 import { defineComponent, useContext, computed } from "nuxt-composition-api";
 // import consola from "consola";
-import { roomStore, sessionStore } from "~/store";
+import { roomStore, sessionStore, conferenceStore } from "~/store";
 import { useLeave, useRaiseHand, useLowerHand } from "~/composable/useRoom";
 
 export default defineComponent({
@@ -38,6 +42,8 @@ export default defineComponent({
     const { redirect, app } = useContext();
     const user = computed(() => sessionStore.user);
     const room = computed(() => roomStore.room);
+    const micMuted = computed(() => conferenceStore.status.micMuted);
+    const camMuted = computed(() => conferenceStore.status.camMuted);
 
     const { mutate: leave, onDone } = useLeave(user.value, room.value);
     function leaveRoom() {
@@ -60,11 +66,35 @@ export default defineComponent({
       }
     }
 
+    function toggleMic() {
+      if (micMuted.value) {
+        conferenceStore.updateMicMuted(false);
+        app.$localTracks.value.localStream.audio.unmute();
+      } else {
+        conferenceStore.updateMicMuted(true);
+        app.$localTracks.value.localStream.audio.mute();
+      }
+    }
+
+    function toggleCam() {
+      if (camMuted.value) {
+        conferenceStore.updateCamMuted(false);
+        app.$localTracks.value.localStream.video.unmute();
+      } else {
+        conferenceStore.updateCamMuted(true);
+        app.$localTracks.value.localStream.video.mute();
+      }
+    }
+
     return {
       leaveRoom,
       moveHand,
       user,
       room,
+      micMuted,
+      camMuted,
+      toggleMic,
+      toggleCam,
     };
   },
 });

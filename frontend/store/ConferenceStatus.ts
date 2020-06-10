@@ -13,6 +13,8 @@ export default class ConferenceStatus extends VuexModule {
     displayName: string;
     roomName: string;
     localAudioLevel: number;
+    micMuted: boolean;
+    camMuted: boolean;
   } = {
     isJoined: false,
     isSpeaker: false,
@@ -20,6 +22,8 @@ export default class ConferenceStatus extends VuexModule {
     displayName: "",
     roomName: "",
     localAudioLevel: 0,
+    micMuted: false,
+    camMuted: false,
   };
 
   public devices: { cameraId: string; micId: string; outputId: string } = {
@@ -124,6 +128,30 @@ export default class ConferenceStatus extends VuexModule {
   @Action
   updateLocalAudioLevel(level: number) {
     this.setLocalAudioLevel(level);
+  }
+
+  // ------MIC MUTED---------
+
+  @Mutation
+  setMicMuted(status: boolean) {
+    this.status.micMuted = status;
+  }
+
+  @Action
+  updateMicMuted(status: boolean) {
+    this.setMicMuted(status);
+  }
+
+  // ------CAM MUTED---------
+
+  @Mutation
+  setCamMuted(status: boolean) {
+    this.status.camMuted = status;
+  }
+
+  @Action
+  updateCamMuted(status: boolean) {
+    this.setCamMuted(status);
   }
 
   // ------SETUP/SETTINGS---------

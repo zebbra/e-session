@@ -154,6 +154,7 @@ export default ({ app }) => {
       // consola.error("Exception:", err);
     }
   };
+
   function _onDeviceListChanged() {
     consola.log("device list has changed");
   }
