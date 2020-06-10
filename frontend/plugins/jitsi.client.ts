@@ -122,7 +122,10 @@ export default ({ app }) => {
         conferenceStore.showSetup(true);
       }
     } catch (err) {
-      consola.error("Exception:", err);
+      consola.error("Exception createLocalTracks:", err);
+      if (showSetuo) {
+        conferenceStore.showSetup(true);
+      }
     }
   };
 
@@ -136,7 +139,7 @@ export default ({ app }) => {
       });
       _onLocalTracks(tracks);
     } catch (err) {
-      consola.error("Exception:", err);
+      consola.error("Exception disposeAndRecreateVideoTrack:", err);
     }
   };
 
@@ -151,7 +154,7 @@ export default ({ app }) => {
       });
       _onLocalTracks(tracks);
     } catch (err) {
-      consola.error("Exception:", err);
+      consola.error("Exception disposeAndRecreateAudioTrack:", err);
     }
   };
 
@@ -249,8 +252,9 @@ export default ({ app }) => {
       Vue.set(app.$remoteTracks.value, id, ref({}));
     }
 
-    track.addEventListener(app.$jitsi.events.track.TRACK_MUTE_CHANGED, () =>
-      consola.log("remote track muted"),
+    track.addEventListener(
+      app.$jitsi.events.track.TRACK_MUTE_CHANGED,
+      (track: any) => _onRemoteTrackMuted(track),
     );
     track.addEventListener(app.$jitsi.events.track.LOCAL_TRACK_STOPPED, () =>
       consola.log("remote track stoped"),
@@ -293,7 +297,7 @@ export default ({ app }) => {
     if (app.$remoteTracks.value[id]) {
       track.removeEventListener(
         app.$jitsi.events.track.TRACK_MUTE_CHANGED,
-        () => consola.log("remote track muted"),
+        (track: any) => _onRemoteTrackMuted(track),
       );
 
       track.removeEventListener(
@@ -321,6 +325,22 @@ export default ({ app }) => {
       ) {
         Vue.delete(app.$remoteTracks.value, id);
       }
+    }
+  }
+
+  function _onRemoteTrackMuted(track: any) {
+    const type = track.getType();
+    let id: string = "";
+    if (track.isLocal()) {
+      id = "localStream";
+    } else {
+      id = track.getParticipantId();
+    }
+    const muted = track.isMuted();
+    consola.log(`${type} track from participant "${id}": muted="${muted}"`);
+    if (type === "video") {
+    }
+    if (type === "audio") {
     }
   }
 };
