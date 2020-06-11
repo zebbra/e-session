@@ -19,7 +19,7 @@
       <v-container
         fluid
         class="d-flex align-center"
-        style="height: calc(100% - 36px);"
+        style="height: calc(100% - 36px); width: 130vh;"
       >
         <nuxt />
       </v-container>

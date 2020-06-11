@@ -3,7 +3,7 @@
     <video
       v-if="videoStream"
       ref="videoRef"
-      style="height: inherit; width: 100%; border-radius: 5px;"
+      style="height: inherit; height: 100%; width: 100%; border-radius: 5px;"
       autoplay
     />
     <audio v-if="audioStream" ref="audioRef" autoplay />
