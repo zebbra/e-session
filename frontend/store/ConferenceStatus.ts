@@ -34,6 +34,7 @@ export default class ConferenceStatus extends VuexModule {
     outputId: "",
   };
 
+  public mutedTracks: Array<any> = [];
   public devicePremissionPromptShown: string = "";
   public deviceSettingsVisible: boolean = false;
   public setupVisible: boolean = false;
@@ -197,5 +198,27 @@ export default class ConferenceStatus extends VuexModule {
   @Action
   premissionPromptShown(type: string) {
     this.setDevicePremissionPromptShown(type);
+  }
+
+  // ------MUTED TRACKS---------
+
+  @Mutation
+  addMutedTrack(id: any) {
+    this.mutedTracks.push(id);
+  }
+
+  @Mutation
+  removeMutedTrack(id: any) {
+    const idx = this.mutedTracks.indexOf(id);
+    this.mutedTracks.splice(idx, 1);
+  }
+
+  @Action
+  updateMutedTracks(id: any) {
+    if (this.mutedTracks.includes(id)) {
+      this.removeMutedTrack(id);
+    } else {
+      this.addMutedTrack(id);
+    }
   }
 }

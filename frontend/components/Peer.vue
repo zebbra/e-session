@@ -1,14 +1,13 @@
 <template>
-  <div style="height: inherit;">
-    <div style="height: inherit;">
-      <div style="height: inherit;">
-        <div class="participant-displayName">{{ displayName }}</div>
-        <media
-          style="height: inherit;"
-          :video-stream="videoStream"
-          :audio-stream="audioStream"
-        />
-      </div>
+  <div class="peer-container">
+    <div class="participant-displayName">
+      {{ displayName }} - {{ participantId }}
+    </div>
+    <media :video-stream="videoStream" :audio-stream="audioStream" />
+    <div class="muted-icon">
+      <v-icon v-if="micMuted" color="red">
+        mdi-microphone-off
+      </v-icon>
     </div>
   </div>
 </template>
@@ -16,12 +15,12 @@
 <script lang="ts">
 import { defineComponent, computed } from "nuxt-composition-api";
 import consola from "consola";
+import { conferenceStore } from "~/store";
 
 export default defineComponent({
   name: "Peer",
   props: {
     mediaTracks: Object,
-    displayName: String,
   },
   components: {
     Media: () => import("~/components/Media.vue"),
@@ -44,19 +43,49 @@ export default defineComponent({
           : null;
       }
     });
+
+    const displayName = computed(() => conferenceStore.status.displayName);
+    const participantId = computed(() => {
+      if (videoStream.value && videoStream.value.isLocal()) {
+        return conferenceStore.status.id;
+      } else if (videoStream.value) {
+        return videoStream.value.getParticipantId();
+      } else if (audioStream.value) {
+        return audioStream.value.getParticipantId();
+      } else {
+        return null;
+      }
+    });
+    const micMuted = computed(() => {
+      if (conferenceStore.mutedTracks.includes(participantId.value)) {
+        return true;
+      } else {
+        return false;
+      }
+    });
     return {
       videoStream,
       audioStream,
-      // displayName
+      displayName,
+      participantId,
+      micMuted,
     };
   },
 });
 </script>
 
-<style>
+<style scoped>
 .participant-displayName {
   position: absolute;
   font-size: small;
-  color: black;
+  color: white;
+}
+.peer-container {
+  position: relative;
+}
+.muted-icon {
+  position: absolute;
+  bottom: 10px;
+  left: 5px;
 }
 </style>

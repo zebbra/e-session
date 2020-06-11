@@ -327,7 +327,11 @@ export default ({ app }) => {
       );
     }
     if (type === "audio") {
+      if (track.isMuted() && !track.isLocal()) {
+        conferenceStore.updateMutedTracks(track.getParticipantId());
+      }
       Vue.set(app.$remoteTracks.value[id].value, "audio", track);
+
       consola.log(
         "onRemoteTrackAdd type audio",
         app.$remoteTracks.value[id].value,
@@ -385,15 +389,19 @@ export default ({ app }) => {
     const type = track.getType();
     let id: string = "";
     if (track.isLocal()) {
-      id = "localStream";
+      id = conferenceStore.status.id;
     } else {
       id = track.getParticipantId();
     }
     const muted = track.isMuted();
     consola.log(`${type} track from participant "${id}": muted="${muted}"`);
     if (type === "video") {
+      if (track.isLocal()) {
+      } else {
+      }
     }
     if (type === "audio") {
+      conferenceStore.updateMutedTracks(id);
     }
   }
 };
