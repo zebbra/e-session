@@ -90,8 +90,12 @@ export default defineComponent({
       }
     }
 
-    function toggleShare() {
-      app.$switchShare();
+    async function toggleShare() {
+      if (conferenceStore.status.isSharing) {
+        await app.$localTracks.value.localStream.video.dispose();
+      } else {
+        app.$switchShare();
+      }
     }
 
     return {
