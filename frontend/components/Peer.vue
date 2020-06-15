@@ -1,6 +1,6 @@
 <template>
   <div class="peer-container">
-    <div class="participant-displayName">
+    <div class="participant-displayName subtitle-1 pl-2 pr-2">
       {{ displayName }} - {{ participantId }}
     </div>
     <e-session-media-cover
@@ -105,8 +105,14 @@ export default defineComponent({
 <style scoped>
 .participant-displayName {
   position: absolute;
-  font-size: small;
   color: white;
+  z-index: 2;
+  left: 10px;
+  top: 10px;
+  backdrop-filter: blur(5px) brightness(1.5);
+  -webkit-backdrop-filter: blur(5px) brightness(1.5);
+  border-radius: 5px;
+  z-index: 9;
 }
 .peer-container {
   position: relative;
@@ -118,6 +124,6 @@ export default defineComponent({
 }
 .stack-top {
   position: absolute;
-  /* z-index: 1; */
+  z-index: 1;
 }
 </style>
