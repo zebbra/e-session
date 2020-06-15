@@ -16,6 +16,9 @@ export default class ConferenceStatus extends VuexModule {
     micMuted: boolean;
     camMuted: boolean;
     isSharing: boolean;
+    error: boolean;
+    errorMsg: string;
+    errorResolution: string;
   } = {
     isJoined: false,
     isSpeaker: false,
@@ -26,18 +29,64 @@ export default class ConferenceStatus extends VuexModule {
     micMuted: false,
     camMuted: false,
     isSharing: false,
+    error: false,
+    errorMsg: "",
+    errorResolution: "",
   };
 
-  public devices: { cameraId: string; micId: string; outputId: string } = {
+  public devices: {
+    cameraId: string;
+    micId: string;
+    outputId: string;
+    outputDevices: Array<any>;
+    microphoneDevices: Array<any>;
+    cameraDevices: Array<any>;
+  } = {
     cameraId: "",
     micId: "",
     outputId: "",
+    outputDevices: [],
+    microphoneDevices: [],
+    cameraDevices: [],
   };
 
   public mutedTracks: Array<any> = [];
   public devicePremissionPromptShown: string = "";
   public deviceSettingsVisible: boolean = false;
   public setupVisible: boolean = false;
+
+  // -------outputDevices-------
+  @Mutation
+  setOutputDevices(deviceList: Array<any>) {
+    this.devices.outputDevices = deviceList;
+  }
+
+  @Action
+  updateOutputDevices(deviceList: Array<any>) {
+    this.setOutputDevices(deviceList);
+  }
+
+  // -------microphoneDevices-------
+  @Mutation
+  setMicrophoneDevices(deviceList: Array<any>) {
+    this.devices.microphoneDevices = deviceList;
+  }
+
+  @Action
+  updateMicrophoneDevices(deviceList: Array<any>) {
+    this.setMicrophoneDevices(deviceList);
+  }
+
+  // -------cameraDevices-------
+  @Mutation
+  setCameraDevices(deviceList: Array<any>) {
+    this.devices.cameraDevices = deviceList;
+  }
+
+  @Action
+  updateCameraDevices(deviceList: Array<any>) {
+    this.setCameraDevices(deviceList);
+  }
 
   // -------DEVICES-------
 
@@ -133,6 +182,40 @@ export default class ConferenceStatus extends VuexModule {
     this.setLocalAudioLevel(level);
   }
 
+  // ------status.error---------
+  @Mutation
+  setError(flag: boolean) {
+    this.status.error = flag;
+  }
+
+  @Action
+  updateErrorFlag(flag: boolean) {
+    this.setError(flag);
+  }
+
+  // ------status.errorMsg---------
+
+  @Mutation
+  setErrorMsg(msg: string) {
+    this.status.errorMsg = msg;
+  }
+
+  @Action
+  updateErrorMsg(msg: string) {
+    this.setErrorMsg(msg);
+  }
+
+  // ------status.errorResolution---------
+
+  @Mutation
+  setErrorResolution(msg: string) {
+    this.status.errorResolution = msg;
+  }
+
+  @Action
+  updateErrorResolution(msg: string) {
+    this.setErrorResolution(msg);
+  }
   // ------MIC MUTED---------
 
   @Mutation

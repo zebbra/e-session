@@ -3,6 +3,7 @@ import consola from "consola";
 import Vue from "vue";
 import { roomStore, sessionStore, conferenceStore } from "~/store";
 import { options, initOptions, confOptions } from "~/utils/jitsi";
+import { handleGum } from "~/utils/gumErrorHandling";
 
 export default ({ app }) => {
   const jitsi = (window as any).JitsiMeetJS;
@@ -91,18 +92,10 @@ export default ({ app }) => {
     app.$room.join();
     conferenceStore.setId(app.$room.myUserId());
     conferenceStore.updateJoined(true);
-    const options: {
-      setup: boolean;
-      video: boolean;
-      desktop: boolean;
-      audio: boolean;
-    } = {
-      setup: true,
-      video: true,
-      desktop: false,
-      audio: true,
-    };
-    app.$createLocalTracks(options);
+
+    _getLocalDevices().then((options) => {
+      app.$createLocalTracks(options);
+    });
   };
 
   app.$onConnectionFailed = () => {
@@ -158,21 +151,10 @@ export default ({ app }) => {
         conferenceStore.showSetup(true);
       }
     } catch (err) {
-      consola.error("Exception createLocalTracks:", err);
-      const options: {
-        setup: boolean;
-        video: boolean;
-        desktop: boolean;
-        audio: boolean;
-      } = {
-        setup: true,
-        video: false,
-        desktop: false,
-        audio: true,
-      };
-      app.$createLocalTracks(options);
-      if (options.setup) {
-        conferenceStore.showSetup(true);
+      if (err.gum) {
+        handleGum(err);
+      } else {
+        consola.error("Exception createLocalTracks:", err);
       }
     }
   };
@@ -274,6 +256,46 @@ export default ({ app }) => {
       app.$room.addTrack(app.$localTracks.value.localStream.video);
       app.$room.addTrack(app.$localTracks.value.localStream.audio);
     }
+  }
+
+  function _getLocalDevices() {
+    return new Promise((resolve, reject) => {
+      const options: {
+        setup: boolean;
+        video: boolean;
+        desktop: boolean;
+        audio: boolean;
+      } = {
+        setup: true,
+        video: true,
+        desktop: false,
+        audio: true,
+      };
+
+      if (app.$jitsi.mediaDevices.isDeviceChangeAvailable("output")) {
+        app.$jitsi.mediaDevices.enumerateDevices((devices) => {
+          // consola.log("audiooutput", devices.filter((d) => d.kind === "audiooutput"));
+          conferenceStore.updateOutputDevices(
+            devices.filter((d) => d.kind === "audiooutput"),
+          );
+          conferenceStore.updateMicrophoneDevices(
+            devices.filter((d) => d.kind === "audioinput"),
+          );
+          conferenceStore.updateCameraDevices(
+            devices.filter((d) => d.kind === "videoinput"),
+          );
+          if (devices.filter((d) => d.kind === "videoinput").length <= 0) {
+            options.video = false;
+          }
+          if (devices.filter((d) => d.kind === "audioinput").length <= 0) {
+            options.audio = false;
+          }
+        });
+        resolve(options);
+      } else {
+        reject(Error("It broke"));
+      }
+    });
   }
 
   function _localTrackEnded() {

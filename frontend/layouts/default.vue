@@ -10,7 +10,7 @@
         <v-icon>mdi-menu</v-icon>
       </v-btn>
     </v-app-bar>
-    <v-content id="start-background">
+    <v-content>
       <div>
         <div id="stars"></div>
         <div id="stars2"></div>
@@ -21,7 +21,8 @@
         class="d-flex align-center"
         style="height: calc(100% - 36px); width: 130vh;"
       >
-        <nuxt />
+        <e-session-error v-if="error" />
+        <nuxt v-else />
       </v-container>
       <v-dialog v-model="setupDialog" persistent max-width="600">
         <e-session-local-media-setup />
@@ -57,11 +58,12 @@ export default defineComponent({
       import("~/components/ESessionModerationDrawer.vue"),
     ESessionLocalMediaSetup: () =>
       import("~/components/ESessionLocalMediaSetup.vue"),
+    ESessionError: () => import("~/components/ESessionError.vue"),
   },
   setup() {
     const { app } = useContext();
     provide(DefaultApolloClient, app.apolloProvider.defaultClient);
-
+    const error = computed(() => conferenceStore.status.error);
     const setupDialog = computed(() => conferenceStore.setupVisible);
     const moderationDrawer = computed(() => globalStore.moderationDrawer);
     const userRef = computed(() => sessionStore.user);
@@ -81,6 +83,7 @@ export default defineComponent({
       toggleModerationDrawer,
       setupDialog,
       room: roomRef,
+      error,
     };
   },
 });
