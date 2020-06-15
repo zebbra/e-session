@@ -3,7 +3,16 @@
     <div class="participant-displayName">
       {{ displayName }} - {{ participantId }}
     </div>
-    <media :video-stream="videoStream" :audio-stream="audioStream" />
+    <e-session-media-cover
+      v-if="camMuted"
+      class="stack-top"
+      :style="coverStyle"
+    />
+    <media
+      ref="mediaRef"
+      :video-stream="videoStream"
+      :audio-stream="audioStream"
+    />
     <div class="muted-icon">
       <v-icon v-if="micMuted" color="red">
         mdi-microphone-off
@@ -13,8 +22,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "nuxt-composition-api";
-import consola from "consola";
+import { defineComponent, computed, ref } from "nuxt-composition-api";
 import { conferenceStore } from "~/store";
 
 export default defineComponent({
@@ -24,10 +32,11 @@ export default defineComponent({
   },
   components: {
     Media: () => import("~/components/Media.vue"),
+    ESessionMediaCover: () => import("~/components/ESessionMediaCover.vue"),
   },
 
   setup(props) {
-    consola.log("Peer props", props);
+    const mediaRef = ref(null);
     const videoStream = computed(() =>
       props.mediaTracks.value.video ? props.mediaTracks.value.video : null,
     );
@@ -43,6 +52,13 @@ export default defineComponent({
           : null;
       }
     });
+    const coverStyle = computed(() => {
+      // console.log("mediaRef", mediaRef);
+      return {
+        height: mediaRef.value.$el.clientHeight + "px",
+        width: mediaRef.value.$el.clientWidth + "px",
+      };
+    });
 
     const displayName = computed(() => conferenceStore.status.displayName);
     const participantId = computed(() => {
@@ -57,18 +73,30 @@ export default defineComponent({
       }
     });
     const micMuted = computed(() => {
-      if (conferenceStore.mutedTracks.includes(participantId.value)) {
+      if (conferenceStore.mutedAudioTracks.includes(participantId.value)) {
         return true;
       } else {
         return false;
       }
     });
+
+    const camMuted = computed(() => {
+      if (conferenceStore.mutedVideoTracks.includes(participantId.value)) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+
     return {
       videoStream,
       audioStream,
       displayName,
       participantId,
       micMuted,
+      camMuted,
+      coverStyle,
+      mediaRef,
     };
   },
 });
@@ -87,5 +115,9 @@ export default defineComponent({
   position: absolute;
   bottom: 10px;
   left: 5px;
+}
+.stack-top {
+  position: absolute;
+  z-index: 9;
 }
 </style>

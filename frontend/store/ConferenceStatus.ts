@@ -50,7 +50,9 @@ export default class ConferenceStatus extends VuexModule {
     cameraDevices: [],
   };
 
-  public mutedTracks: Array<any> = [];
+  public mutedAudioTracks: Array<any> = [];
+  public mutedVideoTracks: Array<any> = [];
+
   public devicePremissionPromptShown: string = "";
   public deviceSettingsVisible: boolean = false;
   public setupVisible: boolean = false;
@@ -283,25 +285,47 @@ export default class ConferenceStatus extends VuexModule {
     this.setDevicePremissionPromptShown(type);
   }
 
-  // ------MUTED TRACKS---------
+  // ------MUTED Audio TRACKS---------
 
   @Mutation
-  addMutedTrack(id: any) {
-    this.mutedTracks.push(id);
+  addMutedAudioTrack(id: any) {
+    this.mutedAudioTracks.push(id);
   }
 
   @Mutation
-  removeMutedTrack(id: any) {
-    const idx = this.mutedTracks.indexOf(id);
-    this.mutedTracks.splice(idx, 1);
+  removeMutedAudioTrack(id: any) {
+    const idx = this.mutedAudioTracks.indexOf(id);
+    this.mutedAudioTracks.splice(idx, 1);
   }
 
   @Action
-  updateMutedTracks(id: any) {
-    if (this.mutedTracks.includes(id)) {
-      this.removeMutedTrack(id);
+  updateMutedAudioTracks(id: any) {
+    if (this.mutedAudioTracks.includes(id)) {
+      this.removeMutedAudioTrack(id);
     } else {
-      this.addMutedTrack(id);
+      this.addMutedAudioTrack(id);
+    }
+  }
+
+  // ------MUTED Video TRACKS---------
+
+  @Mutation
+  addMutedVideoTrack(id: any) {
+    this.mutedVideoTracks.push(id);
+  }
+
+  @Mutation
+  removeMutedVideoTrack(id: any) {
+    const idx = this.mutedVideoTracks.indexOf(id);
+    this.mutedVideoTracks.splice(idx, 1);
+  }
+
+  @Action
+  updateMutedVideoTracks(id: any) {
+    if (this.mutedVideoTracks.includes(id)) {
+      this.removeMutedVideoTrack(id);
+    } else {
+      this.addMutedVideoTrack(id);
     }
   }
 }
