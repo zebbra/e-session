@@ -200,7 +200,11 @@ export default ({ app }) => {
       });
       _onLocalTracks(tracks);
     } catch (err) {
-      consola.error("Exception:", err);
+      if (err.name === "gum.chrome_extension_user_canceled") {
+        app.$switchShare();
+      } else {
+        consola.error("Exception switchShare:", err);
+      }
     }
   };
 

@@ -118,6 +118,6 @@ export default defineComponent({
 }
 .stack-top {
   position: absolute;
-  z-index: 9;
+  /* z-index: 1; */
 }
 </style>
