@@ -92,16 +92,15 @@ export default defineComponent({
 }
 .peer {
   border-radius: 5px;
-  justify-self: stretch;
+  width: 100%;
   overflow: hidden;
-  min-width: 0;
   margin-right: 5px;
   margin-left: 5px;
   margin-top: 5px;
+  background-color: burlywood;
 }
 .grid-1 {
   display: grid;
-  grid-gap: 5px;
   grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
   grid-auto-flow: column;
 }

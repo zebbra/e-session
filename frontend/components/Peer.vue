@@ -3,15 +3,11 @@
     <div class="participant-displayName subtitle-1 pl-2 pr-2">
       {{ displayName }} - {{ participantId }}
     </div>
-    <e-session-media-cover
-      v-if="camMuted"
-      class="stack-top"
-      :style="coverStyle"
-    />
+    <e-session-media-cover v-if="camMuted" class="stack-top" />
     <media
-      ref="mediaRef"
       :video-stream="videoStream"
       :audio-stream="audioStream"
+      class="media"
     />
     <div class="muted-icon">
       <v-icon v-if="micMuted" color="red">
@@ -22,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from "nuxt-composition-api";
+import { defineComponent, computed } from "nuxt-composition-api";
 import { conferenceStore } from "~/store";
 
 export default defineComponent({
@@ -36,7 +32,6 @@ export default defineComponent({
   },
 
   setup(props) {
-    const mediaRef = ref(null);
     const videoStream = computed(() =>
       props.mediaTracks.value.video ? props.mediaTracks.value.video : null,
     );
@@ -51,13 +46,6 @@ export default defineComponent({
           ? props.mediaTracks.value.audio
           : null;
       }
-    });
-    const coverStyle = computed(() => {
-      // console.log("mediaRef", mediaRef);
-      return {
-        height: mediaRef.value.$el.clientHeight + "px",
-        width: mediaRef.value.$el.clientWidth + "px",
-      };
     });
 
     const displayName = computed(() => conferenceStore.status.displayName);
@@ -95,8 +83,6 @@ export default defineComponent({
       participantId,
       micMuted,
       camMuted,
-      coverStyle,
-      mediaRef,
     };
   },
 });
@@ -106,13 +92,14 @@ export default defineComponent({
 .participant-displayName {
   position: absolute;
   color: white;
+  mix-blend-mode: lighten;
   z-index: 2;
   left: 10px;
   top: 10px;
   backdrop-filter: blur(5px) brightness(1.5);
   -webkit-backdrop-filter: blur(5px) brightness(1.5);
   border-radius: 5px;
-  z-index: 9;
+  z-index: 7;
 }
 .peer-container {
   position: relative;
@@ -121,9 +108,16 @@ export default defineComponent({
   position: absolute;
   bottom: 10px;
   left: 5px;
+  z-index: 7;
 }
 .stack-top {
   position: absolute;
   z-index: 1;
+  height: 100%;
+  width: 100%;
+}
+.media {
+  height: 100%;
+  width: 100%;
 }
 </style>
