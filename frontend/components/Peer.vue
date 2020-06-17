@@ -7,7 +7,7 @@
     <media
       :video-stream="videoStream"
       :audio-stream="audioStream"
-      class="media"
+      class="media-wrapper"
     />
     <div class="muted-icon">
       <v-icon v-if="micMuted" color="red">
@@ -91,8 +91,7 @@ export default defineComponent({
 <style scoped>
 .participant-displayName {
   position: absolute;
-  color: white;
-  mix-blend-mode: lighten;
+  mix-blend-mode: difference;
   z-index: 2;
   left: 10px;
   top: 10px;
@@ -103,6 +102,10 @@ export default defineComponent({
 }
 .peer-container {
   position: relative;
+  min-width: 100%;
+  /* min-height: 100%; */
+  width: auto;
+  /* height: auto; */
 }
 .muted-icon {
   position: absolute;

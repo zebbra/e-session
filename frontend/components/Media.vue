@@ -1,11 +1,6 @@
 <template>
-  <div style="height: inherit;">
-    <video
-      v-if="videoStream"
-      ref="videoRef"
-      style="height: 100%; width: 100%; border-radius: 5px;"
-      autoplay
-    />
+  <div class="d-flex">
+    <video v-if="videoStream" ref="videoRef" class="video-insert" autoplay />
     <audio v-if="audioStream" ref="audioRef" autoplay />
   </div>
 </template>
@@ -76,5 +71,12 @@ export default defineComponent({
 .participant-id {
   position: absolute;
   font-size: small;
+}
+.video-wrapper {
+}
+.video-insert {
+  height: 100%;
+  width: 100%;
+  background-size: cover;
 }
 </style>
