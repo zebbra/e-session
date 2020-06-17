@@ -194,6 +194,11 @@ export default ({ app }) => {
     }
     conferenceStore.updateIsSharing(!conferenceStore.status.isSharing);
 
+    // If I start to share when my cam is muted
+    if (conferenceStore.status.isSharing && conferenceStore.status.camMuted) {
+      conferenceStore.updateMutedVideoTracks(conferenceStore.status.id);
+    }
+
     try {
       const tracks = await app.$jitsi.createLocalTracks({
         devices: [conferenceStore.status.isSharing ? "desktop" : "video"],
@@ -237,6 +242,9 @@ export default ({ app }) => {
       const type = tracks[i].getType();
       // consola.log(localTracks);
       if (type === "video") {
+        if (conferenceStore.status.camMuted) {
+          tracks[i].mute();
+        }
         conferenceStore.updateCameraId(tracks[i].getDeviceId());
         Vue.set(app.$localTracks.value.localStream, "video", tracks[i]);
       }
@@ -244,6 +252,9 @@ export default ({ app }) => {
         Vue.set(app.$localTracks.value.localStream, "video", tracks[i]);
       }
       if (type === "audio") {
+        if (conferenceStore.status.micMuted) {
+          tracks[i].mute();
+        }
         tracks[i].addEventListener(
           app.$jitsi.events.track.TRACK_AUDIO_LEVEL_CHANGED,
           (level: number) => conferenceStore.updateLocalAudioLevel(level),
