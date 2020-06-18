@@ -1,7 +1,7 @@
 <template>
-  <v-container fluid>
-    <e-session-conference />
-    <e-session-control-toolbar class="toolbar" />
+  <v-container fluid class="d-flex">
+    <e-session-conference class="conference-wrapper" />
+    <e-session-control-toolbar class="toolbar-wrapper" />
   </v-container>
 </template>
 
@@ -90,10 +90,16 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.toolbar {
+.toolbar-wrapper {
   bottom: 60px;
   position: absolute;
   float: right;
   left: 32%;
+}
+.conference-wrapper {
+  min-width: 100%;
+  /* min-height: 100%; */
+  width: auto;
+  /* height: auto; */
 }
 </style>

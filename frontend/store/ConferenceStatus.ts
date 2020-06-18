@@ -16,6 +16,9 @@ export default class ConferenceStatus extends VuexModule {
     micMuted: boolean;
     camMuted: boolean;
     isSharing: boolean;
+    error: boolean;
+    errorMsg: string;
+    errorResolution: string;
   } = {
     isJoined: false,
     isSpeaker: false,
@@ -26,17 +29,66 @@ export default class ConferenceStatus extends VuexModule {
     micMuted: false,
     camMuted: false,
     isSharing: false,
+    error: false,
+    errorMsg: "",
+    errorResolution: "",
   };
 
-  public devices: { cameraId: string; micId: string; outputId: string } = {
+  public devices: {
+    cameraId: string;
+    micId: string;
+    outputId: string;
+    outputDevices: Array<any>;
+    microphoneDevices: Array<any>;
+    cameraDevices: Array<any>;
+  } = {
     cameraId: "",
     micId: "",
     outputId: "",
+    outputDevices: [],
+    microphoneDevices: [],
+    cameraDevices: [],
   };
+
+  public mutedAudioTracks: Array<any> = [];
+  public mutedVideoTracks: Array<any> = [];
 
   public devicePremissionPromptShown: string = "";
   public deviceSettingsVisible: boolean = false;
   public setupVisible: boolean = false;
+
+  // -------outputDevices-------
+  @Mutation
+  setOutputDevices(deviceList: Array<any>) {
+    this.devices.outputDevices = deviceList;
+  }
+
+  @Action
+  updateOutputDevices(deviceList: Array<any>) {
+    this.setOutputDevices(deviceList);
+  }
+
+  // -------microphoneDevices-------
+  @Mutation
+  setMicrophoneDevices(deviceList: Array<any>) {
+    this.devices.microphoneDevices = deviceList;
+  }
+
+  @Action
+  updateMicrophoneDevices(deviceList: Array<any>) {
+    this.setMicrophoneDevices(deviceList);
+  }
+
+  // -------cameraDevices-------
+  @Mutation
+  setCameraDevices(deviceList: Array<any>) {
+    this.devices.cameraDevices = deviceList;
+  }
+
+  @Action
+  updateCameraDevices(deviceList: Array<any>) {
+    this.setCameraDevices(deviceList);
+  }
 
   // -------DEVICES-------
 
@@ -132,6 +184,40 @@ export default class ConferenceStatus extends VuexModule {
     this.setLocalAudioLevel(level);
   }
 
+  // ------status.error---------
+  @Mutation
+  setError(flag: boolean) {
+    this.status.error = flag;
+  }
+
+  @Action
+  updateErrorFlag(flag: boolean) {
+    this.setError(flag);
+  }
+
+  // ------status.errorMsg---------
+
+  @Mutation
+  setErrorMsg(msg: string) {
+    this.status.errorMsg = msg;
+  }
+
+  @Action
+  updateErrorMsg(msg: string) {
+    this.setErrorMsg(msg);
+  }
+
+  // ------status.errorResolution---------
+
+  @Mutation
+  setErrorResolution(msg: string) {
+    this.status.errorResolution = msg;
+  }
+
+  @Action
+  updateErrorResolution(msg: string) {
+    this.setErrorResolution(msg);
+  }
   // ------MIC MUTED---------
 
   @Mutation
@@ -197,5 +283,49 @@ export default class ConferenceStatus extends VuexModule {
   @Action
   premissionPromptShown(type: string) {
     this.setDevicePremissionPromptShown(type);
+  }
+
+  // ------MUTED Audio TRACKS---------
+
+  @Mutation
+  addMutedAudioTrack(id: any) {
+    this.mutedAudioTracks.push(id);
+  }
+
+  @Mutation
+  removeMutedAudioTrack(id: any) {
+    const idx = this.mutedAudioTracks.indexOf(id);
+    this.mutedAudioTracks.splice(idx, 1);
+  }
+
+  @Action
+  updateMutedAudioTracks(id: any) {
+    if (this.mutedAudioTracks.includes(id)) {
+      this.removeMutedAudioTrack(id);
+    } else {
+      this.addMutedAudioTrack(id);
+    }
+  }
+
+  // ------MUTED Video TRACKS---------
+
+  @Mutation
+  addMutedVideoTrack(id: any) {
+    this.mutedVideoTracks.push(id);
+  }
+
+  @Mutation
+  removeMutedVideoTrack(id: any) {
+    const idx = this.mutedVideoTracks.indexOf(id);
+    this.mutedVideoTracks.splice(idx, 1);
+  }
+
+  @Action
+  updateMutedVideoTracks(id: any) {
+    if (this.mutedVideoTracks.includes(id)) {
+      this.removeMutedVideoTrack(id);
+    } else {
+      this.addMutedVideoTrack(id);
+    }
   }
 }

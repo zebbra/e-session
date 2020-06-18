@@ -3,6 +3,7 @@ import consola from "consola";
 import Vue from "vue";
 import { roomStore, sessionStore, conferenceStore } from "~/store";
 import { options, initOptions, confOptions } from "~/utils/jitsi";
+import { handleGum } from "~/utils/gumErrorHandling";
 
 export default ({ app }) => {
   const jitsi = (window as any).JitsiMeetJS;
@@ -91,18 +92,10 @@ export default ({ app }) => {
     app.$room.join();
     conferenceStore.setId(app.$room.myUserId());
     conferenceStore.updateJoined(true);
-    const options: {
-      setup: boolean;
-      video: boolean;
-      desktop: boolean;
-      audio: boolean;
-    } = {
-      setup: true,
-      video: true,
-      desktop: false,
-      audio: true,
-    };
-    app.$createLocalTracks(options);
+
+    _getLocalDevices().then((options) => {
+      app.$createLocalTracks(options);
+    });
   };
 
   app.$onConnectionFailed = () => {
@@ -158,21 +151,10 @@ export default ({ app }) => {
         conferenceStore.showSetup(true);
       }
     } catch (err) {
-      consola.error("Exception createLocalTracks:", err);
-      const options: {
-        setup: boolean;
-        video: boolean;
-        desktop: boolean;
-        audio: boolean;
-      } = {
-        setup: true,
-        video: false,
-        desktop: false,
-        audio: true,
-      };
-      app.$createLocalTracks(options);
-      if (options.setup) {
-        conferenceStore.showSetup(true);
+      if (err.gum) {
+        handleGum(err);
+      } else {
+        consola.error("Exception createLocalTracks:", err);
       }
     }
   };
@@ -218,7 +200,11 @@ export default ({ app }) => {
       });
       _onLocalTracks(tracks);
     } catch (err) {
-      consola.error("Exception:", err);
+      if (err.name === "gum.chrome_extension_user_canceled") {
+        app.$switchShare();
+      } else {
+        consola.error("Exception switchShare:", err);
+      }
     }
   };
 
@@ -237,7 +223,7 @@ export default ({ app }) => {
       // consola.log("track device id", tracks[i].getDeviceId());
       tracks[i].addEventListener(
         app.$jitsi.events.track.TRACK_MUTE_CHANGED,
-        () => consola.log("local track muted"),
+        (track: any) => _onLocalTrackMuted(track),
       );
       tracks[i].addEventListener(
         app.$jitsi.events.track.LOCAL_TRACK_STOPPED,
@@ -251,6 +237,9 @@ export default ({ app }) => {
       const type = tracks[i].getType();
       // consola.log(localTracks);
       if (type === "video") {
+        if (conferenceStore.status.camMuted) {
+          tracks[i].mute();
+        }
         conferenceStore.updateCameraId(tracks[i].getDeviceId());
         Vue.set(app.$localTracks.value.localStream, "video", tracks[i]);
       }
@@ -258,6 +247,9 @@ export default ({ app }) => {
         Vue.set(app.$localTracks.value.localStream, "video", tracks[i]);
       }
       if (type === "audio") {
+        if (conferenceStore.status.micMuted) {
+          tracks[i].mute();
+        }
         tracks[i].addEventListener(
           app.$jitsi.events.track.TRACK_AUDIO_LEVEL_CHANGED,
           (level: number) => conferenceStore.updateLocalAudioLevel(level),
@@ -274,6 +266,47 @@ export default ({ app }) => {
       app.$room.addTrack(app.$localTracks.value.localStream.video);
       app.$room.addTrack(app.$localTracks.value.localStream.audio);
     }
+  }
+
+  function _getLocalDevices() {
+    return new Promise((resolve, reject) => {
+      const options: {
+        setup: boolean;
+        video: boolean;
+        desktop: boolean;
+        audio: boolean;
+      } = {
+        setup: true,
+        video: true,
+        desktop: false,
+        audio: true,
+      };
+
+      if (app.$jitsi.mediaDevices.isDeviceChangeAvailable("output")) {
+        app.$jitsi.mediaDevices.enumerateDevices((devices) => {
+          // consola.log("audiooutput", devices.filter((d) => d.kind === "audiooutput"));
+          conferenceStore.updateOutputDevices(
+            devices.filter((d) => d.kind === "audiooutput"),
+          );
+          conferenceStore.updateMicrophoneDevices(
+            devices.filter((d) => d.kind === "audioinput"),
+          );
+          conferenceStore.updateCameraDevices(
+            devices.filter((d) => d.kind === "videoinput"),
+          );
+          if (devices.filter((d) => d.kind === "videoinput").length <= 0) {
+            options.video = false;
+          }
+          if (devices.filter((d) => d.kind === "audioinput").length <= 0) {
+            options.audio = false;
+          }
+        });
+        resolve(options);
+      } else {
+        reject(Error("It broke"));
+        // make better error handling
+      }
+    });
   }
 
   function _localTrackEnded() {
@@ -320,6 +353,9 @@ export default ({ app }) => {
 
     const type = track.getType();
     if (type === "video") {
+      if (track.isMuted() && !track.isLocal()) {
+        conferenceStore.updateMutedAudioTracks(track.getParticipantId());
+      }
       Vue.set(app.$remoteTracks.value[id].value, "video", track);
       consola.log(
         "onRemoteTrackAdd type video",
@@ -327,7 +363,11 @@ export default ({ app }) => {
       );
     }
     if (type === "audio") {
+      if (track.isMuted() && !track.isLocal()) {
+        conferenceStore.updateMutedAudioTracks(track.getParticipantId());
+      }
       Vue.set(app.$remoteTracks.value[id].value, "audio", track);
+
       consola.log(
         "onRemoteTrackAdd type audio",
         app.$remoteTracks.value[id].value,
@@ -381,19 +421,38 @@ export default ({ app }) => {
     }
   }
 
-  function _onRemoteTrackMuted(track: any) {
-    const type = track.getType();
-    let id: string = "";
-    if (track.isLocal()) {
-      id = "localStream";
-    } else {
-      id = track.getParticipantId();
-    }
+  function _onLocalTrackMuted(track: any) {
+    consola.log("_onLocalTrackMuted: ", track);
+    const id = conferenceStore.status.id;
     const muted = track.isMuted();
-    consola.log(`${type} track from participant "${id}": muted="${muted}"`);
+    const type = track.getType();
+
+    consola.log(
+      `local ${type} track from participant "${id}": muted="${muted}"`,
+    );
+
     if (type === "video") {
+      conferenceStore.updateMutedVideoTracks(id);
     }
     if (type === "audio") {
+      conferenceStore.updateMutedAudioTracks(id);
+    }
+  }
+
+  function _onRemoteTrackMuted(track: any) {
+    if (track.isLocal()) {
+      return;
+    }
+    const type = track.getType();
+    const id = track.getParticipantId();
+    const muted = track.isMuted();
+
+    consola.log(`${type} track from participant "${id}": muted="${muted}"`);
+    if (type === "video") {
+      conferenceStore.updateMutedVideoTracks(id);
+    }
+    if (type === "audio") {
+      conferenceStore.updateMutedAudioTracks(id);
     }
   }
 };

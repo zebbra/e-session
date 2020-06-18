@@ -1,34 +1,33 @@
 <template>
-  <div style="height: inherit;">
-    <div style="height: inherit;">
-      <div style="height: inherit;">
-        <div class="participant-displayName">{{ displayName }}</div>
-        <media
-          style="height: inherit;"
-          :video-stream="videoStream"
-          :audio-stream="audioStream"
-        />
-      </div>
+  <div class="peer-container">
+    <div class="participant-displayName subtitle-1 pl-2 pr-2">
+      {{ displayName }} - {{ participantId }}
+    </div>
+    <e-session-media-cover v-if="showCover" class="stack-top" />
+    <media :video-stream="videoStream" :audio-stream="audioStream" />
+    <div class="muted-icon">
+      <v-icon v-if="micMuted" color="red">
+        mdi-microphone-off
+      </v-icon>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed } from "nuxt-composition-api";
-import consola from "consola";
+import { conferenceStore } from "~/store";
 
 export default defineComponent({
   name: "Peer",
   props: {
     mediaTracks: Object,
-    displayName: String,
   },
   components: {
     Media: () => import("~/components/Media.vue"),
+    ESessionMediaCover: () => import("~/components/ESessionMediaCover.vue"),
   },
 
   setup(props) {
-    consola.log("Peer props", props);
     const videoStream = computed(() =>
       props.mediaTracks.value.video ? props.mediaTracks.value.video : null,
     );
@@ -44,19 +43,77 @@ export default defineComponent({
           : null;
       }
     });
+
+    const displayName = computed(() => conferenceStore.status.displayName);
+    const participantId = computed(() => {
+      if (videoStream.value && videoStream.value.isLocal()) {
+        return conferenceStore.status.id;
+      } else if (videoStream.value) {
+        return videoStream.value.getParticipantId();
+      } else if (audioStream.value) {
+        return audioStream.value.getParticipantId();
+      } else {
+        return null;
+      }
+    });
+    const micMuted = computed(() => {
+      if (conferenceStore.mutedAudioTracks.includes(participantId.value)) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+
+    const showCover = computed(() => {
+      if (
+        conferenceStore.mutedVideoTracks.includes(participantId.value) &&
+        !conferenceStore.status.isSharing
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+
     return {
       videoStream,
       audioStream,
-      // displayName
+      displayName,
+      participantId,
+      micMuted,
+      showCover,
     };
   },
 });
 </script>
 
-<style>
+<style scoped>
 .participant-displayName {
   position: absolute;
-  font-size: small;
-  color: black;
+  mix-blend-mode: difference;
+  z-index: 2;
+  left: 10px;
+  top: 10px;
+  backdrop-filter: blur(5px) brightness(1.5);
+  -webkit-backdrop-filter: blur(5px) brightness(1.5);
+  border-radius: 5px;
+  z-index: 7;
+}
+.peer-container {
+  position: relative;
+  min-width: 100%;
+  /* min-height: 100%; */
+  width: auto;
+  /* height: calc(100vw * 0.5625); */
+}
+.muted-icon {
+  position: absolute;
+  bottom: 10px;
+  left: 5px;
+  z-index: 7;
+}
+.stack-top {
+  position: absolute;
+  z-index: 1;
 }
 </style>

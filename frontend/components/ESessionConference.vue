@@ -8,17 +8,13 @@
     </v-col>
   </v-row> -->
   <div>
-    <div class="my-container">
-      <v-row class="d-flex justify-center align-center ma-2">
-        <div :class="peerWrapperClassName">
-          <peer
-            v-for="(value, key) in remoteTracks"
-            :key="key"
-            class="peer"
-            :media-tracks="value"
-          />
-        </div>
-      </v-row>
+    <div :class="peerWrapperClassName">
+      <peer
+        v-for="(value, key) in remoteTracks"
+        :key="key"
+        class="peer"
+        :media-tracks="value"
+      />
     </div>
     <v-dialog v-model="settingsDialog" persistent max-width="600">
       <e-session-local-media-settings />
@@ -92,18 +88,20 @@ export default defineComponent({
 }
 .peer {
   border-radius: 5px;
-  justify-self: stretch;
+  width: 100%;
   overflow: hidden;
-  min-width: 0;
   margin-right: 5px;
   margin-left: 5px;
   margin-top: 5px;
+  background-color: #272727;
+  backdrop-filter: blur(5px) contrast(0.8);
 }
 .grid-1 {
   display: grid;
-  grid-gap: 5px;
   grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
   grid-auto-flow: column;
+  /* min-width: 100%; */
+  /* width: auto; */
 }
 .grid-2 {
   display: grid;
@@ -139,8 +137,9 @@ export default defineComponent({
   grid-auto-flow: column;
 }
 .my-container {
-  height: 100%;
-  align-items: center;
-  display: flex;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
 }
 </style>

@@ -22,7 +22,7 @@
       >
     </v-btn>
     <v-btn tile large>
-      <v-icon>mdi-cog</v-icon>
+      <v-icon>mdi-dots-vertical</v-icon>
     </v-btn>
     <v-btn tile large @click.stop="leaveRoom">
       <v-icon color="red">mdi-exit-to-app</v-icon>

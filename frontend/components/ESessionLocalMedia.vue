@@ -45,13 +45,7 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  computed,
-  ref,
-  useContext,
-} from "nuxt-composition-api";
-import consola from "consola";
+import { defineComponent, computed, useContext } from "nuxt-composition-api";
 import { conferenceStore } from "~/store";
 
 export default defineComponent({
@@ -80,20 +74,11 @@ export default defineComponent({
       };
     });
 
-    const cameraDevices = ref([]);
-    const microphoneDevices = ref([]);
-    const outputDevices = ref([]);
-
-    if (app.$jitsi.mediaDevices.isDeviceChangeAvailable("output")) {
-      app.$jitsi.mediaDevices.enumerateDevices((devices) => {
-        consola.log(devices);
-        outputDevices.value = devices.filter((d) => d.kind === "audiooutput");
-        microphoneDevices.value = devices.filter(
-          (d) => d.kind === "audioinput",
-        );
-        cameraDevices.value = devices.filter((d) => d.kind === "videoinput");
-      });
-    }
+    const cameraDevices = computed(() => conferenceStore.devices.cameraDevices);
+    const microphoneDevices = computed(
+      () => conferenceStore.devices.microphoneDevices,
+    );
+    const outputDevices = computed(() => conferenceStore.devices.outputDevices);
 
     function changeCamera(id) {
       app.$disposeAndRecreateVideoTrack(id);
