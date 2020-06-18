@@ -105,6 +105,7 @@ export default defineComponent({
   /* min-height: 100%; */
   width: auto;
   /* height: calc(100vw * 0.5625); */
+  align-self: center;
 }
 .muted-icon {
   position: absolute;
