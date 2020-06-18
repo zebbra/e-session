@@ -1,7 +1,6 @@
 <template @mouseover="mouseover" @mouseleave="mouseleave">
   <div
-    style="height: 100%; width: 100%; border-radius: 5px;"
-    class="d-flex justify-center align-center"
+    class="d-flex justify-center align-center cover-wrapper"
     @mouseover="mouseover"
     @mouseleave="mouseleave"
   >
@@ -10,15 +9,7 @@
         mdi-video-off
       </v-icon>
     </div>
-    <img
-      :src="giphySrc"
-      style="
-        width: 100%;
-        height: 100%;
-        background-size: cover;
-        border-radius: 5px;
-      "
-    />
+    <img :src="giphySrc" class="gif-insert" />
   </div>
 </template>
 
@@ -66,6 +57,18 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.cover-wrapper {
+  background-color: #272727;
+  backdrop-filter: blur(5px) contrast(0.8);
+  height: 100%;
+  width: 100%;
+}
+.gif-insert {
+  height: 100%;
+  width: 100%;
+  background-size: cover;
+  background-color: #272727;
+}
 .icon-container {
   /* backdrop-filter: blur(5px) contrast(0.8); */
   position: absolute;

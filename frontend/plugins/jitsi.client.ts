@@ -194,11 +194,6 @@ export default ({ app }) => {
     }
     conferenceStore.updateIsSharing(!conferenceStore.status.isSharing);
 
-    // If I start to share when my cam is muted
-    if (conferenceStore.status.isSharing && conferenceStore.status.camMuted) {
-      conferenceStore.updateMutedVideoTracks(conferenceStore.status.id);
-    }
-
     try {
       const tracks = await app.$jitsi.createLocalTracks({
         devices: [conferenceStore.status.isSharing ? "desktop" : "video"],

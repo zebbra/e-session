@@ -3,12 +3,8 @@
     <div class="participant-displayName subtitle-1 pl-2 pr-2">
       {{ displayName }} - {{ participantId }}
     </div>
-    <e-session-media-cover v-if="camMuted" class="stack-top" />
-    <media
-      :video-stream="videoStream"
-      :audio-stream="audioStream"
-      class="media-wrapper"
-    />
+    <e-session-media-cover v-if="showCover" class="stack-top" />
+    <media :video-stream="videoStream" :audio-stream="audioStream" />
     <div class="muted-icon">
       <v-icon v-if="micMuted" color="red">
         mdi-microphone-off
@@ -68,8 +64,11 @@ export default defineComponent({
       }
     });
 
-    const camMuted = computed(() => {
-      if (conferenceStore.mutedVideoTracks.includes(participantId.value)) {
+    const showCover = computed(() => {
+      if (
+        conferenceStore.mutedVideoTracks.includes(participantId.value) &&
+        !conferenceStore.status.isSharing
+      ) {
         return true;
       } else {
         return false;
@@ -82,7 +81,7 @@ export default defineComponent({
       displayName,
       participantId,
       micMuted,
-      camMuted,
+      showCover,
     };
   },
 });
@@ -105,7 +104,7 @@ export default defineComponent({
   min-width: 100%;
   /* min-height: 100%; */
   width: auto;
-  /* height: auto; */
+  /* height: calc(100vw * 0.5625); */
 }
 .muted-icon {
   position: absolute;
@@ -116,11 +115,5 @@ export default defineComponent({
 .stack-top {
   position: absolute;
   z-index: 1;
-  height: 100%;
-  width: 100%;
-}
-.media {
-  height: 100%;
-  width: 100%;
 }
 </style>

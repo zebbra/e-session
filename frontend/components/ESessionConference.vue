@@ -93,7 +93,8 @@ export default defineComponent({
   margin-right: 5px;
   margin-left: 5px;
   margin-top: 5px;
-  background-color: burlywood;
+  background-color: #272727;
+  backdrop-filter: blur(5px) contrast(0.8);
 }
 .grid-1 {
   display: grid;
