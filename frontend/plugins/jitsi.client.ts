@@ -82,7 +82,11 @@ export default ({ app }) => {
       _onUserLeft(id),
     );
     // room.on(app.$jitsi.events.conference.TRACK_MUTE_CHANGED, track => consola.log(`${track.getType()} - ${track.isMuted()}`))
-    // room.on(app.$jitsi.events.conference.DISPLAY_NAME_CHANGED, (userID, displayName) => log(`${userID} - ${displayName}`))
+    app.$room.on(
+      app.$jitsi.events.conference.DISPLAY_NAME_CHANGED,
+      (userID: string, displayName: string) =>
+        consola.log(`${userID} - ${displayName}`),
+    );
     /* app.$room.on(
       app.$jitsi.events.conference.TRACK_AUDIO_LEVEL_CHANGED,
       (userID, audioLevel) => consola.log(`${userID} - ${audioLevel}`),
