@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "nuxt-composition-api";
+import { defineComponent, computed, useContext } from "nuxt-composition-api";
 import { conferenceStore } from "~/store";
 
 export default defineComponent({
@@ -28,6 +28,8 @@ export default defineComponent({
   },
 
   setup(props) {
+    const { app } = useContext();
+
     const videoStream = computed(() =>
       props.mediaTracks.value.video ? props.mediaTracks.value.video : null,
     );
@@ -44,7 +46,6 @@ export default defineComponent({
       }
     });
 
-    const displayName = computed(() => conferenceStore.status.displayName);
     const participantId = computed(() => {
       if (videoStream.value && videoStream.value.isLocal()) {
         return conferenceStore.status.id;
@@ -56,6 +57,17 @@ export default defineComponent({
         return null;
       }
     });
+
+    const displayName = computed(() => {
+      if (String(participantId.value) === conferenceStore.status.id) {
+        return conferenceStore.status.displayName;
+      } else {
+        return app.$room.getParticipantById(participantId.value)
+          ? app.$room.getParticipantById(participantId.value)._displayName
+          : "";
+      }
+    });
+
     const micMuted = computed(() => {
       if (conferenceStore.mutedAudioTracks.includes(participantId.value)) {
         return true;
@@ -105,6 +117,7 @@ export default defineComponent({
   /* min-height: 100%; */
   width: auto;
   /* height: calc(100vw * 0.5625); */
+  align-self: center;
 }
 .muted-icon {
   position: absolute;
