@@ -30,12 +30,12 @@ export default defineComponent({
 
   setup(props) {
     const { app } = useContext();
-
+    console.log(props.mediaTracks);
     const videoStream = computed(() =>
-      props.mediaTracks.video ? props.mediaTracks.video : null,
+      props.mediaTracks.value.video ? props.mediaTracks.value.video : null,
     );
     const audioStream = computed(() =>
-      props.mediaTracks.audio ? props.mediaTracks.audio : null,
+      props.mediaTracks.value.audio ? props.mediaTracks.value.audio : null,
     );
 
     const participantId = computed(() => {

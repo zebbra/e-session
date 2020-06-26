@@ -11,11 +11,9 @@
       </v-btn>
     </v-app-bar>
     <v-content>
-      <div>
-        <div id="stars"></div>
-        <div id="stars2"></div>
-        <div id="stars3"></div>
-      </div>
+      <div id="stars"></div>
+      <div id="stars2"></div>
+      <div id="stars3"></div>
       <v-container
         fluid
         class="d-flex align-center"
