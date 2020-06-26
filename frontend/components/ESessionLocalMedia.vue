@@ -2,7 +2,7 @@
   <div>
     <v-row>
       <v-col>
-        <media :video-stream="videoStream" :audio-stream="null" />
+        <e-session-media :video-stream="videoStream" :audio-stream="null" />
         <local-audio-indicator />
       </v-col>
     </v-row>
@@ -51,7 +51,7 @@ import { conferenceStore } from "~/store";
 export default defineComponent({
   name: "ESessionLocalMedia",
   components: {
-    Media: () => import("~/components/Media.vue"),
+    ESessionMedia: () => import("~/components/conference/ESessionMedia.vue"),
     LocalAudioIndicator: () =>
       import("~/components/ESessionLocalMediaAudioLevelIndicator.vue"),
   },

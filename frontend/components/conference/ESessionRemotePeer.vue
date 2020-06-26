@@ -4,7 +4,7 @@
       {{ displayName }} - {{ participantId }}
     </div>
     <e-session-media-cover v-if="showCover" class="stack-top" />
-    <media :video-stream="videoStream" :audio-stream="audioStream" />
+    <e-session-media :video-stream="videoStream" :audio-stream="audioStream" />
     <div class="muted-icon">
       <v-icon v-if="micMuted" color="red">
         mdi-microphone-off
@@ -18,38 +18,28 @@ import { defineComponent, computed, useContext } from "nuxt-composition-api";
 import { conferenceStore } from "~/store";
 
 export default defineComponent({
-  name: "Peer",
+  name: "ESessionRemotePeer",
   props: {
     mediaTracks: Object,
   },
   components: {
-    Media: () => import("~/components/Media.vue"),
-    ESessionMediaCover: () => import("~/components/ESessionMediaCover.vue"),
+    ESessionMedia: () => import("~/components/conference/ESessionMedia.vue"),
+    ESessionMediaCover: () =>
+      import("~/components/conference/ESessionMediaCover.vue"),
   },
 
   setup(props) {
     const { app } = useContext();
 
     const videoStream = computed(() =>
-      props.mediaTracks.value.video ? props.mediaTracks.value.video : null,
+      props.mediaTracks.video ? props.mediaTracks.video : null,
     );
-    const audioStream = computed(() => {
-      if (
-        props.mediaTracks.value.audio &&
-        props.mediaTracks.value.audio.isLocal()
-      ) {
-        return null;
-      } else {
-        return props.mediaTracks.value.audio
-          ? props.mediaTracks.value.audio
-          : null;
-      }
-    });
+    const audioStream = computed(() =>
+      props.mediaTracks.audio ? props.mediaTracks.audio : null,
+    );
 
     const participantId = computed(() => {
-      if (videoStream.value && videoStream.value.isLocal()) {
-        return conferenceStore.status.id;
-      } else if (videoStream.value) {
+      if (videoStream.value) {
         return videoStream.value.getParticipantId();
       } else if (audioStream.value) {
         return audioStream.value.getParticipantId();
@@ -58,34 +48,23 @@ export default defineComponent({
       }
     });
 
-    const displayName = computed(() => {
-      if (String(participantId.value) === conferenceStore.status.id) {
-        return conferenceStore.status.displayName;
-      } else {
-        return app.$room.getParticipantById(participantId.value)
-          ? app.$room.getParticipantById(participantId.value)._displayName
-          : "";
-      }
-    });
+    const displayName = computed(() =>
+      app.$room.getParticipantById(participantId.value)
+        ? app.$room.getParticipantById(participantId.value)._displayName
+        : "",
+    );
 
-    const micMuted = computed(() => {
-      if (conferenceStore.mutedAudioTracks.includes(participantId.value)) {
-        return true;
-      } else {
-        return false;
-      }
-    });
+    const micMuted = computed(
+      () => !!conferenceStore.mutedAudioTracks.includes(participantId.value),
+    );
 
-    const showCover = computed(() => {
-      if (
-        conferenceStore.mutedVideoTracks.includes(participantId.value) &&
-        !conferenceStore.status.isSharing
-      ) {
-        return true;
-      } else {
-        return false;
-      }
-    });
+    const showCover = computed(
+      () =>
+        !!(
+          conferenceStore.mutedVideoTracks.includes(participantId.value) &&
+          !conferenceStore.presenterTracks.includes(participantId.value)
+        ),
+    );
 
     return {
       videoStream,
