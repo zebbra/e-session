@@ -9,12 +9,14 @@
   </v-row> -->
   <div>
     <div :class="peerWrapperClassName">
-      <peer
-        v-for="(value, key) in remoteTracks"
-        :key="key"
-        class="peer"
-        :media-tracks="value"
-      />
+      <div v-for="(value, key) in participants" :key="key">
+        <e-session-local-peer
+          v-if="key === 'localStream'"
+          class="peer"
+          :media-tracks="value"
+        />
+        <e-session-remote-peer v-else class="peer" :media-tracks="value" />
+      </div>
     </div>
     <v-dialog v-model="settingsDialog" persistent max-width="600">
       <e-session-local-media-settings />
@@ -31,22 +33,31 @@ export default defineComponent({
   name: "ESessionConference",
   head: {},
   components: {
-    Peer: () => import("~/components/Peer.vue"),
+    ESessionRemotePeer: () =>
+      import("~/components/conference/ESessionRemotePeer.vue"),
     ESessionLocalMediaSettings: () =>
       import("~/components/ESessionLocalMediaSettings.vue"),
+    ESessionLocalPeer: () =>
+      import("~/components/conference/ESessionLocalPeer.vue"),
   },
   setup() {
     const { app } = useContext();
+
     const settingsDialog = computed(
       () => conferenceStore.deviceSettingsVisible,
     );
-    const localTracks: any = computed(() => app.$localTracks);
-    const remoteTracks = app.$remoteTracks;
+
+    const participants: any = computed(() => {
+      if (conferenceStore.status.isSpeaker) {
+        return { ...app.$localTracks.value, ...app.$remoteTracks.value };
+      } else {
+        return app.$remoteTracks.value;
+      }
+    });
 
     const peerWrapperClassName = computed(() => {
       consola.log("peerWrapperClassName: ", app.$remoteTracks);
       const numOfPeers = Object.keys(app.$remoteTracks.value).length;
-      // console.log("remoteTracks lenght: ", Object.keys(remoteTracks.value).length)
       if (numOfPeers > 0) {
         return "grid-" + numOfPeers;
       } else if (numOfPeers > 6) {
@@ -63,8 +74,7 @@ export default defineComponent({
     function endCall() {}
 
     return {
-      remoteTracks,
-      localTracks,
+      participants,
       peerWrapperClassName,
       settingsDialog,
       showSettings,
@@ -93,7 +103,7 @@ export default defineComponent({
   margin-right: 5px;
   margin-left: 5px;
   margin-top: 5px;
-  background-color: #272727;
+  background-color: rgba(39, 39, 39, 0.5);
   backdrop-filter: blur(5px) contrast(0.8);
 }
 .grid-1 {
@@ -126,7 +136,7 @@ export default defineComponent({
   display: grid;
   grid-gap: 5px;
   grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-  grid-template-rows: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
   grid-auto-flow: column;
 }
 .grid-6 {

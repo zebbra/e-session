@@ -37,7 +37,7 @@ export default defineComponent({
 
     async function fetchGiphy() {
       const giphy = await fetch(
-        "https://api.giphy.com/v1/gifs/random?api_key=E9LxdOaJBxOhcllZL7IXpiJ9kOktXDcm&tag=cat&rating=PG-13",
+        "https://api.giphy.com/v1/gifs/random?api_key=E9LxdOaJBxOhcllZL7IXpiJ9kOktXDcm&tag=space&rating=PG-13",
       ).then((res) => res.json());
       giphyStill.value = giphy.data.images.original_still.url;
       giphyOriginal.value = giphy.data.images.original.url;
@@ -58,7 +58,7 @@ export default defineComponent({
 
 <style scoped>
 .cover-wrapper {
-  background-color: #272727;
+  background-color: rgba(39, 39, 39, 0.5);
   backdrop-filter: blur(5px) contrast(0.8);
   height: 100%;
   width: 100%;
@@ -67,7 +67,7 @@ export default defineComponent({
   height: 100%;
   width: 100%;
   background-size: cover;
-  background-color: #272727;
+  background-color: rgba(39, 39, 39, 0.5);
 }
 .icon-container {
   /* backdrop-filter: blur(5px) contrast(0.8); */
@@ -76,7 +76,8 @@ export default defineComponent({
   /* border: white; */
   border-radius: 81px;
   padding: 40px;
-  background-color: #272727;
+  background-color: rgba(39, 39, 39, 0.7);
+
   /* opacity: 0.7; */
   /* border: solid; */
   /* border-color: gray; */

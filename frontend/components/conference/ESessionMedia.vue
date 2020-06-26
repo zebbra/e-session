@@ -9,7 +9,7 @@
 import { defineComponent, onMounted, watch, ref } from "nuxt-composition-api";
 
 export default defineComponent({
-  name: "Media",
+  name: "ESessionMedia",
   props: {
     videoStream: Object || null,
     audioStream: Object || null,

@@ -28,9 +28,10 @@ export default defineComponent({
   name: "Room",
   head: {},
   components: {
-    ESessionConference: () => import("~/components/ESessionConference.vue"),
+    ESessionConference: () =>
+      import("~/components/conference/ESessionConference.vue"),
     ESessionControlToolbar: () =>
-      import("~/components/ESessionControlToolbar.vue"),
+      import("~/components/conference/ESessionControlToolbar.vue"),
   },
   setup() {
     const roomRef = computed(() => roomStore.room);

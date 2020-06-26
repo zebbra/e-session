@@ -10,36 +10,38 @@
             {{ user.id === currentUser.id ? role : "User" }}
           </v-list-item-subtitle>
         </v-list-item-content>
-        <v-tooltip v-if="user.handRaised && isModerator" left>
-          <template v-slot:activator="{ on }">
-            <v-list-item-icon>
-              <v-icon color="grey" v-on="on" @click.stop="decline(user)">
-                mdi-hand-left
-              </v-icon>
-            </v-list-item-icon>
-          </template>
-          <span>Lower Hand</span>
-        </v-tooltip>
-        <v-tooltip v-if="!user.conferenceJoined" left>
-          <template v-slot:activator="{ on }">
-            <v-list-item-icon>
-              <v-icon color="grey" v-on="on" @click.stop="join(user)">
-                mdi-arrow-left-bold-circle-outline
-              </v-icon>
-            </v-list-item-icon>
-          </template>
-          <span>Join {{ user.name }}</span>
-        </v-tooltip>
-        <v-tooltip v-else left>
-          <template v-slot:activator="{ on }">
-            <v-list-item-icon>
-              <v-icon color="grey" v-on="on" @click.stop="exit(user)">
-                mdi-arrow-right-bold-circle-outline
-              </v-icon>
-            </v-list-item-icon>
-          </template>
-          <span>Exit {{ user.name }}</span>
-        </v-tooltip>
+        <div>
+          <v-tooltip v-if="user.handRaised && isModerator" left>
+            <template v-slot:activator="{ on }">
+              <v-list-item-icon>
+                <v-icon color="orange" v-on="on" @click.stop="decline(user)">
+                  mdi-hand-left
+                </v-icon>
+              </v-list-item-icon>
+            </template>
+            <span>Lower Hand</span>
+          </v-tooltip>
+          <v-tooltip v-if="!user.conferenceJoined" left>
+            <template v-slot:activator="{ on }">
+              <v-list-item-icon>
+                <v-icon color="green" v-on="on" @click.stop="join(user)">
+                  mdi-arrow-left-bold-circle-outline
+                </v-icon>
+              </v-list-item-icon>
+            </template>
+            <span>Join {{ user.name }}</span>
+          </v-tooltip>
+          <v-tooltip v-else left>
+            <template v-slot:activator="{ on }">
+              <v-list-item-icon>
+                <v-icon color="red" v-on="on" @click.stop="exit(user)">
+                  mdi-arrow-right-bold-circle-outline
+                </v-icon>
+              </v-list-item-icon>
+            </template>
+            <span>Exit {{ user.name }}</span>
+          </v-tooltip>
+        </div>
       </v-list-item>
       <template v-slot:actions><span /></template>
     </v-expansion-panel-header>

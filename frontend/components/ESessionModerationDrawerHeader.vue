@@ -8,7 +8,7 @@
       >
     </v-list-item-content>
 
-    <v-tooltip bottom>
+    <!-- <v-tooltip bottom>
       <template v-slot:activator="{ on }">
         <v-btn icon @click.stop="moveHand">
           <v-icon :color="user.handRaised ? 'secondary' : 'grey'" v-on="on">
@@ -17,7 +17,7 @@
         </v-btn>
       </template>
       <span>{{ user.handRaised ? "Lower Hand" : "Raise Hand" }}</span>
-    </v-tooltip>
+    </v-tooltip> -->
     <v-tooltip bottom>
       <template v-slot:activator="{ on }">
         <v-btn icon @click.stop="leaveRoom">

@@ -52,6 +52,7 @@ export default class ConferenceStatus extends VuexModule {
 
   public mutedAudioTracks: Array<any> = [];
   public mutedVideoTracks: Array<any> = [];
+  public presenterTracks: Array<any> = [];
 
   public devicePremissionPromptShown: string = "";
   public deviceSettingsVisible: boolean = false;
@@ -326,6 +327,28 @@ export default class ConferenceStatus extends VuexModule {
       this.removeMutedVideoTrack(id);
     } else {
       this.addMutedVideoTrack(id);
+    }
+  }
+
+  // ------Presenter TRACKS---------
+
+  @Mutation
+  addPresenterTrack(id: any) {
+    this.presenterTracks.push(id);
+  }
+
+  @Mutation
+  removePresenterTrack(id: any) {
+    const idx = this.presenterTracks.indexOf(id);
+    this.presenterTracks.splice(idx, 1);
+  }
+
+  @Action
+  updatePresenterTracks(id: any) {
+    if (this.presenterTracks.includes(id)) {
+      this.removePresenterTrack(id);
+    } else {
+      this.addPresenterTrack(id);
     }
   }
 }
