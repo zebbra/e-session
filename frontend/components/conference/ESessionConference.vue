@@ -155,6 +155,6 @@ export default defineComponent({
   height: auto;
 }
 .participantWrapper {
-  padding: 2px;
+  padding: 3px;
 }
 </style>
