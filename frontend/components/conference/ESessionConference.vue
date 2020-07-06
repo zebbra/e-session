@@ -9,7 +9,11 @@
   </v-row> -->
   <div>
     <div :class="peerWrapperClassName">
-      <div v-for="(value, key) in participants" :key="key">
+      <div
+        v-for="(value, key) in participants"
+        :key="key"
+        class="participantWrapper"
+      >
         <e-session-local-peer
           v-if="key === 'localStream'"
           class="peer"
@@ -149,5 +153,8 @@ export default defineComponent({
   min-height: 100%;
   width: auto;
   height: auto;
+}
+.participantWrapper {
+  padding: 2px;
 }
 </style>
