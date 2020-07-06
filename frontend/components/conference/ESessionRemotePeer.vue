@@ -30,7 +30,6 @@ export default defineComponent({
 
   setup(props) {
     const { app } = useContext();
-    console.log(props.mediaTracks);
     const videoStream = computed(() =>
       props.mediaTracks.value.video ? props.mediaTracks.value.video : null,
     );

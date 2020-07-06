@@ -23,7 +23,7 @@
         <nuxt v-else />
       </v-container>
       <v-dialog v-model="setupDialog" persistent max-width="600">
-        <e-session-local-media-setup />
+        <e-session-media-setup />
       </v-dialog>
     </v-content>
     <e-session-moderation-drawer v-if="roomJoined" />
@@ -54,8 +54,8 @@ export default defineComponent({
     ESessionSnackbar: () => import("~/components/ESessionSnackbar.vue"),
     ESessionModerationDrawer: () =>
       import("~/components/ESessionModerationDrawer.vue"),
-    ESessionLocalMediaSetup: () =>
-      import("~/components/ESessionLocalMediaSetup.vue"),
+    ESessionMediaSetup: () =>
+      import("~/components/media-settings/ESessionMediaSetup.vue"),
     ESessionError: () => import("~/components/ESessionError.vue"),
   },
   setup() {

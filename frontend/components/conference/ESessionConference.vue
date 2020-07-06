@@ -35,8 +35,6 @@ export default defineComponent({
   components: {
     ESessionRemotePeer: () =>
       import("~/components/conference/ESessionRemotePeer.vue"),
-    ESessionLocalMediaSettings: () =>
-      import("~/components/ESessionLocalMediaSettings.vue"),
     ESessionLocalPeer: () =>
       import("~/components/conference/ESessionLocalPeer.vue"),
   },

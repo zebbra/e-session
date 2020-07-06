@@ -72,8 +72,6 @@ export default defineComponent({
   position: absolute;
   font-size: small;
 }
-.video-wrapper {
-}
 .video-insert {
   height: 100%;
   width: 100%;

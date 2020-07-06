@@ -53,7 +53,9 @@ export default defineComponent({
   components: {
     ESessionMedia: () => import("~/components/conference/ESessionMedia.vue"),
     LocalAudioIndicator: () =>
-      import("~/components/ESessionLocalMediaAudioLevelIndicator.vue"),
+      import(
+        "~/components/media-settings/ESessionLocalMediaAudioLevelIndicator.vue"
+      ),
   },
 
   setup() {

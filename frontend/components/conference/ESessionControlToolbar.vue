@@ -21,9 +21,7 @@
         >mdi-monitor-share</v-icon
       >
     </v-btn>
-    <v-btn tile large>
-      <v-icon>mdi-dots-vertical</v-icon>
-    </v-btn>
+    <e-session-control-toolbar-settings-menu />
     <v-btn tile large @click.stop="leaveRoom">
       <v-icon color="red">mdi-exit-to-app</v-icon>
     </v-btn>
@@ -39,7 +37,10 @@ import { useLeave, useRaiseHand, useLowerHand } from "~/composable/useRoom";
 
 export default defineComponent({
   name: "ESessionControlToolbar",
-  components: {},
+  components: {
+    ESessionControlToolbarSettingsMenu: () =>
+      import("~/components/conference/ESessionControlToolbarSettingsMenu.vue"),
+  },
   setup() {
     const { redirect, app } = useContext();
     const user = computed(() => sessionStore.user);

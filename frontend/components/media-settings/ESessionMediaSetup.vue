@@ -1,10 +1,10 @@
 <template>
   <v-card class="text-center">
     <v-card-text>
-      <e-session-local-media />
+      <e-session-media-settings />
       <v-row class="justify-center">
         <div>
-          <v-btn outlined @click="confirm">
+          <v-btn outlined color="primary" @click="confirm">
             <v-icon class="mr-2">mdi-check</v-icon>OK
           </v-btn>
         </div>
@@ -18,9 +18,10 @@ import { defineComponent } from "nuxt-composition-api";
 import { conferenceStore } from "~/store";
 
 export default defineComponent({
-  name: "ESessionLocalMediaSetup",
+  name: "ESessionMediaSetup",
   components: {
-    ESessionLocalMedia: () => import("~/components/ESessionLocalMedia.vue"),
+    ESessionMediaSettings: () =>
+      import("~/components/media-settings/ESessionMediaSettings.vue"),
   },
 
   setup() {
