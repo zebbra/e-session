@@ -1,0 +1,9 @@
+mutation startShare($userId: String!, $roomId: String!) {
+  startShare(userId: $userId, roomId: $roomId) {
+    id
+    name
+    handRaised
+    conferenceJoined
+    screenShared
+  }
+}

@@ -247,6 +247,9 @@ export default ({ app }) => {
         ) {
           tracks[i].mute();
         }
+        if (tracks[i].videoType === "desktop") {
+          conferenceStore.updatePresenterTracks("localStream");
+        }
         conferenceStore.updateCameraId(tracks[i].getDeviceId());
         Vue.set(app.$localTracks.value.localStream, "video", tracks[i]);
       }

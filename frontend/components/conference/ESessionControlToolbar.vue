@@ -33,7 +33,13 @@
 import { defineComponent, useContext, computed } from "nuxt-composition-api";
 // import consola from "consola";
 import { roomStore, sessionStore, conferenceStore } from "~/store";
-import { useLeave, useRaiseHand, useLowerHand } from "~/composable/useRoom";
+import {
+  useLeave,
+  useRaiseHand,
+  useLowerHand,
+  useStartShare,
+  useEndShare,
+} from "~/composable/useRoom";
 
 export default defineComponent({
   name: "ESessionControlToolbar",
@@ -63,11 +69,22 @@ export default defineComponent({
     const { mutate: raiseHand } = useRaiseHand(user.value, room.value);
     const { mutate: lowerHand } = useLowerHand(user.value, room.value);
 
+    const { mutate: startShare } = useStartShare(user.value, room.value);
+    const { mutate: endShare } = useEndShare(user.value, room.value);
+
     function moveHand() {
       if (user.value.handRaised) {
         lowerHand();
       } else {
         raiseHand();
+      }
+    }
+
+    function toggleShare() {
+      if (isSharing.value) {
+        endShare();
+      } else {
+        startShare();
       }
     }
 
@@ -91,13 +108,13 @@ export default defineComponent({
       }
     }
 
-    async function toggleShare() {
+    /* async function toggleShare() {
       if (conferenceStore.status.isSharing) {
         await app.$localTracks.value.localStream.video.dispose();
       } else {
         app.$switchShare();
       }
-    }
+    } */
 
     return {
       leaveRoom,

@@ -48,6 +48,16 @@ export class UserService {
     return this.findOne(id).lowerHand();
   }
 
+  startShare(id: string): User {
+    this.logger.info("startShare(%s)", id);
+    return this.findOne(id).startShare();
+  }
+
+  endShare(id: string): User {
+    this.logger.info("endShare(%s)", id);
+    return this.findOne(id).endShare();
+  }
+
   joinConference(id: string): User {
     this.logger.info("joinConference(%s)", id);
     return this.findOne(id).joinConference();

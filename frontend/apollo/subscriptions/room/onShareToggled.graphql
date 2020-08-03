@@ -1,0 +1,9 @@
+subscription onShareToggled($roomId: String!) {
+  shareToggled(roomId: $roomId) {
+    id
+    name
+    handRaised
+    conferenceJoined
+    screenShared
+  }
+}

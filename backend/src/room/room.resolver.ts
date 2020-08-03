@@ -130,4 +130,33 @@ export class RoomResolver {
   messagePosted(@Args("room") room: string) {
     return this.pubSub.asyncIterator("messagePosted");
   }
+
+  @Mutation((returns) => User)
+  async startShare(
+    @Args("userId") userId: string,
+    @Args("roomId") roomId: string,
+  ) {
+    const user = this.userService.startShare(userId);
+    this.pubSub.publish("shareToggled", { user, roomId });
+    return user;
+  }
+
+  @Mutation((returns) => User)
+  async endShare(
+    @Args("userId") userId: string,
+    @Args("roomId") roomId: string,
+  ) {
+    const user = this.userService.endShare(userId);
+    this.pubSub.publish("shareToggled", { user, roomId });
+    return user;
+  }
+
+  @Subscription((returns) => User, {
+    filter: (payload, variables) => payload.roomId === variables.roomId,
+    resolve: (payload) => payload.user,
+  })
+  shareToggled(@Args("roomId") roomId: string) {
+    return this.pubSub.asyncIterator("shareToggled");
+  }
+
 }

@@ -27,13 +27,16 @@ export default defineComponent({
     ESessionMediaCover: () =>
       import("~/components/conference/ESessionMediaCover.vue"),
   },
-
   setup(props) {
     const videoStream = computed(() =>
-      props.mediaTracks.video ? props.mediaTracks.video : null,
+      props.mediaTracks && props.mediaTracks.video
+        ? props.mediaTracks.video
+        : null,
     );
     const audioStream = computed(() =>
-      props.mediaTracks.audio ? props.mediaTracks.audio : null,
+      props.mediaTracks && props.mediaTracks.audio
+        ? props.mediaTracks.audio
+        : null,
     );
     const participantId = computed(() => conferenceStore.status.id);
     const displayName = computed(() => conferenceStore.status.displayName);

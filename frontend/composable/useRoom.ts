@@ -5,7 +5,7 @@ import {
   useResult,
 } from "@vue/apollo-composable";
 import { Ref } from "@vue/composition-api";
-import { roomStore, sessionStore } from "~/store";
+import { roomStore, sessionStore, conferenceStore } from "~/store";
 import { queries, mutations, subscriptions } from "~/apollo";
 import { IUser, IRoom } from "~/types";
 
@@ -156,6 +156,40 @@ export function useOnHandMoved(room: IRoom) {
       roomStore.updateUser(result.data.handMoved);
       if (result.data.handMoved.id === sessionStore.user.id) {
         sessionStore.handMoved();
+      }
+    });
+  }
+}
+
+export function useStartShare(user: IUser, room: IRoom) {
+  return useMutation(mutations.room.startShare, {
+    variables: {
+      userId: user.id,
+      roomId: room.id,
+    },
+  });
+}
+
+export function useEndShare(user: IUser, room: IRoom) {
+  return useMutation(mutations.room.endShare, {
+    variables: {
+      userId: user.id,
+      roomId: room.id,
+    },
+  });
+}
+
+export function useOnShareToggled(room: IRoom) {
+  if (process.browser) {
+    const { onResult } = useSubscription<{ shareToggled: IUser }>(
+      subscriptions.room.onShareToggled,
+      { roomId: room.id },
+    );
+
+    onResult((result) => {
+      roomStore.updateUser(result.data.shareToggled);
+      if (result.data.shareToggled.id === sessionStore.user.id) {
+        conferenceStore.toggleShare();
       }
     });
   }

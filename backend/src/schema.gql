@@ -7,6 +7,7 @@ type User {
   name: String!
   handRaised: Boolean!
   conferenceJoined: Boolean!
+  screenShared: Boolean!
 }
 
 type Room {
@@ -39,6 +40,8 @@ type Mutation {
   leave(roomId: String!, userId: String!): User
   raiseHand(roomId: String!, userId: String!): User!
   lowerHand(roomId: String!, userId: String!): User!
+  startShare(roomId: String!, userId: String!): User!
+  endShare(roomId: String!, userId: String!): User!
 }
 
 type Subscription {
@@ -49,4 +52,5 @@ type Subscription {
   roomLeft(roomId: String!): User!
   signal(userId: String!, roomId: String!): User!
   messagePosted(room: String!): Message!
+  shareToggled(roomId: String!): User!
 }

@@ -254,6 +254,12 @@ export default class ConferenceStatus extends VuexModule {
     this.setIsSharing(status);
   }
 
+  // New implementation
+  @Mutation
+  toggleShare() {
+    this.status.isSharing = !this.status.isSharing;
+  }
+
   // ------SETUP/SETTINGS---------
 
   @Mutation

@@ -61,6 +61,7 @@ export default class Room extends VuexModule {
       if (this.room.users[i].id === user.id) {
         this.room.users[i].conferenceJoined = user.conferenceJoined;
         this.room.users[i].handRaised = user.handRaised;
+        this.room.users[i].screenShared = user.screenShared;
         i = 0;
       }
     }
