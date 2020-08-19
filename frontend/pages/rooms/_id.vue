@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="d-flex">
+  <v-container fluid class="d-flex justify-center">
     <e-session-conference class="conference-wrapper" />
     <e-session-control-toolbar class="toolbar-wrapper" />
   </v-container>
@@ -22,6 +22,8 @@ import {
   useOnHandMoved,
   useOnShareToggled,
 } from "~/composable/useRoom";
+import { useSetJid, useOnUserUpdate } from "~/composable/useUser";
+
 import { useOnMessagePosted } from "~/composable/useMessage";
 import { roomStore, sessionStore, conferenceStore } from "~/store";
 
@@ -37,6 +39,7 @@ export default defineComponent({
   setup() {
     const roomRef = computed(() => roomStore.room);
     const userRef = computed(() => sessionStore.user);
+    const jidRef = computed(() => conferenceStore.status.id);
 
     useMeta({ title: roomRef.value.name });
 
@@ -48,9 +51,11 @@ export default defineComponent({
     useOnMessagePosted(roomRef.value);
     useOnHandMoved(roomRef.value);
     useOnShareToggled(roomRef.value);
+    useOnUserUpdate(roomRef.value);
 
     const { mutate: join } = useJoin(userRef.value, roomRef.value);
     join();
+    const { mutate: setJid } = useSetJid();
 
     conferenceStore.updateDisplayName(userRef.value.name);
     conferenceStore.updateRoomName(roomRef.value.name);
@@ -81,6 +86,15 @@ export default defineComponent({
         lazy: true, // immediate: false
       },
     );
+    watch(
+      () => jidRef.value,
+      (newVal) => {
+        setJid({ userId: userRef.value.id, jid: newVal });
+      },
+      {
+        lazy: true, // immediate: false
+      },
+    );
 
     if (process.browser) {
       app.$initJitsi();
@@ -96,8 +110,8 @@ export default defineComponent({
 .toolbar-wrapper {
   bottom: 60px;
   position: absolute;
-  float: right;
-  left: 32%;
+  /* float: right; */
+  /* left: 32%; */
 }
 .conference-wrapper {
   min-width: 100%;

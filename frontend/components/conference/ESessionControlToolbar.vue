@@ -82,8 +82,11 @@ export default defineComponent({
 
     function toggleShare() {
       if (isSharing.value) {
+        // await app.$localTracks.value.localStream.video.dispose();
+        app.$switchShare();
         endShare();
       } else {
+        app.$switchShare();
         startShare();
       }
     }

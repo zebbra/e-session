@@ -10,6 +10,9 @@ export class User {
   @Field((type) => String)
   name: string;
 
+  @Field((type) => String)
+  jid: string;
+
   @Field((type) => Boolean)
   handRaised: boolean;
 
@@ -25,6 +28,12 @@ export class User {
     this.handRaised = false;
     this.conferenceJoined = false;
     this.screenShared = false;
+    this.jid = '';
+  }
+
+  setJid(jid: string): User {
+    this.jid = jid;
+    return this;
   }
 
   raiseHand(): User {
@@ -46,7 +55,6 @@ export class User {
     this.screenShared = false;
     return this;
   }
-
 
   joinConference(): User {
     this.conferenceJoined = true;

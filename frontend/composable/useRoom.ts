@@ -85,6 +85,7 @@ export function useJoin(user: IUser, room: IRoom) {
       roomId: room.id,
     },
     update: (_cache, { data }) => {
+      console.log("useJoin: ", data);
       roomStore.addUser(data.join);
     },
   });
@@ -188,9 +189,11 @@ export function useOnShareToggled(room: IRoom) {
 
     onResult((result) => {
       roomStore.updateUser(result.data.shareToggled);
-      if (result.data.shareToggled.id === sessionStore.user.id) {
-        conferenceStore.toggleShare();
+      let jid = result.data.shareToggled.jid;
+      if (jid === conferenceStore.status.id) {
+        jid = "localStream";
       }
+      conferenceStore.updatePresenterTracks(jid);
     });
   }
 }

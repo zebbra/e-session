@@ -47,6 +47,16 @@ export class UserResolver {
     return user;
   }
 
+  @Mutation((returns) => User)
+  async setJid(
+    @Args("userId") userId: string,
+    @Args("jid") jid: string,
+  ) {
+    const user = this.userService.setJid(userId, jid);
+    this.pubSub.publish("userUpdate", { user });
+    return user;
+  }
+
   @Subscription((returns) => User, {
     filter: (payload, variables) => payload.roomId === variables.roomId,
     resolve: (payload) => payload.user,
@@ -61,5 +71,13 @@ export class UserResolver {
   })
   conferenceLeft(@Args("roomId") roomId: string) {
     return this.pubSub.asyncIterator("conferenceLeft");
+  }
+
+  @Subscription((returns) => User, {
+    filter: (payload, variables) => payload.roomId === variables.roomId,
+    resolve: (payload) => payload.user,
+  })
+  userUpdate(@Args("roomId") roomId: string) {
+    return this.pubSub.asyncIterator("userUpdate");
   }
 }

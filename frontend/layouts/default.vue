@@ -10,7 +10,7 @@
         <v-icon>mdi-menu</v-icon>
       </v-btn>
     </v-app-bar>
-    <v-content>
+    <v-content id="main-content-container">
       <div id="stars"></div>
       <div id="stars2"></div>
       <div id="stars3"></div>

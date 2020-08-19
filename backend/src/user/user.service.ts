@@ -67,4 +67,10 @@ export class UserService {
     this.logger.info("leaveConference(%s)", id);
     return this.findOne(id).leaveConference();
   }
+
+  setJid(id: string, jid: string): User {
+    this.logger.info("set Jitsi ID (%s) for user (%s)", jid, id);
+    return this.findOne(id).setJid(jid);
+  }
+
 }

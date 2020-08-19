@@ -1,6 +1,6 @@
 <template>
   <div class="text-center">
-    <v-menu offset-y top>
+    <v-menu offset-y top eager>
       <template v-slot:activator="{ on, attrs }">
         <v-btn tile large v-bind="attrs" v-on="on">
           <v-icon>mdi-dots-vertical</v-icon>
@@ -10,9 +10,8 @@
       <v-list dense>
         <v-list-item
           v-for="(item, i) in items"
-          :id="item.id"
           :key="i"
-          @click="menuSelection"
+          @click="menuSelection(item.action)"
         >
           <v-list-item-icon>
             <v-icon v-text="item.icon"></v-icon>
@@ -32,22 +31,27 @@
 import { defineComponent, ref } from "nuxt-composition-api";
 import consola from "consola";
 import { openFullscreen, closeFullscreen } from "~/utils/helpers";
+import { globalStore } from "~/store";
 
 export default defineComponent({
   name: "ESessionControlToolbarSettingsMenu",
 
   setup() {
     const items = ref([
-      { text: "Settings", icon: "mdi-cog", id: "SHOW_SETTINGS" },
-      { text: "Fullscreen", icon: "mdi-fullscreen", id: "TOGGLE_FULLSCREEN" },
+      { text: "Settings", icon: "mdi-cog", action: "SHOW_SETTINGS" },
+      {
+        text: "Fullscreen",
+        icon: "mdi-fullscreen",
+        action: "TOGGLE_FULLSCREEN",
+      },
       /* { text: "Hide Background", icon: "mdi-blur" }, */
-      { text: "Toggle Grid", icon: "mdi-grid", id: "TOGGLE_GRID" },
+      { text: "Toggle Grid", icon: "mdi-grid", action: "TOGGLE_GRID" },
       /* { text: "Record Session", icon: "mdi-record" }, */
     ]);
     const appIsFullscreen = ref(false);
 
-    function menuSelection(event: any) {
-      switch (event.target.id) {
+    function menuSelection(action: string) {
+      switch (action) {
         case "SHOW_SETTINGS":
           consola.log("SHOW_SETTINGS");
           break;
@@ -55,7 +59,7 @@ export default defineComponent({
           if (appIsFullscreen.value) {
             closeFullscreen(document);
           } else {
-            openFullscreen(document.body);
+            openFullscreen(document.getElementById("main-content-container"));
             document.body.onfullscreenchange = handleFullscreenChange;
           }
           break;
@@ -72,9 +76,11 @@ export default defineComponent({
       const isFullscreen = document.fullscreenElement === elem;
       if (isFullscreen) {
         // consola.log("Full start");
+        globalStore.toggleModerationDrawer();
         appIsFullscreen.value = true;
       } else {
         // consola.log("Full end");
+        globalStore.toggleModerationDrawer();
         appIsFullscreen.value = false;
       }
     }

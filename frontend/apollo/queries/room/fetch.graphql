@@ -11,6 +11,7 @@ query fetchRoom($name: String!) {
       handRaised
       conferenceJoined
       screenShared
+      jid
     }
   }
 }

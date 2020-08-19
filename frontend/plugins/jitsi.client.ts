@@ -87,6 +87,9 @@ export default ({ app }) => {
       (userID: string, displayName: string) =>
         consola.log(`${userID} - ${displayName}`),
     );
+    app.$room.on(app.$jitsi.events.conference.TALK_WHILE_MUTED, () =>
+      consola.log("you are talking while muted"),
+    );
     /* app.$room.on(
       app.$jitsi.events.conference.TRACK_AUDIO_LEVEL_CHANGED,
       (userID, audioLevel) => consola.log(`${userID} - ${audioLevel}`),
@@ -96,10 +99,7 @@ export default ({ app }) => {
     app.$room.join();
     conferenceStore.setId(app.$room.myUserId());
     conferenceStore.updateJoined(true);
-
-    _getLocalDevices().then((options) => {
-      app.$createLocalTracks(options);
-    });
+    app.$createLocalTracks({ audio: true, video: true, setup: true });
   };
 
   app.$onConnectionFailed = () => {
@@ -152,7 +152,9 @@ export default ({ app }) => {
       );
       _onLocalTracks(tracks);
       if (options.setup) {
-        conferenceStore.showSetup(true);
+        _getLocalDevices().then(() => {
+          conferenceStore.showSetup(true);
+        });
       }
     } catch (err) {
       if (err.gum) {
@@ -247,9 +249,9 @@ export default ({ app }) => {
         ) {
           tracks[i].mute();
         }
-        if (tracks[i].videoType === "desktop") {
-          conferenceStore.updatePresenterTracks("localStream");
-        }
+        // if (tracks[i].videoType === "desktop") {
+        // conferenceStore.updatePresenterTracks("localStream");
+        // }
         conferenceStore.updateCameraId(tracks[i].getDeviceId());
         Vue.set(app.$localTracks.value.localStream, "video", tracks[i]);
       }
@@ -289,30 +291,33 @@ export default ({ app }) => {
         audio: true,
       };
 
-      if (app.$jitsi.mediaDevices.isDeviceChangeAvailable("output")) {
-        app.$jitsi.mediaDevices.enumerateDevices((devices) => {
-          // consola.log("audiooutput", devices.filter((d) => d.kind === "audiooutput"));
-          conferenceStore.updateOutputDevices(
-            devices.filter((d) => d.kind === "audiooutput"),
-          );
-          conferenceStore.updateMicrophoneDevices(
-            devices.filter((d) => d.kind === "audioinput"),
-          );
-          conferenceStore.updateCameraDevices(
-            devices.filter((d) => d.kind === "videoinput"),
-          );
-          if (devices.filter((d) => d.kind === "videoinput").length <= 0) {
-            options.video = false;
-          }
-          if (devices.filter((d) => d.kind === "audioinput").length <= 0) {
-            options.audio = false;
-          }
-        });
-        resolve(options);
-      } else {
-        reject(Error("It broke"));
-        // make better error handling
-      }
+      app.$jitsi.mediaDevices.isDevicePermissionGranted().then(() => {
+        if (app.$jitsi.mediaDevices.isDeviceListAvailable()) {
+          app.$jitsi.mediaDevices.enumerateDevices((devices) => {
+            // consola.log("devices: ", devices);
+            // consola.log("audiooutput", devices.filter((d) => d.kind === "audiooutput"));
+            conferenceStore.updateOutputDevices(
+              devices.filter((d) => d.kind === "audiooutput"),
+            );
+            conferenceStore.updateMicrophoneDevices(
+              devices.filter((d) => d.kind === "audioinput"),
+            );
+            conferenceStore.updateCameraDevices(
+              devices.filter((d) => d.kind === "videoinput"),
+            );
+            if (devices.filter((d) => d.kind === "videoinput").length <= 0) {
+              options.video = false;
+            }
+            if (devices.filter((d) => d.kind === "audioinput").length <= 0) {
+              options.audio = false;
+            }
+          });
+          resolve(options);
+        } else {
+          reject(Error("It broke"));
+          // make better error handling
+        }
+      });
     });
   }
 
@@ -363,9 +368,9 @@ export default ({ app }) => {
         conferenceStore.updateMutedVideoTracks(track.getParticipantId());
       }
       // If track is a dekstop share add participant id to presenter store
-      if (track.videoType === "desktop") {
+      /* if (track.videoType === "desktop") {
         conferenceStore.updatePresenterTracks(id);
-      }
+      } */
       Vue.set(app.$remoteTracks.value[id].value, "video", track);
       consola.log(
         "onRemoteTrackAdd type video",

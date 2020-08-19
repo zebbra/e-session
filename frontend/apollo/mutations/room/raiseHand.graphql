@@ -4,5 +4,6 @@ mutation raiseHand($userId: String!, $roomId: String!) {
     name
     handRaised
     conferenceJoined
+    jid
   }
 }
