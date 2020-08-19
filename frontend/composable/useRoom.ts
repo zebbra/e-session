@@ -85,7 +85,6 @@ export function useJoin(user: IUser, room: IRoom) {
       roomId: room.id,
     },
     update: (_cache, { data }) => {
-      console.log("useJoin: ", data);
       roomStore.addUser(data.join);
     },
   });

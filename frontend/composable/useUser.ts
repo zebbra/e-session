@@ -20,7 +20,7 @@ export function useOnUserUpdate(room: IRoom) {
     );
 
     onResult((result) => {
-      console.log("useOnUserUpdate: ", result);
+      // console.log("useOnUserUpdate: ", result);
       roomStore.updateUser(result.data.user);
       /* if (result.data.user.id !== roomStore.) {
         roomStore.addUser(result.data.roomJoined);

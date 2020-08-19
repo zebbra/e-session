@@ -61,6 +61,7 @@ export default defineComponent({
       onDone(() => {
         app.$closeJitsiConnection();
         roomStore.setUsersFilter("");
+        conferenceStore.doClearConferenceStatus();
         redirect("/");
       });
       leave();

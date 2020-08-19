@@ -18,14 +18,14 @@
       </template>
       <span>{{ user.handRaised ? "Lower Hand" : "Raise Hand" }}</span>
     </v-tooltip> -->
-    <v-tooltip bottom>
+    <!-- <v-tooltip bottom>
       <template v-slot:activator="{ on }">
         <v-btn icon @click.stop="leaveRoom">
           <v-icon v-on="on">mdi-exit-to-app</v-icon>
         </v-btn>
       </template>
       <span>Leave Room</span>
-    </v-tooltip>
+    </v-tooltip> -->
   </v-list-item>
 </template>
 

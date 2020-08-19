@@ -357,4 +357,35 @@ export default class ConferenceStatus extends VuexModule {
       this.addPresenterTrack(id);
     }
   }
+
+  @Action
+  doClearConferenceStatus() {
+    this.clearConferenceStatus();
+  }
+
+  @Mutation
+  clearConferenceStatus() {
+    this.status = {
+      isJoined: false,
+      isSpeaker: false,
+      id: "",
+      displayName: "",
+      roomName: "",
+      localAudioLevel: 0,
+      micMuted: false,
+      camMuted: false,
+      isSharing: false,
+      error: false,
+      errorMsg: "",
+      errorResolution: "",
+    };
+
+    this.mutedAudioTracks = [];
+    this.mutedVideoTracks = [];
+    this.presenterTracks = [];
+
+    this.devicePremissionPromptShown = "";
+    this.deviceSettingsVisible = false;
+    this.setupVisible = false;
+  }
 }
