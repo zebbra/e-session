@@ -44,14 +44,20 @@ export default ({ app }) => {
   };
 
   app.$closeJitsiConnection = () => {
-    app.$localTracks.value.localStream.video.dispose();
-    app.$localTracks.value.localStream.audio.dispose();
-    Vue.delete(app.$localTracks.value.localStream, "video");
-    Vue.delete(app.$localTracks.value.localStream, "audio");
-    app.$room.leave();
-    app.$connection.disconnect();
-    app.$room = null;
-    app.$connection = null;
+    if (app.$localTracks.value.localStream) {
+      app.$localTracks.value.localStream.video.dispose();
+      app.$localTracks.value.localStream.audio.dispose();
+      Vue.delete(app.$localTracks.value.localStream, "video");
+      Vue.delete(app.$localTracks.value.localStream, "audio");
+    }
+    if (app.$room) {
+      app.$room.leave();
+      app.$room = null;
+    }
+    if (app.$connection) {
+      app.$connection.disconnect();
+      app.$connection = null;
+    }
     conferenceStore.updateJoined(false);
   };
 
