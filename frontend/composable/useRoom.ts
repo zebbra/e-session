@@ -74,6 +74,7 @@ export function useLeave(user: IUser, room: IRoom) {
     },
     update: () => {
       roomStore.clearRoom();
+      sessionStore.resetLocalUserParameters();
     },
   });
 }

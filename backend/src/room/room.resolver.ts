@@ -23,6 +23,9 @@ export class RoomResolver {
 
   @Query((returns) => [User])
   async usersInConference(@Args("room") room: string) {
+    console.log("usersInConference", this.roomService
+    .lookup(room)
+    .users.filter((user) => user.conferenceJoined))
     return this.roomService
       .lookup(room)
       .users.filter((user) => user.conferenceJoined);
@@ -54,6 +57,7 @@ export class RoomResolver {
 
   @Mutation((returns) => User, { nullable: true })
   async leave(@Args("userId") userId: string, @Args("roomId") roomId: string) {
+    const _ = this.userService.resetUserParameters(userId);
     const user = this.roomService.leave(userId, roomId);
     this.pubSub.publish("roomLeft", { user, roomId });
     return user;

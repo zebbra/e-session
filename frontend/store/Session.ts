@@ -36,6 +36,13 @@ export default class Session extends VuexModule {
     this.user.conferenceJoined = !this.user.conferenceJoined;
   }
 
+  @Mutation
+  resetLocalUserParameters() {
+    this.user.handRaised = false;
+    this.user.conferenceJoined = false;
+    this.user.screenShared = false;
+  }
+
   get isModerator() {
     return this.role === "moderator";
   }

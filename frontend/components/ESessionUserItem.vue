@@ -10,7 +10,7 @@
             {{ user.id === currentUser.id ? role : "User" }}
           </v-list-item-subtitle>
         </v-list-item-content>
-        <div>
+        <div class="d-flex">
           <v-tooltip v-if="user.handRaised && isModerator" left>
             <template v-slot:activator="{ on }">
               <v-list-item-icon>

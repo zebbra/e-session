@@ -66,8 +66,12 @@ export default defineComponent({
       () => usersInConference.value,
       (newVal) => {
         const speaker = newVal.filter(
-          (item) => item.id === sessionStore.user.id,
+          (item) => item.id === sessionStore.user.id && item.conferenceJoined,
         );
+        console.log("newVal", newVal);
+        console.log("esssionStore.user.id", sessionStore.user.id);
+        console.log("speaker", speaker);
+
         if (speaker.length > 0) {
           conferenceStore.updateIsSpeaker(true);
           app.$room.addTrack(app.$localTracks.value.localStream.video);
@@ -90,7 +94,9 @@ export default defineComponent({
     watch(
       () => jidRef.value,
       (newVal) => {
-        setJid({ userId: userRef.value.id, jid: newVal });
+        if (newVal.length > 0) {
+          setJid({ userId: userRef.value.id, jid: newVal });
+        }
       },
       {
         lazy: true, // immediate: false

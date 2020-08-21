@@ -73,4 +73,9 @@ export class UserService {
     return this.findOne(id).setJid(jid);
   }
 
+  resetUserParameters(id: string): User {
+    this.logger.info("resetUserParameters for user (%s)", id);
+    return this.findOne(id).resetUserParameters();
+  }
+
 }

@@ -30,11 +30,14 @@ export class Room {
     if (!this.users.includes(user)) {
       this.users.push(user);
     }
+    console.log("userJoined", this.users)
     return this;
   }
 
   userLeft(id: string): Room {
+    console.log("userLeft", this.users)
     remove(this.users, { id });
+    console.log("userLeft after remove", this.users)
     return this;
   }
 

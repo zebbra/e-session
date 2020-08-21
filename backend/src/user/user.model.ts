@@ -65,4 +65,13 @@ export class User {
     this.conferenceJoined = false;
     return this;
   }
+
+  resetUserParameters(): User {
+    this.conferenceJoined = false;
+    this.handRaised = false;
+    this.conferenceJoined = false;
+    this.screenShared = false;
+    this.jid = '';
+    return this;
+  }
 }
