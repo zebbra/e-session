@@ -23,9 +23,6 @@ export class RoomResolver {
 
   @Query((returns) => [User])
   async usersInConference(@Args("room") room: string) {
-    console.log("usersInConference", this.roomService
-    .lookup(room)
-    .users.filter((user) => user.conferenceJoined))
     return this.roomService
       .lookup(room)
       .users.filter((user) => user.conferenceJoined);

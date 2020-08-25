@@ -1,4 +1,5 @@
 import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators";
+import { IUser } from "~/types";
 
 @Module({
   name: "ConferenceStatus",
@@ -53,6 +54,7 @@ export default class ConferenceStatus extends VuexModule {
   public mutedAudioTracks: Array<any> = [];
   public mutedVideoTracks: Array<any> = [];
   public presenterTracks: Array<any> = [];
+  public addedParticipants: Array<any> = [];
 
   public devicePremissionPromptShown: string = "";
   public deviceSettingsVisible: boolean = false;
@@ -355,6 +357,28 @@ export default class ConferenceStatus extends VuexModule {
       this.removePresenterTrack(id);
     } else {
       this.addPresenterTrack(id);
+    }
+  }
+
+  // ------addedParticipants ---------
+
+  @Mutation
+  addParticipant(id: string) {
+    this.addedParticipants.push(id);
+  }
+
+  @Mutation
+  removeParticipant(id: string) {
+    const idx = this.addedParticipants.indexOf(id);
+    this.addedParticipants.splice(idx, 1);
+  }
+
+  @Action
+  updateAddedParticipants(user: IUser) {
+    if (this.addedParticipants.includes(user.id)) {
+      this.removeParticipant(user.id);
+    } else {
+      this.addParticipant(user.id);
     }
   }
 

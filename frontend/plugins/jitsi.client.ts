@@ -4,6 +4,7 @@ import Vue from "vue";
 import { roomStore, sessionStore, conferenceStore } from "~/store";
 import { options, initOptions, confOptions } from "~/utils/jitsi";
 import { handleGum } from "~/utils/gumErrorHandling";
+// import { useEndShare } from "~/composable/useRoom";
 
 export default ({ app }) => {
   const jitsi = (window as any).JitsiMeetJS;
@@ -200,6 +201,39 @@ export default ({ app }) => {
     }
   };
 
+  app.$startShare = async () => {
+    // if (!app.$localTracks.value.localStream.video.disposed) {
+    // await app.$localTracks.value.localStream.video.dispose();
+    // }
+    await app.$room.removeTrack(app.$localTracks.value.localStream.video);
+    // await app.$localTracks.value.localStream.video.dispose();
+    try {
+      const tracks = await app.$jitsi.createLocalTracks({
+        devices: ["desktop"],
+      });
+      _onLocalTracksShare(tracks);
+    } catch (err) {
+      conferenceStore.updateIsSharing(!conferenceStore.status.isSharing);
+      consola.error("Exception switchShare:", err);
+    }
+  };
+
+  app.$endShare = async () => {
+    await app.$room.removeTrack(app.$localTracks.value.localStream.video);
+    // if (!app.$localTracks.value.localStream.video.disposed) {
+    await app.$localTracks.value.localStream.video.dispose();
+    // }
+    // conferenceStore.updateIsSharing(!conferenceStore.status.isSharing);
+    try {
+      const tracks = await app.$jitsi.createLocalTracks({
+        devices: ["video"],
+      });
+      _onLocalTracksShare(tracks);
+    } catch (err) {
+      consola.error("Exception stopShare:", err);
+    }
+  };
+
   app.$switchShare = async () => {
     if (app.$localTracks.value.localStream.video) {
       await app.$localTracks.value.localStream.video.dispose();
@@ -228,8 +262,47 @@ export default ({ app }) => {
     conferenceStore.premissionPromptShown(type);
   }
 
+  function _onLocalTracksShare(tracks) {
+    for (let i = 0; i < tracks.length; i++) {
+      // consola.log("track device id", tracks[i].getDeviceId());
+      tracks[i].addEventListener(
+        app.$jitsi.events.track.TRACK_MUTE_CHANGED,
+        (track: any) => _onLocalTrackMuted(track),
+      );
+      tracks[i].addEventListener(
+        app.$jitsi.events.track.LOCAL_TRACK_STOPPED,
+        () => _localTrackEnded(),
+      );
+      tracks[i].addEventListener(
+        app.$jitsi.events.track.TRACK_AUDIO_OUTPUT_CHANGED,
+        (deviceId: String) =>
+          consola.log(`track audio output device was changed to ${deviceId}`),
+      );
+      const type = tracks[i].getType();
+      // consola.log(localTracks);
+      if (type === "video") {
+        // If cam was muted then we mute the stream if type is not desktop (screen sharing)
+        if (
+          conferenceStore.status.camMuted &&
+          tracks[i].videoType !== "desktop"
+        ) {
+          tracks[i].mute();
+        }
+        conferenceStore.updateCameraId(tracks[i].getDeviceId());
+        Vue.set(app.$localTracks.value.localStream, "video", tracks[i]);
+      }
+    }
+    if (conferenceStore.status.isSpeaker) {
+      app.$room.addTrack(app.$localTracks.value.localStream.video);
+    }
+    consola.log("onLocalTracksShare done");
+  }
+
   function _onLocalTracks(tracks) {
     // consola.log("tracks: ", tracks);
+    // console.log("_onLocalTracks removing track: ", app.$localTracks.value.localStream.video);
+    // console.log("_conferenceStore.status: ", conferenceStore.status);
+
     for (let i = 0; i < tracks.length; i++) {
       // consola.log("track device id", tracks[i].getDeviceId());
       tracks[i].addEventListener(
@@ -334,8 +407,10 @@ export default ({ app }) => {
       conferenceStore.status.isSharing,
     );
     if (conferenceStore.status.isSharing) {
+      // useEndShare(sessionStore.user, roomStore.room);
+      conferenceStore.updateIsSharing(!conferenceStore.status.isSharing);
       consola.log("stop sharing");
-      app.$switchShare();
+      // app.$switchShare();
     }
   }
 

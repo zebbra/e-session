@@ -1,8 +1,15 @@
 <template>
   <div class="text-center">
-    <v-menu offset-y top eager>
+    <v-menu
+      offset-y
+      top
+      absolute
+      allow-overflow
+      attach="#menuAnchor"
+      content-class="customContent"
+    >
       <template v-slot:activator="{ on, attrs }">
-        <v-btn tile large v-bind="attrs" v-on="on">
+        <v-btn id="menuAnchor" tile large v-bind="attrs" v-on="on">
           <v-icon>mdi-dots-vertical</v-icon>
         </v-btn>
       </template>
@@ -28,6 +35,7 @@
 </template>
 
 <script lang="ts">
+import Vue from "vue";
 import { defineComponent, ref } from "nuxt-composition-api";
 import consola from "consola";
 import { openFullscreen, closeFullscreen } from "~/utils/helpers";
@@ -76,11 +84,15 @@ export default defineComponent({
       const isFullscreen = document.fullscreenElement === elem;
       if (isFullscreen) {
         // consola.log("Full start");
-        globalStore.toggleModerationDrawer();
+        globalStore.closeModerationDrawer();
         appIsFullscreen.value = true;
+        Vue.set(items.value[1], "text", "Windowed");
+        Vue.set(items.value[1], "icon", "mdi-fullscreen-exit");
       } else {
         // consola.log("Full end");
-        globalStore.toggleModerationDrawer();
+        Vue.set(items.value[1], "text", "Fullscreen");
+        Vue.set(items.value[1], "icon", "mdi-fullscreen");
+
         appIsFullscreen.value = false;
       }
     }
@@ -93,4 +105,8 @@ export default defineComponent({
 });
 </script>
 
-<style></style>
+<style scoped>
+.customContent {
+  display: table;
+}
+</style>

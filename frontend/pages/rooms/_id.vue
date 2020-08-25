@@ -23,7 +23,6 @@ import {
   useOnShareToggled,
 } from "~/composable/useRoom";
 import { useSetJid, useOnUserUpdate } from "~/composable/useUser";
-
 import { useOnMessagePosted } from "~/composable/useMessage";
 import { roomStore, sessionStore, conferenceStore } from "~/store";
 
@@ -60,18 +59,15 @@ export default defineComponent({
     conferenceStore.updateDisplayName(userRef.value.name);
     conferenceStore.updateRoomName(roomRef.value.name);
 
-    const usersInConference = useUsersInConference(roomRef.value);
+    useUsersInConference(roomRef.value);
 
     watch(
-      () => usersInConference.value,
+      () => conferenceStore.addedParticipants,
       (newVal) => {
-        const speaker = newVal.filter(
-          (item) => item.id === sessionStore.user.id && item.conferenceJoined,
-        );
+        /* console.log("usersInConference", usersInConference.value);
         console.log("newVal", newVal);
-        console.log("esssionStore.user.id", sessionStore.user.id);
-        console.log("speaker", speaker);
-
+        console.log("oldVal", oldVal); */
+        const speaker = newVal.filter((item) => item === sessionStore.user.id);
         if (speaker.length > 0) {
           conferenceStore.updateIsSpeaker(true);
           app.$room.addTrack(app.$localTracks.value.localStream.video);
@@ -90,7 +86,6 @@ export default defineComponent({
         lazy: true, // immediate: false
       },
     );
-
     watch(
       () => jidRef.value,
       (newVal) => {

@@ -24,6 +24,9 @@ export function useUsersInConference(room: IRoom) {
       },
       updateQuery: (previousResult, { subscriptionData }) => {
         roomStore.updateUser(subscriptionData.data.conferenceJoined);
+        conferenceStore.updateAddedParticipants(
+          subscriptionData.data.conferenceJoined,
+        );
         previousResult.usersInConference.push(
           subscriptionData.data.conferenceJoined,
         );
@@ -38,6 +41,9 @@ export function useUsersInConference(room: IRoom) {
       },
       updateQuery: (previousResult, { subscriptionData }) => {
         roomStore.updateUser(subscriptionData.data.conferenceLeft);
+        conferenceStore.updateAddedParticipants(
+          subscriptionData.data.conferenceLeft,
+        );
         for (let i = previousResult.usersInConference.length - 1; i >= 0; --i) {
           if (
             previousResult.usersInConference[i].id ===
@@ -51,7 +57,6 @@ export function useUsersInConference(room: IRoom) {
       },
     });
   }
-
   return useResult(users, [] as IUser[], (data) => data.usersInConference);
 }
 

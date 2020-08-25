@@ -30,7 +30,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useContext, computed } from "nuxt-composition-api";
+import {
+  defineComponent,
+  useContext,
+  computed,
+  watch,
+} from "nuxt-composition-api";
 // import consola from "consola";
 import { roomStore, sessionStore, conferenceStore } from "~/store";
 import {
@@ -82,14 +87,7 @@ export default defineComponent({
     }
 
     function toggleShare() {
-      if (isSharing.value) {
-        // await app.$localTracks.value.localStream.video.dispose();
-        app.$switchShare();
-        endShare();
-      } else {
-        app.$switchShare();
-        startShare();
-      }
+      conferenceStore.updateIsSharing(!conferenceStore.status.isSharing);
     }
 
     function toggleMic() {
@@ -112,13 +110,25 @@ export default defineComponent({
       }
     }
 
-    /* async function toggleShare() {
-      if (conferenceStore.status.isSharing) {
-        await app.$localTracks.value.localStream.video.dispose();
-      } else {
-        app.$switchShare();
-      }
-    } */
+    watch(
+      // getter
+      () => conferenceStore.status.isSharing,
+      // callback
+      (newVal) => {
+        // console.log("conferenceStore.status.isSharing", newVal);
+        if (newVal === true) {
+          startShare();
+          app.$startShare();
+        } else {
+          endShare();
+          app.$endShare();
+        }
+      },
+      // watch Options
+      {
+        lazy: true,
+      },
+    );
 
     return {
       leaveRoom,

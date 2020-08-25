@@ -1,5 +1,5 @@
 mutation startShare($userId: String!, $roomId: String!) {
-  startShare(userId: $userId, roomId: $roomId) {
+  startShare(roomId: $roomId, userId: $userId) {
     id
     name
     handRaised

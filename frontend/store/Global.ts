@@ -15,6 +15,11 @@ export default class Global extends VuexModule {
   }
 
   @Mutation
+  closeModerationDrawer() {
+    this.moderationDrawer = false;
+  }
+
+  @Mutation
   showErrorMessage(message: string) {
     this.errorMessage = message;
   }

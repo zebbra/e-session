@@ -31,7 +31,6 @@
 </template>
 
 <script lang="ts">
-import consola from "consola";
 import { defineComponent, computed, useContext } from "nuxt-composition-api";
 import { conferenceStore } from "~/store";
 
@@ -61,11 +60,11 @@ export default defineComponent({
       ];
 
     const dominantMediaTracks: any = computed(() => {
-      consola.log("lastPresenterId", lastPresenterId);
+      /* consola.log("lastPresenterId", lastPresenterId);
       consola.log(
         "participants[lastPresenterId];",
         participants.value[lastPresenterId],
-      );
+      ); */
       return participants.value[lastPresenterId];
     });
 
