@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-row>
+    <v-row class="pt-2">
       <v-col>
         <e-session-media :video-stream="videoStream" :audio-stream="null" />
         <local-audio-indicator />

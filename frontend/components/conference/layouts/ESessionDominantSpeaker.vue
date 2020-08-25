@@ -8,59 +8,43 @@
     </v-col>
   </v-row> -->
   <div>
-    <div v-if="dominantSpeakerView">
-      <e-session-dominant-speaker />
+    <div class="dominantSpeaker">
+      <e-session-local-peer
+        v-if="lastPresenterId === 'localStream'"
+        class="peer"
+        :media-tracks="dominantMediaTracks"
+      />
+      <e-session-remote-peer
+        v-else
+        class="peer"
+        :media-tracks="dominantMediaTracks"
+      />
     </div>
-    <div v-else :class="peerWrapperClassName">
-      <div
-        v-for="(value, key) in participants"
-        :key="key"
-        class="participantWrapper"
-      >
-        <e-session-local-peer
-          v-if="key === 'localStream'"
-          class="peer"
-          :media-tracks="value"
-        />
-        <e-session-remote-peer v-else class="peer" :media-tracks="value" />
-      </div>
-    </div>
-    <v-dialog v-model="settingsDialog" persistent max-width="600">
-      <e-session-local-media-settings />
-    </v-dialog>
+    <!-- <div
+      v-for="(value, key) in participants"
+      :key="key"
+      class="participantWrapper"
+    >
+      <e-session-remote-peer class="peer" :media-tracks="value" />
+    </div> -->
   </div>
 </template>
 
 <script lang="ts">
-import consola from "consola";
 import { defineComponent, computed, useContext } from "nuxt-composition-api";
 import { conferenceStore } from "~/store";
 
 export default defineComponent({
-  name: "ESessionConference",
+  name: "ESessionDominantSpeaker",
   head: {},
   components: {
     ESessionRemotePeer: () =>
       import("~/components/conference/ESessionRemotePeer.vue"),
     ESessionLocalPeer: () =>
       import("~/components/conference/ESessionLocalPeer.vue"),
-    ESessionDominantSpeaker: () =>
-      import("~/components/conference/layouts/ESessionDominantSpeaker.vue"),
   },
   setup() {
     const { app } = useContext();
-    const dominantSpeakerView = computed(() => {
-      if (conferenceStore.presenterTracks.length > 0) {
-        consola.log("dominantSpeakerView on");
-        return true;
-      } else {
-        consola.log("dominantSpeakerView off");
-        return false;
-      }
-    });
-    const settingsDialog = computed(
-      () => conferenceStore.deviceSettingsVisible,
-    );
 
     const participants: any = computed(() => {
       if (conferenceStore.status.isSpeaker) {
@@ -70,31 +54,24 @@ export default defineComponent({
       }
     });
 
-    const peerWrapperClassName = computed(() => {
-      consola.log("peerWrapperClassName: ", app.$remoteTracks);
-      const numOfPeers = Object.keys(app.$remoteTracks.value).length;
-      if (numOfPeers > 0) {
-        return "grid-" + numOfPeers;
-      } else if (numOfPeers > 6) {
-        return "grid-6";
-      } else {
-        return "grid-1";
-      }
+    const lastPresenterId =
+      conferenceStore.presenterTracks[
+        conferenceStore.presenterTracks.length - 1
+      ];
+
+    const dominantMediaTracks: any = computed(() => {
+      /* consola.log("lastPresenterId", lastPresenterId);
+      consola.log(
+        "participants[lastPresenterId];",
+        participants.value[lastPresenterId],
+      ); */
+      return participants.value[lastPresenterId];
     });
-
-    function showSettings() {
-      conferenceStore.showDeviceSettings(true);
-    }
-
-    function endCall() {}
 
     return {
       participants,
-      peerWrapperClassName,
-      settingsDialog,
-      showSettings,
-      endCall,
-      dominantSpeakerView,
+      dominantMediaTracks,
+      lastPresenterId,
     };
   },
 });

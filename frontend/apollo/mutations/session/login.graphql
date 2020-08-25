@@ -4,5 +4,7 @@ mutation loginUser($name: String!) {
     name
     handRaised
     conferenceJoined
+    screenShared
+    jid
   }
 }

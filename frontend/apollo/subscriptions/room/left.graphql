@@ -2,5 +2,6 @@ subscription onRoomLeft($roomId: String!) {
   roomLeft(roomId: $roomId) {
     id
     name
+    jid
   }
 }

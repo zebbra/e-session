@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card class="custom-theme">
     <v-card-text>
       <v-form @submit.prevent>
         <v-text-field
@@ -30,3 +30,9 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.custom-theme {
+  background-color: var(--v-background-base) !important;
+}
+</style>

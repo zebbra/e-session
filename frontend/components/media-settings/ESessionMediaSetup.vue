@@ -1,5 +1,5 @@
 <template>
-  <v-card class="text-center">
+  <v-card class="text-center custom-theme">
     <v-card-text>
       <e-session-media-settings />
       <v-row class="justify-center">
@@ -35,4 +35,8 @@ export default defineComponent({
 });
 </script>
 
-<style></style>
+<style scoped>
+.custom-theme {
+  background-color: var(--v-background-lighten1) !important;
+}
+</style>

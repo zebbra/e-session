@@ -1,7 +1,7 @@
 <template>
-  <v-app dark>
+  <v-app dusk>
     <e-session-snackbar />
-    <v-app-bar fixed app>
+    <v-app-bar fixed app class="custom-theme">
       <v-toolbar-title v-text="title" />
       <v-spacer></v-spacer>
       <span class="title">{{ room && room.name }}</span>
@@ -10,7 +10,7 @@
         <v-icon>mdi-menu</v-icon>
       </v-btn>
     </v-app-bar>
-    <v-content>
+    <v-content id="main-content-container">
       <div id="stars"></div>
       <div id="stars2"></div>
       <div id="stars3"></div>
@@ -26,8 +26,11 @@
         <e-session-media-setup />
       </v-dialog>
     </v-content>
-    <e-session-moderation-drawer v-if="roomJoined" />
-    <v-footer fixed>
+    <e-session-moderation-drawer
+      v-if="roomJoined"
+      class="custom-theme-lighter"
+    />
+    <v-footer fixed class="custom-theme">
       <span
         >&#9994; e-session
         <a href="https://github.com/zebbra/e-session" target="_blank"
@@ -86,4 +89,11 @@ export default defineComponent({
   },
 });
 </script>
-<style scoped></style>
+<style scoped>
+.custom-theme {
+  background-color: var(--v-background-base) !important;
+}
+.custom-theme-lighter {
+  background-color: var(--v-background-lighten1) !important;
+}
+</style>

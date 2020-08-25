@@ -5,7 +5,7 @@ import {
   useResult,
 } from "@vue/apollo-composable";
 import { Ref } from "@vue/composition-api";
-import { roomStore, sessionStore } from "~/store";
+import { roomStore, sessionStore, conferenceStore } from "~/store";
 import { queries, mutations, subscriptions } from "~/apollo";
 import { IUser, IRoom } from "~/types";
 
@@ -24,6 +24,9 @@ export function useUsersInConference(room: IRoom) {
       },
       updateQuery: (previousResult, { subscriptionData }) => {
         roomStore.updateUser(subscriptionData.data.conferenceJoined);
+        conferenceStore.updateAddedParticipants(
+          subscriptionData.data.conferenceJoined,
+        );
         previousResult.usersInConference.push(
           subscriptionData.data.conferenceJoined,
         );
@@ -38,6 +41,9 @@ export function useUsersInConference(room: IRoom) {
       },
       updateQuery: (previousResult, { subscriptionData }) => {
         roomStore.updateUser(subscriptionData.data.conferenceLeft);
+        conferenceStore.updateAddedParticipants(
+          subscriptionData.data.conferenceLeft,
+        );
         for (let i = previousResult.usersInConference.length - 1; i >= 0; --i) {
           if (
             previousResult.usersInConference[i].id ===
@@ -51,7 +57,6 @@ export function useUsersInConference(room: IRoom) {
       },
     });
   }
-
   return useResult(users, [] as IUser[], (data) => data.usersInConference);
 }
 
@@ -74,6 +79,7 @@ export function useLeave(user: IUser, room: IRoom) {
     },
     update: () => {
       roomStore.clearRoom();
+      sessionStore.resetLocalUserParameters();
     },
   });
 }
@@ -157,6 +163,42 @@ export function useOnHandMoved(room: IRoom) {
       if (result.data.handMoved.id === sessionStore.user.id) {
         sessionStore.handMoved();
       }
+    });
+  }
+}
+
+export function useStartShare(user: IUser, room: IRoom) {
+  return useMutation(mutations.room.startShare, {
+    variables: {
+      userId: user.id,
+      roomId: room.id,
+    },
+  });
+}
+
+export function useEndShare(user: IUser, room: IRoom) {
+  return useMutation(mutations.room.endShare, {
+    variables: {
+      userId: user.id,
+      roomId: room.id,
+    },
+  });
+}
+
+export function useOnShareToggled(room: IRoom) {
+  if (process.browser) {
+    const { onResult } = useSubscription<{ shareToggled: IUser }>(
+      subscriptions.room.onShareToggled,
+      { roomId: room.id },
+    );
+
+    onResult((result) => {
+      roomStore.updateUser(result.data.shareToggled);
+      let jid = result.data.shareToggled.jid;
+      if (jid === conferenceStore.status.id) {
+        jid = "localStream";
+      }
+      conferenceStore.updatePresenterTracks(jid);
     });
   }
 }

@@ -48,6 +48,16 @@ export class UserService {
     return this.findOne(id).lowerHand();
   }
 
+  startShare(id: string): User {
+    this.logger.info("startShare(%s)", id);
+    return this.findOne(id).startShare();
+  }
+
+  endShare(id: string): User {
+    this.logger.info("endShare(%s)", id);
+    return this.findOne(id).endShare();
+  }
+
   joinConference(id: string): User {
     this.logger.info("joinConference(%s)", id);
     return this.findOne(id).joinConference();
@@ -57,4 +67,15 @@ export class UserService {
     this.logger.info("leaveConference(%s)", id);
     return this.findOne(id).leaveConference();
   }
+
+  setJid(id: string, jid: string): User {
+    this.logger.info("set Jitsi ID (%s) for user (%s)", jid, id);
+    return this.findOne(id).setJid(jid);
+  }
+
+  resetUserParameters(id: string): User {
+    this.logger.info("resetUserParameters for user (%s)", id);
+    return this.findOne(id).resetUserParameters();
+  }
+
 }

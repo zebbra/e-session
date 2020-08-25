@@ -6,6 +6,7 @@
     right
     fixed
     bottom
+    overlay-color="blue"
   >
     <template v-slot:prepend>
       <e-session-moderation-drawer-header :room="room" :user="user" />
@@ -14,7 +15,7 @@
     <v-divider></v-divider>
 
     <v-tabs v-model="selectedTab" centered grow>
-      <v-tab>
+      <v-tab class="custom-theme">
         <v-icon>mdi-account-multiple-outline</v-icon> People ({{
           room.users.length
         }})
@@ -22,7 +23,7 @@
       <v-tab-item :transition="false" :reverse-transition="false">
         <e-session-users :current-user="user" :room="room" />
       </v-tab-item>
-      <v-tab> <v-icon>mdi-message</v-icon> Chat </v-tab>
+      <v-tab class="custom-theme"> <v-icon>mdi-message</v-icon> Chat </v-tab>
       <v-tab-item :transition="false" :reverse-transition="false">
         <e-session-chat :room="room" :user="user" />
       </v-tab-item>
@@ -82,8 +83,11 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style scoped>
 .message-input input {
   font-size: 0.8em;
+}
+.custom-theme {
+  background-color: var(--v-background-base) !important;
 }
 </style>

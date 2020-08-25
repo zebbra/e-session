@@ -5,8 +5,10 @@
 type User {
   id: String!
   name: String!
+  jid: String!
   handRaised: Boolean!
   conferenceJoined: Boolean!
+  screenShared: Boolean!
 }
 
 type Room {
@@ -33,20 +35,25 @@ type Mutation {
   logout(id: String!): User!
   joinConference(roomId: String!, userId: String!): User!
   leaveConference(roomId: String!, userId: String!): User!
+  setJid(jid: String!, userId: String!): User!
   createRoom(name: String!): Room!
   say(text: String!, author: String!, room: String!): Message!
   join(roomId: String!, userId: String!): User!
   leave(roomId: String!, userId: String!): User
   raiseHand(roomId: String!, userId: String!): User!
   lowerHand(roomId: String!, userId: String!): User!
+  startShare(roomId: String!, userId: String!): User!
+  endShare(roomId: String!, userId: String!): User!
 }
 
 type Subscription {
   conferenceJoined(roomId: String!): User!
   conferenceLeft(roomId: String!): User!
+  userUpdate(roomId: String!): User!
   handMoved(roomId: String!): User!
   roomJoined(roomId: String!): User!
   roomLeft(roomId: String!): User!
   signal(userId: String!, roomId: String!): User!
   messagePosted(room: String!): Message!
+  shareToggled(roomId: String!): User!
 }

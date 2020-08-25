@@ -10,7 +10,7 @@
             {{ user.id === currentUser.id ? role : "User" }}
           </v-list-item-subtitle>
         </v-list-item-content>
-        <div>
+        <div class="d-flex">
           <v-tooltip v-if="user.handRaised && isModerator" left>
             <template v-slot:activator="{ on }">
               <v-list-item-icon>
@@ -21,26 +21,28 @@
             </template>
             <span>Lower Hand</span>
           </v-tooltip>
-          <v-tooltip v-if="!user.conferenceJoined" left>
-            <template v-slot:activator="{ on }">
-              <v-list-item-icon>
-                <v-icon color="green" v-on="on" @click.stop="join(user)">
-                  mdi-arrow-left-bold-circle-outline
-                </v-icon>
-              </v-list-item-icon>
-            </template>
-            <span>Join {{ user.name }}</span>
-          </v-tooltip>
-          <v-tooltip v-else left>
-            <template v-slot:activator="{ on }">
-              <v-list-item-icon>
-                <v-icon color="red" v-on="on" @click.stop="exit(user)">
-                  mdi-arrow-right-bold-circle-outline
-                </v-icon>
-              </v-list-item-icon>
-            </template>
-            <span>Exit {{ user.name }}</span>
-          </v-tooltip>
+          <div v-if="isModerator">
+            <v-tooltip v-if="!user.conferenceJoined" left>
+              <template v-slot:activator="{ on }">
+                <v-list-item-icon class="mr-0">
+                  <v-icon color="green" v-on="on" @click.stop="join(user)">
+                    mdi-arrow-left-bold-circle-outline
+                  </v-icon>
+                </v-list-item-icon>
+              </template>
+              <span>Join {{ user.name }}</span>
+            </v-tooltip>
+            <v-tooltip v-else left>
+              <template v-slot:activator="{ on }">
+                <v-list-item-icon class="mr-0">
+                  <v-icon color="red" v-on="on" @click.stop="exit(user)">
+                    mdi-arrow-right-bold-circle-outline
+                  </v-icon>
+                </v-list-item-icon>
+              </template>
+              <span>Exit {{ user.name }}</span>
+            </v-tooltip>
+          </div>
         </div>
       </v-list-item>
       <template v-slot:actions><span /></template>

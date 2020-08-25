@@ -30,10 +30,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useContext, computed } from "nuxt-composition-api";
+import {
+  defineComponent,
+  useContext,
+  computed,
+  watch,
+} from "nuxt-composition-api";
 // import consola from "consola";
 import { roomStore, sessionStore, conferenceStore } from "~/store";
-import { useLeave, useRaiseHand, useLowerHand } from "~/composable/useRoom";
+import {
+  useLeave,
+  useRaiseHand,
+  useLowerHand,
+  useStartShare,
+  useEndShare,
+} from "~/composable/useRoom";
 
 export default defineComponent({
   name: "ESessionControlToolbar",
@@ -55,6 +66,7 @@ export default defineComponent({
       onDone(() => {
         app.$closeJitsiConnection();
         roomStore.setUsersFilter("");
+        conferenceStore.doClearConferenceStatus();
         redirect("/");
       });
       leave();
@@ -63,12 +75,19 @@ export default defineComponent({
     const { mutate: raiseHand } = useRaiseHand(user.value, room.value);
     const { mutate: lowerHand } = useLowerHand(user.value, room.value);
 
+    const { mutate: startShare } = useStartShare(user.value, room.value);
+    const { mutate: endShare } = useEndShare(user.value, room.value);
+
     function moveHand() {
       if (user.value.handRaised) {
         lowerHand();
       } else {
         raiseHand();
       }
+    }
+
+    function toggleShare() {
+      conferenceStore.updateIsSharing(!conferenceStore.status.isSharing);
     }
 
     function toggleMic() {
@@ -91,13 +110,25 @@ export default defineComponent({
       }
     }
 
-    async function toggleShare() {
-      if (conferenceStore.status.isSharing) {
-        await app.$localTracks.value.localStream.video.dispose();
-      } else {
-        app.$switchShare();
-      }
-    }
+    watch(
+      // getter
+      () => conferenceStore.status.isSharing,
+      // callback
+      (newVal) => {
+        // console.log("conferenceStore.status.isSharing", newVal);
+        if (newVal === true) {
+          startShare();
+          app.$startShare();
+        } else {
+          endShare();
+          app.$endShare();
+        }
+      },
+      // watch Options
+      {
+        lazy: true,
+      },
+    );
 
     return {
       leaveRoom,

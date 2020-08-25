@@ -3,6 +3,8 @@ export interface IUser {
   name: string;
   handRaised: Boolean;
   conferenceJoined: Boolean;
+  screenShared: Boolean;
+  jid: string;
 }
 
 export interface IRoom {

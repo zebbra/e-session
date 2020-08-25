@@ -1,0 +1,10 @@
+subscription onUserUpdate($id: String!, $jid: String!) {
+  userUpdate(id: $id, jid: $jid) {
+    id
+    name
+    handRaised
+    conferenceJoined
+    screenShared
+    jid
+  }
+}

@@ -54,6 +54,7 @@ export class RoomResolver {
 
   @Mutation((returns) => User, { nullable: true })
   async leave(@Args("userId") userId: string, @Args("roomId") roomId: string) {
+    const _ = this.userService.resetUserParameters(userId);
     const user = this.roomService.leave(userId, roomId);
     this.pubSub.publish("roomLeft", { user, roomId });
     return user;
@@ -130,4 +131,33 @@ export class RoomResolver {
   messagePosted(@Args("room") room: string) {
     return this.pubSub.asyncIterator("messagePosted");
   }
+
+  @Mutation((returns) => User)
+  async startShare(
+    @Args("userId") userId: string,
+    @Args("roomId") roomId: string,
+  ) {
+    const user = this.userService.startShare(userId);
+    this.pubSub.publish("shareToggled", { user, roomId });
+    return user;
+  }
+
+  @Mutation((returns) => User)
+  async endShare(
+    @Args("userId") userId: string,
+    @Args("roomId") roomId: string,
+  ) {
+    const user = this.userService.endShare(userId);
+    this.pubSub.publish("shareToggled", { user, roomId });
+    return user;
+  }
+
+  @Subscription((returns) => User, {
+    filter: (payload, variables) => payload.roomId === variables.roomId,
+    resolve: (payload) => payload.user,
+  })
+  shareToggled(@Args("roomId") roomId: string) {
+    return this.pubSub.asyncIterator("shareToggled");
+  }
+
 }

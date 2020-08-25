@@ -1,0 +1,10 @@
+mutation endShare($userId: String!, $roomId: String!) {
+  endShare(roomId: $roomId, userId: $userId) {
+    id
+    name
+    handRaised
+    conferenceJoined
+    screenShared
+    jid
+  }
+}

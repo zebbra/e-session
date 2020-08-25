@@ -1,5 +1,5 @@
-subscription onRoomJoined($roomId: String!) {
-  roomJoined(roomId: $roomId) {
+subscription onShareToggled($roomId: String!) {
+  shareToggled(roomId: $roomId) {
     id
     name
     handRaised

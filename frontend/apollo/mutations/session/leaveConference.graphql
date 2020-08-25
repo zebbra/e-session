@@ -4,5 +4,7 @@ mutation leaveConference($roomId: String!, $userId: String!) {
     name
     handRaised
     conferenceJoined
+    screenShared
+    jid
   }
 }

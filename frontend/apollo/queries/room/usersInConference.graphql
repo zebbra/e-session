@@ -4,5 +4,7 @@ query fetchUsersInConference($room: String!) {
     name
     handRaised
     conferenceJoined
+    screenShared
+    jid
   }
 }
