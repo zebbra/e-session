@@ -70,7 +70,7 @@ trigger:
 
 steps:
   - name: helm
-    image: quay.io/ipedrazas/drone-helm
+    image: quay.io/zebbra/drone-helm
     environment:
       API_SERVER: https://kubernetes.default
       KUBERNETES_TOKEN: { from_secret: kubernetes_token }
