@@ -110,11 +110,15 @@ export class RoomResolver {
   signal(@Args("roomId") roomId: string, @Args("userId") userId: string) {
     return withCancel(this.pubSub.asyncIterator("signal"), () => {
       const room = this.roomService.findOne(roomId);
+      console.log("signal room: ", room)
       if (room) {
         const user = room.findUser(userId);
+        console.log("signal user: ", user)
         if (user) {
           room.userLeft(user.id);
           if (room.users.length === 0) {
+            console.log("signal room.users: ", room.users)
+
             this.roomService.destroy(room.id);
           }
           this.pubSub.publish("roomLeft", { user, roomId });
