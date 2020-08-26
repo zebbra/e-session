@@ -14,7 +14,6 @@ import {
   watch,
 } from "nuxt-composition-api";
 import {
-  useSignal,
   useOnJoined,
   useOnLeft,
   useJoin,
@@ -44,7 +43,7 @@ export default defineComponent({
 
     const { app } = useContext();
 
-    useSignal(userRef.value, roomRef.value);
+    // useSignal(userRef.value, roomRef.value);
     useOnJoined(roomRef.value);
     useOnLeft(roomRef.value);
     useOnMessagePosted(roomRef.value);
