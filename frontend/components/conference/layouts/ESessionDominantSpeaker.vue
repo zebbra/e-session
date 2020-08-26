@@ -27,6 +27,7 @@
     >
       <e-session-remote-peer class="peer" :media-tracks="value" />
     </div> -->
+    <e-session-filmstrip />
   </div>
 </template>
 
@@ -42,6 +43,8 @@ export default defineComponent({
       import("~/components/conference/ESessionRemotePeer.vue"),
     ESessionLocalPeer: () =>
       import("~/components/conference/ESessionLocalPeer.vue"),
+    ESessionFilmstrip: () =>
+      import("~/components/conference/layouts/ESessionFilmstrip.vue"),
   },
   setup() {
     const { app } = useContext();

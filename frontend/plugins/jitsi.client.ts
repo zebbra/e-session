@@ -44,10 +44,10 @@ export default ({ app }) => {
     app.$connection.connect();
   };
 
-  app.$closeJitsiConnection = () => {
+  app.$closeJitsiConnection = async () => {
     if (app.$localTracks.value.localStream) {
-      app.$localTracks.value.localStream.video.dispose();
-      app.$localTracks.value.localStream.audio.dispose();
+      await app.$localTracks.value.localStream.video.dispose();
+      await app.$localTracks.value.localStream.audio.dispose();
       Vue.delete(app.$localTracks.value.localStream, "video");
       Vue.delete(app.$localTracks.value.localStream, "audio");
     }
@@ -59,6 +59,7 @@ export default ({ app }) => {
       app.$connection.disconnect();
       app.$connection = null;
     }
+    app.$jitsi = null;
     conferenceStore.updateJoined(false);
   };
 
@@ -116,9 +117,9 @@ export default ({ app }) => {
   app.$onDisconnect = () => {
     consola.log("you have disconnected");
   };
-  app.$disposeAndRecreateLocalTracks = () => {
-    app.$localTracks.value.localStream.video.dispose();
-    app.$localTracks.value.localStream.audio.dispose();
+  app.$disposeAndRecreateLocalTracks = async () => {
+    await app.$localTracks.value.localStream.video.dispose();
+    await app.$localTracks.value.localStream.audio.dispose();
     Vue.set(app.$localTracks.value.localStream, "video", null);
     Vue.set(app.$localTracks.value.localStream, "audio", null);
     const options: {
@@ -173,7 +174,7 @@ export default ({ app }) => {
   };
 
   app.$disposeAndRecreateVideoTrack = async (id: string) => {
-    app.$localTracks.value.localStream.video.dispose();
+    await app.$localTracks.value.localStream.video.dispose();
     Vue.set(app.$localTracks.value.localStream, "video", null);
     try {
       const tracks = await app.$jitsi.createLocalTracks({
@@ -187,7 +188,7 @@ export default ({ app }) => {
   };
 
   app.$disposeAndRecreateAudioTrack = async (id: string) => {
-    app.$localTracks.value.localStream.audio.dispose();
+    await app.$localTracks.value.localStream.audio.dispose();
     Vue.set(app.$localTracks.value.localStream, "audio", null);
     // consola.log(event);
     try {

@@ -1,18 +1,22 @@
 <template>
-  <div>
-    <div v-for="(value, key) in participants" :key="key" class="filmStrip">
+  <v-row class="filmStripWrapper d-flex justify-center">
+    <v-col
+      v-for="(value, key) in filmstripMembers"
+      :key="key"
+      class="filmStrip"
+    >
       <e-session-local-peer
-        v-if="lastPresenterId === 'localStream'"
+        v-if="key === 'localStream'"
         class="peer"
         :media-tracks="value"
       />
       <e-session-remote-peer v-else class="peer" :media-tracks="value" />
-    </div>
-  </div>
+    </v-col>
+  </v-row>
 </template>
 
 <script lang="ts">
-import consola from "consola";
+// import consola from "consola";
 import { defineComponent, computed, useContext } from "nuxt-composition-api";
 import { conferenceStore } from "~/store";
 
@@ -41,26 +45,30 @@ export default defineComponent({
         conferenceStore.presenterTracks.length - 1
       ];
 
-    const dominantMediaTracks: any = computed(() => {
-      consola.log("lastPresenterId", lastPresenterId);
-      consola.log(
-        "participants[lastPresenterId];",
-        participants.value[lastPresenterId],
-      );
-      return participants.value[lastPresenterId];
+    const filmstripMembers: any = computed(() => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [lastPresenterId]: _, ...without } = participants.value;
+      return without;
     });
 
     return {
-      participants,
-      dominantMediaTracks,
-      lastPresenterId,
+      filmstripMembers,
     };
   },
 });
 </script>
 
 <style scoped>
-.filmStrip {
+.filmStripWrapper {
+  position: absolute;
+  /* height: 150px; */
+  /* display: flex; */
+  bottom: 35px;
+  left: 0px;
   height: 150px;
+  width: 100%;
+}
+.filmStrip {
+  max-width: 250px;
 }
 </style>
