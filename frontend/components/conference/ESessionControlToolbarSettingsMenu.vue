@@ -39,7 +39,7 @@ import Vue from "vue";
 import { defineComponent, ref } from "nuxt-composition-api";
 import consola from "consola";
 import { openFullscreen, closeFullscreen } from "~/utils/helpers";
-import { globalStore } from "~/store";
+import { globalStore, conferenceStore } from "~/store";
 
 export default defineComponent({
   name: "ESessionControlToolbarSettingsMenu",
@@ -61,7 +61,7 @@ export default defineComponent({
     function menuSelection(action: string) {
       switch (action) {
         case "SHOW_SETTINGS":
-          consola.log("SHOW_SETTINGS");
+          toggleMediaSetupDialog();
           break;
         case "TOGGLE_FULLSCREEN":
           if (appIsFullscreen.value) {
@@ -77,6 +77,10 @@ export default defineComponent({
         default:
           consola.log("DEFAULT");
       }
+    }
+
+    function toggleMediaSetupDialog() {
+      conferenceStore.showSetup(!conferenceStore.setupVisible);
     }
 
     function handleFullscreenChange(event) {

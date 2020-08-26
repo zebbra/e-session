@@ -214,7 +214,11 @@ export default ({ app }) => {
       _onLocalTracksShare(tracks);
     } catch (err) {
       conferenceStore.updateIsSharing(!conferenceStore.status.isSharing);
-      consola.error("Exception switchShare:", err);
+      if (err.name === "gum.screensharing_user_canceled") {
+        consola.log("gum.chrome_extension_user_canceled");
+      } else {
+        consola.error("Exception startShare:", err);
+      }
     }
   };
 
@@ -230,7 +234,7 @@ export default ({ app }) => {
       });
       _onLocalTracksShare(tracks);
     } catch (err) {
-      consola.error("Exception stopShare:", err);
+      consola.error("Exception endShare:", err);
     }
   };
 
