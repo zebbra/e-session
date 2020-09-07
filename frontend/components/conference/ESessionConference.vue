@@ -72,7 +72,9 @@ export default defineComponent({
 
     const peerWrapperClassName = computed(() => {
       consola.log("peerWrapperClassName: ", app.$remoteTracks);
-      const numOfPeers = Object.keys(app.$remoteTracks.value).length;
+      const numOfPeers =
+        Object.keys(app.$remoteTracks.value).length +
+        Object.keys(app.$localTracks.value).length;
       if (numOfPeers > 0) {
         return "grid-" + numOfPeers;
       } else if (numOfPeers > 6) {
@@ -146,7 +148,6 @@ export default defineComponent({
   grid-gap: 5px;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-template-rows: repeat(2, 1fr);
-  grid-auto-flow: column;
 }
 .grid-5 {
   display: grid;

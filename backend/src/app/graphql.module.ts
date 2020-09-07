@@ -5,4 +5,7 @@ export const graphQLModule = GraphQLModule.forRoot({
   installSubscriptionHandlers: true,
   debug: true,
   playground: true,
+  subscriptions: {
+    keepAlive: 5000,
+  }
 });
