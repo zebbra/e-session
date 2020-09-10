@@ -43,4 +43,20 @@ function closeFullscreen(document) {
     document.msExitFullscreen();
   }
 }
-export { delay, openFullscreen, closeFullscreen };
+function round(num: number) {
+  return Math.round((num + Number.EPSILON) * 100) / 100;
+}
+
+function highestScore(stack: Object) {
+  const indexOfMaxValue = Object.values(stack).reduce(
+    (iMax, x, i, arr) => (x > arr[iMax] ? i : iMax),
+    0,
+  );
+  if (Object.values(stack)[indexOfMaxValue] < 0.6) {
+    return 4; // return neutral value by default
+  } else {
+    return Object.keys(stack)[indexOfMaxValue];
+  }
+}
+
+export { delay, openFullscreen, closeFullscreen, round, highestScore };

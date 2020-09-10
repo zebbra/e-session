@@ -1,12 +1,25 @@
 <template>
   <div class="d-flex">
-    <video v-if="videoStream" ref="videoRef" class="video-insert" autoplay />
+    <video
+      v-if="videoStream"
+      :id="id"
+      ref="videoRef"
+      class="video-insert"
+      autoplay
+    />
     <audio v-if="audioStream" ref="audioRef" autoplay />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, watch, ref } from "nuxt-composition-api";
+import {
+  defineComponent,
+  onMounted,
+  watch,
+  ref,
+  computed,
+} from "nuxt-composition-api";
+import { conferenceStore } from "~/store";
 
 export default defineComponent({
   name: "ESessionMedia",
@@ -17,6 +30,7 @@ export default defineComponent({
   setup(props, context) {
     const videoRef = ref(null);
     const audioRef = ref(null);
+    const id = computed(() => conferenceStore.status.id);
 
     async function doConnectVideoStream(stream: any) {
       if (stream) {
@@ -62,7 +76,7 @@ export default defineComponent({
       },
     );
 
-    return { videoRef, audioRef };
+    return { videoRef, audioRef, id };
   },
 });
 </script>
