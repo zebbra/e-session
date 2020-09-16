@@ -8,7 +8,10 @@ import { conferenceStore, detectionStore } from "~/store";
 // import { useEndShare } from "~/composable/useRoom";
 
 export default ({ app }) => {
+  let warmUp: boolean = true;
   let doDetection: boolean = false;
+  const inputSize = 224;
+  const scoreThreshold = 0.5;
 
   app.$faceApi = faceapi;
 
@@ -16,10 +19,12 @@ export default ({ app }) => {
     await app.$faceApi.nets.tinyFaceDetector.loadFromUri("/models");
     // await app.$faceApi.nets.faceLandmark68Net.loadFromUri("/models");
     await app.$faceApi.nets.faceExpressionNet.loadFromUri("/models");
+    _loadImage();
   };
 
-  app.$startFaceApi = () => {
+  app.$startFaceApi = async () => {
     doDetection = true;
+    await _sleep(3000);
     // console.log("app.$faceApi.tf.getBackend()", app.$faceApi.tf.getBackend());
     _loadImage();
   };
@@ -35,26 +40,29 @@ export default ({ app }) => {
   const _sleep = (m) => new Promise((resolve) => setTimeout(resolve, m));
 
   function _getFaceDetectorOptions() {
-    const inputSize = 224;
-    const scoreThreshold = 0.5;
-
     return new faceapi.TinyFaceDetectorOptions({ inputSize, scoreThreshold });
   }
+  const _warmUpTensor = () =>
+    faceapi.tf.randomUniform([1, inputSize, inputSize, 3], 0, 1, "float32");
 
   async function _loadImage() {
-    if (doDetection) {
+    if (doDetection || warmUp) {
       const localStream: any = await _fetchStream();
-      console.log("detection localStream", localStream);
+      // console.log("detection localStream", localStream);
 
       const result: any = await app.$faceApi
-        .detectSingleFace(localStream, _getFaceDetectorOptions())
+        .detectSingleFace(
+          warmUp ? _warmUpTensor() : localStream,
+          _getFaceDetectorOptions(),
+        )
         .withFaceExpressions();
-      console.log("detectiondetection", result);
+      warmUp = false;
+      // console.log("detectiondetection", result);
       if (result) {
         detectionStore.updateExpression(result.expressions);
       }
     }
-    await _sleep(1000);
+    await _sleep(2000);
     // Continuously detecting
     await _loadImage();
   }
