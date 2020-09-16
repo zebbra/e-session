@@ -15,7 +15,7 @@
       </template>
       <!-- <v-list-item-title>{{ item.title }}</v-list-item-title> -->
       <v-list dense>
-        <v-list-item-group v-model="item" color="success">
+        <v-list-item-group v-model="items.value" color="success">
           <v-list-item
             v-for="(item, i) in items"
             :key="i"
@@ -94,8 +94,6 @@ export default defineComponent({
     function _handleToggleFaceAPI() {
       if (detectionStore.expressionsDetection) {
         app.$stopFaceApi();
-      } else {
-        app.$startFaceApi();
       }
       detectionStore.toggleExpressionsDetection();
     }

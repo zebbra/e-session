@@ -58,12 +58,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "nuxt-composition-api";
+import { defineComponent, useContext } from "nuxt-composition-api";
 import { useMutation } from "@vue/apollo-composable";
 import consola from "consola";
 import { mutations } from "~/apollo";
 import { useJoinConference, useLeaveConference } from "~/composable/useSession";
 import { IUser, IRoom } from "~/types";
+import { detectionStore } from "~/store";
 
 export default defineComponent({
   name: "ESessionUserItem",
@@ -75,6 +76,8 @@ export default defineComponent({
     isModerator: Boolean,
   },
   setup({ room }) {
+    const { app } = useContext();
+
     const { mutate: joinConference } = useJoinConference();
     const { mutate: leaveConference } = useLeaveConference();
 
@@ -98,6 +101,10 @@ export default defineComponent({
         userId: user.id,
         roomId: room.id,
       });
+      if (detectionStore.expressionsDetection) {
+        app.$stopFaceApi();
+        detectionStore.toggleExpressionsDetection();
+      }
     }
 
     return {

@@ -17,7 +17,7 @@ export default ({ app }) => {
   app.$room = null;
 
   app.$initJitsi = () => {
-    // app.$jitsi.setLogLevel(app.$jitsi.logLevels.WARN);
+    app.$jitsi.setLogLevel(app.$jitsi.logLevels.WARN);
     app.$jitsi.init(initOptions);
 
     app.$connection = new app.$jitsi.JitsiConnection(null, null, options);
@@ -59,7 +59,7 @@ export default ({ app }) => {
       app.$connection.disconnect();
       app.$connection = null;
     }
-    app.$jitsi = null;
+    // app.$jitsi = null;
     conferenceStore.updateJoined(false);
   };
 

@@ -9,16 +9,18 @@ import { conferenceStore, detectionStore } from "~/store";
 
 export default ({ app }) => {
   let doDetection: boolean = false;
+
   app.$faceApi = faceapi;
 
   app.$initFaceApi = async () => {
-    await app.$faceApi.nets.ssdMobilenetv1.loadFromUri("/models");
+    await app.$faceApi.nets.tinyFaceDetector.loadFromUri("/models");
     // await app.$faceApi.nets.faceLandmark68Net.loadFromUri("/models");
     await app.$faceApi.nets.faceExpressionNet.loadFromUri("/models");
   };
 
   app.$startFaceApi = () => {
     doDetection = true;
+    // console.log("app.$faceApi.tf.getBackend()", app.$faceApi.tf.getBackend());
     _loadImage();
   };
 
@@ -32,18 +34,27 @@ export default ({ app }) => {
 
   const _sleep = (m) => new Promise((resolve) => setTimeout(resolve, m));
 
+  function _getFaceDetectorOptions() {
+    const inputSize = 224;
+    const scoreThreshold = 0.5;
+
+    return new faceapi.TinyFaceDetectorOptions({ inputSize, scoreThreshold });
+  }
+
   async function _loadImage() {
     if (doDetection) {
       const localStream: any = await _fetchStream();
+      console.log("detection localStream", localStream);
+
       const result: any = await app.$faceApi
-        .detectSingleFace(localStream)
+        .detectSingleFace(localStream, _getFaceDetectorOptions())
         .withFaceExpressions();
-      // console.log("detectiondetection", result);
+      console.log("detectiondetection", result);
       if (result) {
         detectionStore.updateExpression(result.expressions);
       }
     }
-    await _sleep(3000);
+    await _sleep(1000);
     // Continuously detecting
     await _loadImage();
   }

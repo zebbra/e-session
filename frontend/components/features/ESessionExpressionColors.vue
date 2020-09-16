@@ -8,6 +8,7 @@ import {
   computed,
   onMounted,
   ref,
+  useContext,
 } from "nuxt-composition-api";
 import { Tween, update } from "es6-tween";
 import { FaceExpressions } from "face-api.js";
@@ -18,12 +19,12 @@ export default defineComponent({
   name: "ESessionExpressionColors",
 
   setup() {
-    // const { app } = useContext();
+    const { app } = useContext();
 
     onMounted(() => {
       requestAnimationFrame(animate);
-      /* console.log("onMounterd", app);
-      app.$startFaceApi(); */
+      console.log("onMounterd", app);
+      app.$startFaceApi();
     });
 
     const initColorTest = ref({
