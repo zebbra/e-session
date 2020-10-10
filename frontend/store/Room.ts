@@ -63,6 +63,7 @@ export default class Room extends VuexModule {
         this.room.users[i].handRaised = user.handRaised;
         this.room.users[i].screenShared = user.screenShared;
         this.room.users[i].jid = user.jid;
+        this.room.users[i].role = user.role;
         i = 0;
       }
     }

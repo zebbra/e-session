@@ -6,5 +6,6 @@ query fetchUsersInConference($room: String!) {
     conferenceJoined
     screenShared
     jid
+    role
   }
 }

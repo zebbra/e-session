@@ -67,6 +67,7 @@ export class RoomResolver {
   ) {
     const user = this.userService.raiseHand(userId);
     this.pubSub.publish("handMoved", { user, roomId });
+    console.log("raiseHand user: ", user)
     return user;
   }
 

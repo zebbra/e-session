@@ -18,8 +18,11 @@ export class UserResolver {
   }
 
   @Mutation((returns) => User)
-  async login(@Args("name") name: string) {
-    return this.userService.create(name);
+  async login(
+    @Args("name") name: string, 
+    @Args("role") role: string,
+  ) {
+    return this.userService.create(name, role);
   }
 
   @Mutation((returns) => User)
@@ -44,6 +47,16 @@ export class UserResolver {
   ) {
     const user = this.userService.leaveConference(userId);
     this.pubSub.publish("conferenceLeft", { user, roomId });
+    return user;
+  }
+
+  @Mutation((returns) => User)
+  async setRole(
+    @Args("userId") userId: string,
+    @Args("role") role: string,
+  ) {
+    const user = this.userService.setRole(userId, role);
+    this.pubSub.publish("userUpdate", { user });
     return user;
   }
 

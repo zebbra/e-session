@@ -6,5 +6,6 @@ subscription onShareToggled($roomId: String!) {
     conferenceJoined
     screenShared
     jid
+    role
   }
 }

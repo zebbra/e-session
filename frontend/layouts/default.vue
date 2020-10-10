@@ -14,11 +14,7 @@
       <div id="stars"></div>
       <div id="stars2"></div>
       <div id="stars3"></div>
-      <v-container
-        fluid
-        class="d-flex align-center"
-        style="height: calc(100% - 36px); width: 130vh;"
-      >
+      <v-container fluid class="d-flex align-center">
         <e-session-error v-if="error" />
         <nuxt v-else />
       </v-container>

@@ -1,0 +1,9 @@
+query fetchPoll($id: String!) {
+  fetchPoll(id: $id) {
+    id
+    yes
+    no
+    didNot
+    abstain
+  }
+}

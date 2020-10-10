@@ -12,6 +12,7 @@ query fetchRoom($name: String!) {
       conferenceJoined
       screenShared
       jid
+      role
     }
   }
 }

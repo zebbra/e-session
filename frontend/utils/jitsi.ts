@@ -21,6 +21,7 @@ const initOptions = {
 const options = {
   serviceUrl: "https://hello.zebbra.ch/http-bind",
   // serviceUrl: "https://open.meet.switch.ch/http-bind",
+
   hosts: {
     domain: "meet.jitsi",
     muc: "muc.meet.jitsi",

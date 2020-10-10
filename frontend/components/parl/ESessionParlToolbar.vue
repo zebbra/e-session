@@ -1,0 +1,184 @@
+<template>
+  <v-container fluid>
+    <v-row>
+      <v-col class="d-flex justify-center col-md-4 col-6">
+        <e-session-parl-voting-bar v-if="isVoting" />
+      </v-col>
+      <v-col>
+        <v-row class="d-flex justify-center">
+          <v-btn v-if="!isModerator" tile large @click.stop="moveHand">
+            <v-icon :color="user.handRaised ? 'secondary' : 'white'">
+              mdi-hand-right
+            </v-icon>
+          </v-btn>
+          <v-btn v-if="isModerator" tile large @click.stop="startVote">
+            <v-icon :color="isVoting ? 'green' : 'white'">
+              mdi-vote
+            </v-icon>
+          </v-btn>
+          <v-btn v-if="isSpeaker" tile large @click.stop="toggleMic">
+            <v-icon :color="micMuted ? 'red' : 'white'"
+              >{{ micMuted ? "mdi-microphone-off" : "mdi-microphone" }}
+            </v-icon>
+          </v-btn>
+          <v-btn v-if="isSpeaker" tile large @click.stop="toggleCam">
+            <v-icon :color="camMuted ? 'red' : 'white'">{{
+              camMuted ? "mdi-video-off" : "mdi-video"
+            }}</v-icon>
+          </v-btn>
+          <v-btn v-if="isSpeaker" tile large @click.stop="toggleShare">
+            <v-icon :color="isSharing ? 'secondary' : 'white'"
+              >mdi-monitor-share</v-icon
+            >
+          </v-btn>
+          <e-session-parl-toolbar-more />
+          <v-btn tile large @click.stop="leaveRoom">
+            <v-icon color="red">mdi-exit-to-app</v-icon>
+          </v-btn>
+        </v-row>
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
+
+<script lang="ts">
+import {
+  defineComponent,
+  useContext,
+  computed,
+  watch,
+} from "nuxt-composition-api";
+// import consola from "consola";
+import { roomStore, sessionStore, conferenceStore, pollStore } from "~/store";
+import {
+  useLeave,
+  useRaiseHand,
+  useLowerHand,
+  useStartShare,
+  useEndShare,
+} from "~/composable/useRoom";
+import { useCreate } from "~/composable/usePoll";
+
+export default defineComponent({
+  name: "ESessionParlToolbar",
+  components: {
+    ESessionParlToolbarMore: () =>
+      import("~/components/parl/ESessionParlToolbarMore.vue"),
+    ESessionParlVotingBar: () =>
+      import("~/components/parl/ESessionParlVotingBar.vue"),
+  },
+  setup() {
+    const { redirect, app } = useContext();
+    const user = computed(() => sessionStore.user);
+    const room = computed(() => roomStore.room);
+    const micMuted = computed(() => conferenceStore.status.micMuted);
+    const camMuted = computed(() => conferenceStore.status.camMuted);
+    const isSharing = computed(() => conferenceStore.status.isSharing);
+    const isSpeaker = computed(() => conferenceStore.status.isSpeaker);
+    const isModerator = computed(() => sessionStore.isModerator);
+
+    const { mutate: leave, onDone } = useLeave(user.value, room.value);
+    function leaveRoom() {
+      onDone(() => {
+        app.$closeJitsiConnection();
+        roomStore.setUsersFilter("");
+        conferenceStore.doClearConferenceStatus();
+        redirect("/");
+      });
+      leave();
+    }
+
+    const { mutate: raiseHand } = useRaiseHand(user.value, room.value);
+    const { mutate: lowerHand } = useLowerHand(user.value, room.value);
+
+    const { mutate: startShare } = useStartShare(user.value, room.value);
+    const { mutate: endShare } = useEndShare(user.value, room.value);
+
+    const { mutate: createPoll } = useCreate(room.value);
+
+    const isVoting = computed(() => {
+      if (pollStore.poll && pollStore.poll.status === "started") {
+        return true;
+      } else {
+        return false;
+      }
+    });
+
+    function moveHand() {
+      if (user.value.handRaised) {
+        lowerHand();
+      } else {
+        raiseHand();
+      }
+    }
+
+    function toggleShare() {
+      conferenceStore.updateIsSharing(!conferenceStore.status.isSharing);
+    }
+
+    function toggleMic() {
+      if (micMuted.value) {
+        conferenceStore.updateMicMuted(false);
+        app.$localTracks.value.localStream.audio.unmute();
+      } else {
+        conferenceStore.updateMicMuted(true);
+        app.$localTracks.value.localStream.audio.mute();
+      }
+    }
+
+    function toggleCam() {
+      if (camMuted.value) {
+        conferenceStore.updateCamMuted(false);
+        app.$localTracks.value.localStream.video.unmute();
+      } else {
+        conferenceStore.updateCamMuted(true);
+        app.$localTracks.value.localStream.video.mute();
+      }
+    }
+
+    function startVote() {
+      console.log("startVote");
+      createPoll();
+    }
+
+    watch(
+      // getter
+      () => conferenceStore.status.isSharing,
+      // callback
+      (newVal) => {
+        // console.log("conferenceStore.status.isSharing", newVal);
+        if (newVal === true) {
+          startShare();
+          app.$startShare();
+        } else {
+          endShare();
+          app.$endShare();
+        }
+      },
+      // watch Options
+      {
+        lazy: true,
+      },
+    );
+
+    return {
+      leaveRoom,
+      moveHand,
+      user,
+      room,
+      micMuted,
+      camMuted,
+      isSharing,
+      toggleMic,
+      toggleCam,
+      toggleShare,
+      isSpeaker,
+      isModerator,
+      startVote,
+      isVoting,
+    };
+  },
+});
+</script>
+
+<style></style>

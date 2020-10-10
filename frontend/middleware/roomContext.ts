@@ -8,7 +8,12 @@ export default function ({ isHMR, route, redirect }) {
   const roomJoined = sessionStore.user !== null && roomStore.room !== null;
   if (route.name !== "index" && !roomJoined) {
     const query: any = {};
-
+    if (route.name === "parl-speaker") {
+      return redirect("/parl/speaker");
+    }
+    if (route.name === "parl-member") {
+      return redirect("/parl/member");
+    }
     if (route.name === "rooms-id") {
       query.room = route.params.id;
 

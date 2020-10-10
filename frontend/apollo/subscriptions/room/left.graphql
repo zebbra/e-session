@@ -2,6 +2,10 @@ subscription onRoomLeft($roomId: String!) {
   roomLeft(roomId: $roomId) {
     id
     name
+    handRaised
+    conferenceJoined
+    screenShared
     jid
+    role
   }
 }

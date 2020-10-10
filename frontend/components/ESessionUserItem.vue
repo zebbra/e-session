@@ -11,10 +11,18 @@
           </v-list-item-subtitle>
         </v-list-item-content>
         <div class="d-flex">
-          <v-tooltip v-if="user.handRaised && isModerator" left>
+          <v-tooltip v-if="user.handRaised" left>
             <template v-slot:activator="{ on }">
               <v-list-item-icon>
-                <v-icon color="orange" v-on="on" @click.stop="decline(user)">
+                <v-icon
+                  v-if="isModerator"
+                  color="orange"
+                  v-on="on"
+                  @click.stop="decline(user)"
+                >
+                  mdi-hand-left
+                </v-icon>
+                <v-icon v-else color="orange" v-on="on">
                   mdi-hand-left
                 </v-icon>
               </v-list-item-icon>
