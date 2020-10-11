@@ -16,6 +16,17 @@ export function useCreate(room: IRoom) {
   }));
 }
 
+export function useEnd() {
+  return useMutation(mutations.poll.end, () => ({
+    variables: {
+      pollId: pollStore.poll.id,
+    },
+    /* update: (_cache, { data }) => {
+      pollStore.setPoll(data.poll);
+    }, */
+  }));
+}
+
 export function useVote(id: String, userId: String, vote: String) {
   return useMutation(mutations.poll.vote, () => ({
     variables: {

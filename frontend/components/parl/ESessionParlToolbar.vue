@@ -11,7 +11,7 @@
               mdi-hand-right
             </v-icon>
           </v-btn>
-          <v-btn v-if="isModerator" tile large @click.stop="startVote">
+          <v-btn v-if="isModerator" tile large @click.stop="toggleVote">
             <v-icon :color="isVoting ? 'green' : 'white'">
               mdi-vote
             </v-icon>
@@ -38,6 +38,25 @@
         </v-row>
       </v-col>
     </v-row>
+    <v-dialog v-model="showVoteResult" persistent max-width="350">
+      <v-card>
+        <v-card-title class="headline">
+          Voting Result
+        </v-card-title>
+
+        <v-card-text>
+          <e-session-parl-voting-result />
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn color="green darken-1" text @click.stop="hideVoteResult">
+            Close
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -57,11 +76,13 @@ import {
   useStartShare,
   useEndShare,
 } from "~/composable/useRoom";
-import { useCreate } from "~/composable/usePoll";
+import { useCreate, useEnd } from "~/composable/usePoll";
 
 export default defineComponent({
   name: "ESessionParlToolbar",
   components: {
+    ESessionParlVotingResult: () =>
+      import("~/components/parl/ESessionParlVotingResult.vue"),
     ESessionParlToolbarMore: () =>
       import("~/components/parl/ESessionParlToolbarMore.vue"),
     ESessionParlVotingBar: () =>
@@ -95,6 +116,7 @@ export default defineComponent({
     const { mutate: endShare } = useEndShare(user.value, room.value);
 
     const { mutate: createPoll } = useCreate(room.value);
+    const { mutate: endPoll } = useEnd();
 
     const isVoting = computed(() => {
       if (pollStore.poll && pollStore.poll.status === "started") {
@@ -136,11 +158,21 @@ export default defineComponent({
       }
     }
 
-    function startVote() {
-      console.log("startVote");
-      createPoll();
+    function toggleVote() {
+      if (isVoting.value) {
+        endPoll();
+      } else {
+        createPoll();
+      }
     }
 
+    const showVoteResult = computed(() => {
+      return pollStore.poll && pollStore.poll.status === "ended";
+    });
+
+    function hideVoteResult() {
+      pollStore.resetPoll();
+    }
     watch(
       // getter
       () => conferenceStore.status.isSharing,
@@ -174,8 +206,10 @@ export default defineComponent({
       toggleShare,
       isSpeaker,
       isModerator,
-      startVote,
+      toggleVote,
       isVoting,
+      showVoteResult,
+      hideVoteResult,
     };
   },
 });

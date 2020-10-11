@@ -5,14 +5,15 @@
         <div
           v-if="showVoteIndicator"
           class="pa-2 mr-3 circle d-inline-block"
-          :class="voteIndicator"
+          :class="voteIndicatorClass"
         ></div>
         <v-list-item-content>
           <v-list-item-title>
             {{ user.name }} {{ user.id === currentUser.id ? " (You)" : "" }}
           </v-list-item-title>
           <v-list-item-subtitle>
-            {{ user.id === currentUser.id ? role : "User" }}
+            <!-- {{ user.id === currentUser.id ? role : "User" }} -->
+            {{ user.id }}
           </v-list-item-subtitle>
         </v-list-item-content>
         <div class="d-flex">
@@ -115,7 +116,7 @@ export default defineComponent({
       });
     }
 
-    const voteIndicator = computed(() => {
+    const voteIndicatorClass = computed(() => {
       if (pollStore.poll.yes.includes(user.id)) {
         return "yes-vote";
       } else if (pollStore.poll.no.includes(user.id)) {
@@ -135,7 +136,7 @@ export default defineComponent({
       join,
       decline,
       exit,
-      voteIndicator,
+      voteIndicatorClass,
       showVoteIndicator,
     };
   },

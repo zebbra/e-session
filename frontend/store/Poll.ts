@@ -32,10 +32,16 @@ export default class Poll extends VuexModule {
 
   @Mutation
   resetPoll() {
-    this.poll = null;
+    this.poll.yes = [];
+    this.poll.no = [];
+    this.poll.abstain = [];
+    this.poll.didNot = [];
+    this.poll.status = "";
+    this.poll.id = "";
+    this.poll.roomId = "";
   }
 
-  get isRunning() {
-    return this.poll.status === "started";
-  }
+  // get isRunning() {
+    // return this.poll.status === "started";
+  // }
 }

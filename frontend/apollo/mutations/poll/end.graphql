@@ -1,0 +1,5 @@
+mutation endPoll($pollId: String!) {
+  endPoll(pollId: $pollId) {
+    id
+  }
+}
