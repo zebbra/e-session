@@ -1,16 +1,31 @@
 <template>
   <div>
-    <v-btn tile large :color="vote.yes ? 'green' : ''" @click.stop="voteYes">
+    <v-btn
+      tile
+      large
+      :color="vote.yes ? 'green' : ''"
+      @click.stop="checkAndVoteYes"
+    >
       <v-icon :color="vote.yes ? 'white' : 'green'">
         mdi-thumb-up
       </v-icon>
     </v-btn>
-    <v-btn tile large :color="vote.no ? 'red' : ''" @click.stop="voteNo">
+    <v-btn
+      tile
+      large
+      :color="vote.no ? 'red' : ''"
+      @click.stop="checkAndVoteNo"
+    >
       <v-icon :color="vote.no ? 'white' : 'red'">
         mdi-thumb-down
       </v-icon>
     </v-btn>
-    <v-btn tile large :color="vote.abstain ? 'cyan' : ''" @click.stop="voteAbs">
+    <v-btn
+      tile
+      large
+      :color="vote.abstain ? 'cyan' : ''"
+      @click.stop="checkAndVoteAbs"
+    >
       <v-icon :color="vote.abstain ? 'white' : 'cyan'">
         mdi-thumbs-up-down
       </v-icon>
@@ -23,7 +38,7 @@ import { defineComponent, computed } from "nuxt-composition-api";
 // import consola from "consola";
 // import Vue from "vue";
 import { pollStore, sessionStore } from "~/store";
-import { useOnPollUpdate, useVote } from "~/composable/usePoll";
+import { useOnPollUpdate, useVote, useDidNotVote } from "~/composable/usePoll";
 
 export default defineComponent({
   name: "ESessionParlVotingBar",
@@ -51,6 +66,35 @@ export default defineComponent({
       "abstain",
     );
 
+    const { mutate: didNotVote } = useDidNotVote(
+      pollStore.poll.id,
+      sessionStore.user.id,
+    );
+
+    function checkAndVoteYes() {
+      if (pollStore.poll.yes.includes(sessionStore.user.id)) {
+        didNotVote();
+      } else {
+        voteYes();
+      }
+    }
+
+    function checkAndVoteNo() {
+      if (pollStore.poll.no.includes(sessionStore.user.id)) {
+        didNotVote();
+      } else {
+        voteNo();
+      }
+    }
+
+    function checkAndVoteAbs() {
+      if (pollStore.poll.abstain.includes(sessionStore.user.id)) {
+        didNotVote();
+      } else {
+        voteAbs();
+      }
+    }
+
     const vote = computed(() => {
       return {
         yes: pollStore.poll.yes
@@ -66,9 +110,9 @@ export default defineComponent({
     });
 
     return {
-      voteYes,
-      voteNo,
-      voteAbs,
+      checkAndVoteYes,
+      checkAndVoteNo,
+      checkAndVoteAbs,
       vote,
     };
   },
