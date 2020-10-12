@@ -17,6 +17,7 @@ type Room {
   name: String!
   messages: [Message!]!
   users: [User!]!
+  activeAgendaItem: String!
 }
 
 type Message {
@@ -39,6 +40,7 @@ type Query {
   user(id: String!): User
   room(name: String!): Room!
   usersInConference(room: String!): [User!]!
+  fetchActiveAgendaItem(roomId: String!): Room!
   getPolls: Poll
   getPoll(id: String!): Poll
 }
@@ -58,6 +60,7 @@ type Mutation {
   lowerHand(roomId: String!, userId: String!): User!
   startShare(roomId: String!, userId: String!): User!
   endShare(roomId: String!, userId: String!): User!
+  setActiveAgendaItem(index: String!, roomId: String!): Room!
   createPoll(roomId: String!): Poll!
   endPoll(pollId: String!): Poll!
   vote(vote: String!, userId: String!, id: String!): Poll!
@@ -74,6 +77,7 @@ type Subscription {
   signal(userId: String!, roomId: String!): User!
   messagePosted(room: String!): Message!
   shareToggled(roomId: String!): User!
+  agenda(roomId: String!): Room!
   pollUpdate(pollId: String!): Poll!
   poll(roomId: String!): Poll!
 }

@@ -1,0 +1,5 @@
+query fetchActiveAgendaItem($roomId: String!) {
+  fetchActiveAgendaItem(roomId: $roomId) {
+    activeAgendaItem
+  }
+}

@@ -1,6 +1,4 @@
-/* eslint-disable prettier/prettier */
-<template>
-  <svg
+ <svg
     xmlns:svg="http://www.w3.org/2000/svg"
     xmlns="http://www.w3.org/2000/svg"
     version="1.0"
@@ -61,14 +59,3 @@
       </g>
     </g>
   </svg>
-</template>
-
-<script lang="ts">
-import { defineComponent } from "nuxt-composition-api";
-
-export default defineComponent({
-  name: "ESessionDietikonLogo",
-  head: {},
-  components: {},
-});
-</script>

@@ -1,0 +1,5 @@
+mutation setActiveAgendaItem($roomId: String!, $index: String!) {
+  setActiveAgendaItem(roomId: $roomId, index: $index) {
+    activeAgendaItem
+  }
+}

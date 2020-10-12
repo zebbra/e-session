@@ -9,6 +9,7 @@ import { IRoom, IUser, IMessage } from "~/types";
 export default class Room extends VuexModule {
   public room: IRoom = null;
   public usersFilter: string = null;
+  public activeAgendaItem: number = 0;
 
   @Mutation
   setRoom(room: IRoom) {
@@ -18,6 +19,11 @@ export default class Room extends VuexModule {
   @Mutation
   clearRoom() {
     this.room = null;
+  }
+
+  @Mutation
+  setActiveAgendaItem(index: number) {
+    this.activeAgendaItem = index;
   }
 
   @Mutation

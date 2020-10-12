@@ -1,7 +1,5 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { v4 as uuidv4 } from "uuid";
-import { runInThisContext } from "vm";
-import { User } from "../user/user.model";
 
 @ObjectType()
 export class Poll {

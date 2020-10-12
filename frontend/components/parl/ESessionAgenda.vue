@@ -5,7 +5,12 @@
       <v-card-text>
         <v-list dense>
           <v-list-item-group v-model="step">
-            <v-list-item v-for="(item, index) in items" :key="index" three-line>
+            <v-list-item
+              v-for="(item, index) in items"
+              :key="index"
+              three-line
+              :disabled="isMember"
+            >
               <v-list-item-content>
                 <v-list-item-title class="whiteSpaceNormal"
                   >{{ index + 1 }} - {{ item.text }}</v-list-item-title
@@ -38,14 +43,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "nuxt-composition-api";
+import { defineComponent, ref, computed } from "nuxt-composition-api";
+import { roomStore, sessionStore } from "~/store";
+import {
+  useSetActiveAgendaItem,
+  useFetchActiveAgendaItem,
+} from "~/composable/useAgenda";
 
 export default defineComponent({
   name: "ESessionParl",
   head: {},
   components: {},
   setup() {
-    const step = ref(0);
+    // const step = ref(0);
     const items = ref([
       {
         text: "Mitteilungen",
@@ -114,10 +124,32 @@ export default defineComponent({
         party: "FDP",
       },
     ]);
+    useFetchActiveAgendaItem(roomStore.room);
+
+    const step = computed({
+      get: () => roomStore.activeAgendaItem,
+      set: (idx) => {
+        if (idx !== undefined && idx !== index.value) {
+          index.value = idx;
+          if (sessionStore.isModerator) {
+            setActiveItem();
+          }
+        }
+      },
+    });
+
+    const index = ref(0);
+    const { mutate: setActiveItem } = useSetActiveAgendaItem(
+      roomStore.room,
+      index,
+    );
+
+    const isMember = computed(() => !sessionStore.isModerator);
 
     return {
       items,
       step,
+      isMember,
     };
   },
 });

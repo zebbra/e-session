@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row class="mb-5">
-      <e-session-dietikon-logo class="mx-auto" />
+      <e-session-tenant-logo class="mx-auto" />
     </v-row>
     <v-form v-model="valid">
       <v-card
@@ -52,8 +52,8 @@ import { sessionStore, roomStore } from "~/store";
 export default defineComponent({
   name: "ESessionJoinRoomForm",
   components: {
-    ESessionDietikonLogo: () =>
-      import("~/components/parl/ESessionDietikonLogo.vue"),
+    ESessionTenantLogo: () =>
+      import("~/components/parl/ESessionTenantLogo.vue"),
   },
   setup() {
     const { redirect } = useContext();

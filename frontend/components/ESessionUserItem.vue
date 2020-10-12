@@ -12,8 +12,7 @@
             {{ user.name }} {{ user.id === currentUser.id ? " (You)" : "" }}
           </v-list-item-title>
           <v-list-item-subtitle>
-            <!-- {{ user.id === currentUser.id ? role : "User" }} -->
-            {{ user.id }}
+            {{ user.id === currentUser.id ? role : "User" }}
           </v-list-item-subtitle>
         </v-list-item-content>
         <div class="d-flex">
@@ -65,6 +64,7 @@
       <v-card flat tile>
         <v-card-text>
           User Information
+          {{ user.id }}
         </v-card-text>
       </v-card>
     </v-expansion-panel-content>

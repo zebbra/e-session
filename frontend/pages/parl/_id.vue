@@ -22,6 +22,7 @@ import {
   useOnHandMoved,
   useOnShareToggled,
 } from "~/composable/useRoom";
+import { useOnAgendaUpdate } from "~/composable/useAgenda";
 import { useOnPoll } from "~/composable/usePoll";
 import { useSetJid, useOnUserUpdate } from "~/composable/useUser";
 import { useOnMessagePosted } from "~/composable/useMessage";
@@ -51,6 +52,7 @@ export default defineComponent({
     useOnShareToggled(roomRef.value);
     useOnUserUpdate(roomRef.value);
     useOnPoll(roomRef.value);
+    useOnAgendaUpdate(roomRef.value);
 
     const { mutate: join } = useJoin(userRef.value, roomRef.value);
     join();

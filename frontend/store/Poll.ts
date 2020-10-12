@@ -40,8 +40,4 @@ export default class Poll extends VuexModule {
     this.poll.id = "";
     this.poll.roomId = "";
   }
-
-  // get isRunning() {
-    // return this.poll.status === "started";
-  // }
 }
