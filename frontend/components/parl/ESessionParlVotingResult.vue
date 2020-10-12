@@ -13,7 +13,7 @@ import { pollStore } from "~/store";
 export default defineComponent({
   name: "ESessionParlVotingBar",
   components: {
-    PieChart: () => import("~/utils/PieChart.js"),
+    PieChart: () => import("~/utils/PieChart"),
   },
   setup() {
     const pollRef = computed(() => pollStore.poll);
