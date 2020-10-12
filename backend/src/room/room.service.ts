@@ -80,4 +80,9 @@ export class RoomService {
     }
     return user;
   }
+
+  setActiveAgendaItem(roomId: string, index: string): Room {
+    this.logger.info("agenda item (%s) in room (%s) ", index, roomId);
+    return this.findOne(roomId).setActiveItem(index);
+  }
 }

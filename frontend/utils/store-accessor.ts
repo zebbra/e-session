@@ -4,12 +4,15 @@ import Session from "~/store/Session";
 import Global from "~/store/Global";
 import ConferenceStatus from "~/store/ConferenceStatus";
 import Room from "~/store/Room";
+import Poll from "~/store/Poll";
 
 /* eslint-disable import/no-mutable-exports */
 let globalStore: Global;
 let conferenceStore: ConferenceStatus;
 let roomStore: Room;
 let sessionStore: Session;
+let pollStore: Poll;
+
 /* eslint-enable import/no-mutable-exports */
 
 function initialiseStores(store: Store<any>): void {
@@ -17,6 +20,7 @@ function initialiseStores(store: Store<any>): void {
   conferenceStore = getModule(ConferenceStatus, store);
   roomStore = getModule(Room, store);
   sessionStore = getModule(Session, store);
+  pollStore = getModule(Poll, store);
 }
 
 export {
@@ -25,4 +29,5 @@ export {
   roomStore,
   sessionStore,
   conferenceStore,
+  pollStore,
 };

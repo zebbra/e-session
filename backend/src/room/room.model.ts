@@ -17,9 +17,13 @@ export class Room {
   @Field((type) => [User])
   users: User[] = [];
 
+  @Field((type) => String)
+  activeAgendaItem: string;
+
   constructor(name: string) {
     this.id = uuidv4();
     this.name = name;
+    this.activeAgendaItem = "0"
   }
 
   findUser(id: string) {
@@ -45,6 +49,12 @@ export class Room {
       this.messages = this.messages.slice(0, 50);
     }
     return message;
+  }
+  
+  setActiveItem(index: string): Room {
+    // const agenda = new Agenda(this, index);
+    this.activeAgendaItem = index
+    return this;
   }
 }
 

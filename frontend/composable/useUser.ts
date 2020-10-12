@@ -12,6 +12,10 @@ export function useSetJid() {
   });
 }
 
+export function useSetRole() {
+  return useMutation(mutations.user.setRole);
+}
+
 export function useOnUserUpdate(room: IRoom) {
   if (process.browser) {
     const { onResult } = useSubscription<{ user: IUser }>(

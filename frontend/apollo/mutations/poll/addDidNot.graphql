@@ -1,0 +1,9 @@
+mutation addDidNot($id: String!, $userId: String!) {
+  addDidNot(id: $id, userId: $userId) {
+    id
+    yes
+    no
+    didNot
+    abstain
+  }
+}

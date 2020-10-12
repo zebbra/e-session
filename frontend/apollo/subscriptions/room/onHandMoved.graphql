@@ -5,5 +5,7 @@ subscription onHandMoved($roomId: String!) {
     handRaised
     conferenceJoined
     screenShared
+    jid
+    role
   }
 }

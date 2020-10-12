@@ -6,5 +6,6 @@ subscription onUserUpdate($id: String!, $jid: String!) {
     conferenceJoined
     screenShared
     jid
+    role
   }
 }

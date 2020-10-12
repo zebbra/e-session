@@ -9,6 +9,7 @@ type User {
   handRaised: Boolean!
   conferenceJoined: Boolean!
   screenShared: Boolean!
+  role: String!
 }
 
 type Room {
@@ -16,6 +17,7 @@ type Room {
   name: String!
   messages: [Message!]!
   users: [User!]!
+  activeAgendaItem: String!
 }
 
 type Message {
@@ -24,17 +26,31 @@ type Message {
   text: String!
 }
 
+type Poll {
+  id: String!
+  roomId: String!
+  status: String!
+  yes: [String!]!
+  no: [String!]!
+  didNot: [String!]!
+  abstain: [String!]!
+}
+
 type Query {
   user(id: String!): User
   room(name: String!): Room!
   usersInConference(room: String!): [User!]!
+  fetchActiveAgendaItem(roomId: String!): Room!
+  getPolls: Poll
+  getPoll(id: String!): Poll
 }
 
 type Mutation {
-  login(name: String!): User!
+  login(role: String!, name: String!): User!
   logout(id: String!): User!
   joinConference(roomId: String!, userId: String!): User!
   leaveConference(roomId: String!, userId: String!): User!
+  setRole(role: String!, userId: String!): User!
   setJid(jid: String!, userId: String!): User!
   createRoom(name: String!): Room!
   say(text: String!, author: String!, room: String!): Message!
@@ -44,6 +60,11 @@ type Mutation {
   lowerHand(roomId: String!, userId: String!): User!
   startShare(roomId: String!, userId: String!): User!
   endShare(roomId: String!, userId: String!): User!
+  setActiveAgendaItem(index: String!, roomId: String!): Room!
+  createPoll(roomId: String!): Poll!
+  endPoll(pollId: String!): Poll!
+  vote(vote: String!, userId: String!, id: String!): Poll!
+  addDidNot(userId: String!, id: String!): Poll!
 }
 
 type Subscription {
@@ -56,4 +77,7 @@ type Subscription {
   signal(userId: String!, roomId: String!): User!
   messagePosted(room: String!): Message!
   shareToggled(roomId: String!): User!
+  agenda(roomId: String!): Room!
+  pollUpdate(pollId: String!): Poll!
+  poll(roomId: String!): Poll!
 }

@@ -6,5 +6,6 @@ mutation leaveConference($roomId: String!, $userId: String!) {
     conferenceJoined
     screenShared
     jid
+    role
   }
 }

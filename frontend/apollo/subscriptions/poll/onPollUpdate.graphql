@@ -1,0 +1,10 @@
+subscription onPollUpdate($pollId: String!) {
+  pollUpdate(pollId: $pollId) {
+    id
+    yes
+    no
+    didNot
+    abstain
+    roomId
+  }
+}

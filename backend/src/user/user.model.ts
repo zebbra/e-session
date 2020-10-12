@@ -22,6 +22,9 @@ export class User {
   @Field((type) => Boolean)
   screenShared: boolean;
 
+  @Field((type) => String)
+  role: string;
+
   constructor(name: string) {
     this.id = uuidv4();
     this.name = name;
@@ -29,6 +32,7 @@ export class User {
     this.conferenceJoined = false;
     this.screenShared = false;
     this.jid = '';
+    this.role = '';
   }
 
   setJid(jid: string): User {
@@ -66,12 +70,18 @@ export class User {
     return this;
   }
 
+  setRole(role: string): User {
+    this.role = role;
+    return this;
+  }
+
   resetUserParameters(): User {
     this.conferenceJoined = false;
     this.handRaised = false;
     this.conferenceJoined = false;
     this.screenShared = false;
     this.jid = '';
+    this.role = '';
     return this;
   }
 }
