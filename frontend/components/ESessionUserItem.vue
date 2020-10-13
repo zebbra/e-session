@@ -11,15 +11,18 @@
             {{ user.name }} {{ user.id === currentUser.id ? " (You)" : "" }}
           </v-list-item-title>
           <v-list-item-subtitle>
-            {{ user.id === currentUser.id ? role : "User" }}
+            {{ user.role }}
           </v-list-item-subtitle>
         </v-list-item-content>
         <div class="d-flex">
           <v-tooltip v-if="user.handRaised" left>
             <template v-slot:activator="{ on }">
               <v-list-item-icon>
+                <v-icon v-if="user.conferenceJoined" color="blue">
+                  mdi-account-voice
+                </v-icon>
                 <v-icon
-                  v-if="isModerator"
+                  v-else-if="isModerator"
                   color="orange"
                   v-on="on"
                   @click.stop="decline(user)"
@@ -115,6 +118,7 @@ export default defineComponent({
 
     function exit(user) {
       consola.log("exit", user.id);
+      lowerHand({ userId: user.id, roomId: room.id });
       leaveConference({
         userId: user.id,
         roomId: room.id,

@@ -1,5 +1,6 @@
 subscription onConferenceLeft($roomId: String!) {
   conferenceLeft(roomId: $roomId) {
     id
+    role
   }
 }

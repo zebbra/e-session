@@ -6,7 +6,13 @@
       </v-col>
       <v-col>
         <v-row class="d-flex justify-center">
-          <v-btn v-if="!isModerator" tile large @click.stop="moveHand">
+          <v-btn
+            v-if="!isModerator"
+            tile
+            large
+            :disabled="conferenceJoined"
+            @click.stop="moveHand"
+          >
             <v-icon :color="user.handRaised ? 'secondary' : 'white'">
               mdi-hand-right
             </v-icon>
@@ -171,6 +177,14 @@ export default defineComponent({
       pollStore.resetPoll();
       roomStore.resetVoteAllUser();
     }
+
+    const conferenceJoined = computed(() => {
+      const usrs = roomStore.room.users.filter(
+        (item) => item.id === sessionStore.user.id,
+      );
+      return usrs.length > 0 ? usrs[0].conferenceJoined : false;
+    });
+
     watch(
       // getter
       () => conferenceStore.status.isSharing,
@@ -208,6 +222,7 @@ export default defineComponent({
       isVoting,
       showVoteResult,
       hideVoteResult,
+      conferenceJoined,
     };
   },
 });
