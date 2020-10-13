@@ -92,7 +92,7 @@ export default defineComponent({
       import("~/components/parl/ESessionParlVotingBar.vue"),
   },
   setup() {
-    const { redirect, app } = useContext();
+    const { app } = useContext();
     const user = computed(() => sessionStore.user);
     const room = computed(() => roomStore.room);
     const micMuted = computed(() => conferenceStore.status.micMuted);
@@ -102,12 +102,17 @@ export default defineComponent({
     const isModerator = computed(() => sessionStore.isModerator);
 
     const { mutate: leave, onDone } = useLeave(user.value, room.value);
+
     function leaveRoom() {
+      const wasModerator = isModerator.value;
       onDone(() => {
         app.$closeJitsiConnection();
-        roomStore.setUsersFilter("");
         conferenceStore.doClearConferenceStatus();
-        redirect("/");
+        if (wasModerator) {
+          window.location.href = "/parl/speaker";
+        } else {
+          window.location.href = "/parl/member";
+        }
       });
       leave();
     }

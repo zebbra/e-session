@@ -1,10 +1,10 @@
 <template>
-  <div>
-    <v-row v-if="member" class="member">
+  <div class="d-flex align-center full-height" :class="withMembers">
+    <v-row v-if="member" class="member flex-row justify-center">
       <div
         v-for="(value, key) in membersTracks"
         :key="key"
-        class="participantWrapper"
+        class="participantWrapper ma-1"
       >
         <h4>Member</h4>
         <e-session-local-peer
@@ -20,6 +20,7 @@
         v-for="(value, key) in speakersTracks"
         :key="key"
         :class="peerWrapperClassName"
+        class="ma-1"
       >
         <h4>Speaker</h4>
         <e-session-local-peer
@@ -59,19 +60,27 @@ export default defineComponent({
     });
 
     const speakers: any = computed(() => {
-      return roomStore.room.users.filter((item) => {
-        if (item.conferenceJoined && item.role === "moderator") {
-          return item.jid;
-        }
-      });
+      if (roomStore.room) {
+        return roomStore.room.users.filter((item) => {
+          if (item.conferenceJoined && item.role === "moderator") {
+            return item.jid;
+          }
+        });
+      } else {
+        return [];
+      }
     });
 
     const members: any = computed(() => {
-      return roomStore.room.users.filter((item) => {
-        if (item.conferenceJoined && item.role === "user") {
-          return item.jid;
-        }
-      });
+      if (roomStore.room) {
+        return roomStore.room.users.filter((item) => {
+          if (item.conferenceJoined && item.role === "user") {
+            return item.jid;
+          }
+        });
+      } else {
+        return [];
+      }
     });
 
     const membersTracks: any = computed(() => {
@@ -132,18 +141,34 @@ export default defineComponent({
       }
     });
 
+    const withMembers: any = computed(() => {
+      if (member.value) {
+        return "flex-column";
+      } else {
+        return "flex-row";
+      }
+    });
+
     return {
       membersTracks,
       speakersTracks,
       member,
       participants,
       peerWrapperClassName,
+      withMembers,
     };
   },
 });
 </script>
 
 <style scoped>
+.speaker {
+  flex-wrap: nowrap !important;
+}
+.member {
+  width: 100%;
+  flex-wrap: nowrap !important;
+}
 .with-member {
   width: 250px;
 }
@@ -162,5 +187,8 @@ export default defineComponent({
 }
 .participantWrapper {
   width: 100%;
+}
+.full-height {
+  height: 100%;
 }
 </style>

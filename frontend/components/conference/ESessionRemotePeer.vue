@@ -1,7 +1,7 @@
 <template>
   <div class="peer-container">
     <div class="participant-displayName subtitle-1 pl-2 pr-2">
-      {{ displayName }} - {{ participantId }}
+      {{ displayName }}
     </div>
     <e-session-media-cover v-if="showCover" class="stack-top" />
     <e-session-media :video-stream="videoStream" :audio-stream="audioStream" />
