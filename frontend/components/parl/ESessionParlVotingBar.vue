@@ -71,6 +71,8 @@ export default defineComponent({
       sessionStore.user.id,
     );
 
+    didNotVote();
+
     function checkAndVoteYes() {
       if (pollStore.poll.yes.includes(sessionStore.user.id)) {
         didNotVote();

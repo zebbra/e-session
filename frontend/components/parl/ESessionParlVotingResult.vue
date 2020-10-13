@@ -1,6 +1,7 @@
 <template>
   <div>
     <pie-chart :chart-data="data"></pie-chart>
+    <div>Did not vote: {{ poll.didNot.length }}</div>
   </div>
 </template>
 
