@@ -120,7 +120,7 @@ export default defineComponent({
       if (Object.keys(membersTracks.value).length > 0) {
         return "with-member";
       } else {
-        return "no-member";
+        return "with-no-member";
       }
     });
 
@@ -147,6 +147,9 @@ export default defineComponent({
 .with-member {
   width: 250px;
 }
+.with-no-member {
+  width: 100%;
+}
 .peer {
   border-radius: 5px;
   width: 100%;
@@ -156,5 +159,8 @@ export default defineComponent({
   margin-top: 5px;
   background-color: rgba(39, 39, 39, 0.5);
   backdrop-filter: blur(5px) contrast(0.8);
+}
+.participantWrapper {
+  width: 100%;
 }
 </style>

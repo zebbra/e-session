@@ -39,7 +39,7 @@ import Vue from "vue";
 import { defineComponent, ref } from "nuxt-composition-api";
 import consola from "consola";
 import { openFullscreen, closeFullscreen } from "~/utils/helpers";
-import { globalStore, conferenceStore } from "~/store";
+import { conferenceStore } from "~/store";
 
 export default defineComponent({
   name: "ESessionParlToolbarMore",
@@ -67,7 +67,7 @@ export default defineComponent({
           if (appIsFullscreen.value) {
             closeFullscreen(document);
           } else {
-            openFullscreen(document.getElementById("main-content-container"));
+            openFullscreen(document.getElementById("app-content-container"));
             document.body.onfullscreenchange = handleFullscreenChange;
           }
           break;
@@ -88,7 +88,6 @@ export default defineComponent({
       const isFullscreen = document.fullscreenElement === elem;
       if (isFullscreen) {
         // consola.log("Full start");
-        globalStore.closeModerationDrawer();
         appIsFullscreen.value = true;
         Vue.set(items.value[1], "text", "Windowed");
         Vue.set(items.value[1], "icon", "mdi-fullscreen-exit");

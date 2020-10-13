@@ -1,5 +1,5 @@
 <template>
-  <v-app dusk>
+  <v-app id="app-content-container" dusk>
     <e-session-snackbar />
     <v-app-bar fixed app class="custom-theme">
       <v-toolbar-title v-text="title" />
