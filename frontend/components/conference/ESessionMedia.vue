@@ -1,6 +1,12 @@
 <template>
   <div class="d-flex">
-    <video v-if="videoStream" ref="videoRef" class="video-insert" autoplay />
+    <video
+      v-if="videoStream"
+      ref="videoRef"
+      class="video-insert"
+      autoplay
+      @dblclick="fullscreenEvent"
+    />
     <audio v-if="audioStream" ref="audioRef" autoplay />
   </div>
 </template>
@@ -31,11 +37,17 @@ export default defineComponent({
         stream.attach(audioRef.value);
       }
     }
+
     onMounted(() => {
       doConnectVideoStream(props.videoStream);
       doConnectAudioStream(props.audioStream);
     });
 
+    function fullscreenEvent(event: any) {
+      if (event.target.requestFullscreen) {
+        event.target.requestFullscreen();
+      }
+    }
     watch(
       // getter
       () => props.videoStream,
@@ -62,7 +74,7 @@ export default defineComponent({
       },
     );
 
-    return { videoRef, audioRef };
+    return { videoRef, audioRef, fullscreenEvent };
   },
 });
 </script>
@@ -76,5 +88,8 @@ export default defineComponent({
   height: 100%;
   width: 100%;
   background-size: cover;
+}
+video::-webkit-media-controls {
+  display: none !important;
 }
 </style>

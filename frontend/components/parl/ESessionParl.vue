@@ -36,12 +36,9 @@ export default defineComponent({
       conferenceStore.showDeviceSettings(true);
     }
 
-    function endCall() {}
-
     return {
       settingsDialog,
       showSettings,
-      endCall,
     };
   },
 });

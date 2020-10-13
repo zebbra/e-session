@@ -70,7 +70,7 @@ export default defineComponent({
     const { mutate: logout } = useLogout(userRef);
 
     const roomRef = computed(() => roomStore.room);
-    const roomName = ref("demositting");
+    const roomName = ref("demositzung");
     if (roomRef.value) {
       roomName.value = roomRef.value.name;
     }
