@@ -1,12 +1,11 @@
 <template>
   <section>
-    <v-expansion-panel-header class="py-0">
+    <v-expansion-panel-header :user="user" class="py-0">
       <v-list-item class="full-width">
-        <div
+        <e-session-user-itemVote-indicator
           v-if="showVoteIndicator"
-          class="pa-2 mr-3 circle d-inline-block"
-          :class="voteIndicatorClass"
-        ></div>
+          :user="user"
+        />
         <v-list-item-content>
           <v-list-item-title>
             {{ user.name }} {{ user.id === currentUser.id ? " (You)" : "" }}
@@ -34,7 +33,11 @@
             </template>
             <span>Lower Hand</span>
           </v-tooltip>
-          <div v-if="isModerator">
+          <div
+            v-if="
+              isModerator && (user.handRaised || user.id === currentUser.id)
+            "
+          >
             <v-tooltip v-if="!user.conferenceJoined" left>
               <template v-slot:activator="{ on }">
                 <v-list-item-icon class="mr-0">
@@ -63,7 +66,6 @@
     <v-expansion-panel-content class="py-0">
       <v-card flat tile>
         <v-card-text>
-          User Information
           {{ user.id }}
         </v-card-text>
       </v-card>
@@ -89,7 +91,11 @@ export default defineComponent({
     role: String,
     isModerator: Boolean,
   },
-  setup({ room, user }) {
+  components: {
+    ESessionUserItemVoteIndicator: () =>
+      import("~/components/ESessionUserItemVoteIndicator.vue"),
+  },
+  setup({ room }) {
     const { mutate: joinConference } = useJoinConference();
     const { mutate: leaveConference } = useLeaveConference();
 
@@ -100,7 +106,6 @@ export default defineComponent({
         roomId: room.id,
       });
     }
-
     const { mutate: lowerHand } = useMutation(mutations.room.lowerHand);
 
     function decline(user) {
@@ -116,18 +121,6 @@ export default defineComponent({
       });
     }
 
-    const voteIndicatorClass = computed(() => {
-      if (pollStore.poll.yes.includes(user.id)) {
-        return "yes-vote";
-      } else if (pollStore.poll.no.includes(user.id)) {
-        return "no-vote";
-      } else if (pollStore.poll.abstain.includes(user.id)) {
-        return "abstain-vote";
-      } else {
-        return "did-not-vote";
-      }
-    });
-
     const showVoteIndicator = computed(
       () => pollStore.poll && pollStore.poll.status === "started",
     );
@@ -136,7 +129,6 @@ export default defineComponent({
       join,
       decline,
       exit,
-      voteIndicatorClass,
       showVoteIndicator,
     };
   },
@@ -144,25 +136,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.circle {
-  border-radius: 50%;
-}
 .full-width {
   padding: 0px !important;
-}
-.yes-vote {
-  background-color: green;
-  box-shadow: 0px 0px 6px 2px green;
-}
-.no-vote {
-  background-color: red;
-  box-shadow: 0px 0px 6px 2px red;
-}
-.abstain-vote {
-  background-color: cyan;
-  box-shadow: 0px 0px 6px 2px cyan;
-}
-.did-not-vote {
-  background-color: gray;
 }
 </style>

@@ -1,3 +1,4 @@
+import Vue from "vue";
 import { Module, VuexModule, Mutation } from "vuex-module-decorators";
 import { IRoom, IUser, IMessage } from "~/types";
 
@@ -24,6 +25,24 @@ export default class Room extends VuexModule {
   @Mutation
   setActiveAgendaItem(index: number) {
     this.activeAgendaItem = index;
+  }
+
+  @Mutation
+  resetVoteAllUser() {
+    for (let i = this.room.users.length - 1; i >= 0; --i) {
+      Vue.set(this.room.users[i], "vote", "");
+      i = 0;
+    }
+  }
+
+  @Mutation
+  setVote(data: any) {
+    for (let i = this.room.users.length - 1; i >= 0; --i) {
+      if (this.room.users[i].id === data.userId) {
+        Vue.set(this.room.users[i], "vote", data.vote);
+        i = 0;
+      }
+    }
   }
 
   @Mutation

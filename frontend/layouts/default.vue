@@ -88,6 +88,7 @@ export default defineComponent({
 <style scoped>
 .custom-theme {
   background-color: var(--v-background-base) !important;
+  right: 0px !important;
 }
 .custom-theme-lighter {
   background-color: var(--v-background-lighten1) !important;

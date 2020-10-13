@@ -4,9 +4,10 @@
     :width="300"
     app
     right
-    fixed
     bottom
     overlay-color="blue"
+    fixed
+    clipped
   >
     <template v-slot:prepend>
       <e-session-moderation-drawer-header :room="room" :user="user" />

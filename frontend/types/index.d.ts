@@ -6,6 +6,7 @@ export interface IUser {
   screenShared: Boolean;
   jid: string;
   role: string;
+  vote: String;
 }
 
 export interface IRoom {

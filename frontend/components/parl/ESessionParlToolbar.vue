@@ -38,19 +38,16 @@
         </v-row>
       </v-col>
     </v-row>
-    <v-dialog v-model="showVoteResult" persistent max-width="350">
+    <v-dialog v-model="showVoteResult" persistent width="350">
       <v-card>
         <v-card-title class="headline">
           Voting Result
         </v-card-title>
-
         <v-card-text>
           <e-session-parl-voting-result />
         </v-card-text>
-
         <v-card-actions>
           <v-spacer></v-spacer>
-
           <v-btn color="green darken-1" text @click.stop="hideVoteResult">
             Close
           </v-btn>
@@ -172,6 +169,7 @@ export default defineComponent({
 
     function hideVoteResult() {
       pollStore.resetPoll();
+      roomStore.resetVoteAllUser();
     }
     watch(
       // getter

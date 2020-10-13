@@ -15,6 +15,8 @@
           :current-user="currentUser"
           :role="role"
           :is-moderator="isModerator"
+          :vote="user.vote"
+          class="item"
         />
       </v-expansion-panel>
     </v-expansion-panels>
