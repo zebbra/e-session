@@ -25,6 +25,10 @@ const config: Configuration = {
         src:
           "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js",
       },
+      /* {
+        src:
+          "https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/dist/face-api.min.js",
+      }, */
     ],
   },
 
@@ -45,7 +49,10 @@ const config: Configuration = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [{ src: "~/plugins/jitsi.client", mode: "client" }],
+  plugins: [
+    { src: "~/plugins/jitsi.client", mode: "client" },
+    { src: "~/plugins/emotion.detector", mode: "client" },
+  ],
 
   /*
    ** Nuxt.js dev-modules

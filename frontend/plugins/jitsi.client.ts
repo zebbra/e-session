@@ -59,7 +59,7 @@ export default ({ app }) => {
       app.$connection.disconnect();
       app.$connection = null;
     }
-    app.$jitsi = null;
+    // app.$jitsi = null;
     conferenceStore.updateJoined(false);
   };
 

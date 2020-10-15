@@ -46,6 +46,22 @@ function closeFullscreen(document) {
   }
 }
 
+function round(num: number) {
+  return Math.round((num + Number.EPSILON) * 100) / 100;
+}
+
+function highestScore(stack: Object) {
+  const indexOfMaxValue = Object.values(stack).reduce(
+    (iMax, x, i, arr) => (x > arr[iMax] ? i : iMax),
+    0,
+  );
+  if (Object.values(stack)[indexOfMaxValue] < 0.6) {
+    return 4; // return neutral value by default
+  } else {
+    return Object.keys(stack)[indexOfMaxValue];
+  }
+}
+
 function keepProps(obj: object, keep: Array<string>) {
   /*   console.log(obj)
   console.log(keep) */
@@ -58,4 +74,12 @@ function keepProps(obj: object, keep: Array<string>) {
   }
   return deepCopy;
 }
-export { delay, openFullscreen, closeFullscreen, keepProps };
+
+export {
+  delay,
+  openFullscreen,
+  closeFullscreen,
+  keepProps,
+  round,
+  highestScore,
+};

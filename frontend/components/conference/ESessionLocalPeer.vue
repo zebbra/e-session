@@ -1,5 +1,9 @@
 <template>
-  <div class="peer-container">
+  <div class="local-peer-container">
+    <e-session-expression-colors
+      v-if="isExpressionsDetection"
+      class="emotion-hue"
+    />
     <div class="participant-displayName subtitle-1 pl-2 pr-2">
       {{ displayName }}
     </div>
@@ -15,7 +19,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from "nuxt-composition-api";
-import { conferenceStore } from "~/store";
+import { conferenceStore, detectionStore } from "~/store";
 
 export default defineComponent({
   name: "ESessionLocalPeer",
@@ -23,6 +27,8 @@ export default defineComponent({
     mediaTracks: Object,
   },
   components: {
+    ESessionExpressionColors: () =>
+      import("~/components/features/ESessionExpressionColors.vue"),
     ESessionMedia: () => import("~/components/conference/ESessionMedia.vue"),
     ESessionMediaCover: () =>
       import("~/components/conference/ESessionMediaCover.vue"),
@@ -47,6 +53,10 @@ export default defineComponent({
       );
     });
 
+    const isExpressionsDetection = computed(
+      () => detectionStore.expressionsDetection,
+    );
+
     return {
       videoStream,
       audioStream,
@@ -54,6 +64,7 @@ export default defineComponent({
       participantId,
       micMuted,
       showCover,
+      isExpressionsDetection,
     };
   },
 });
@@ -71,7 +82,12 @@ export default defineComponent({
   border-radius: 5px;
   z-index: 7;
 }
-.peer-container {
+.emotion-hue {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+.local-peer-container {
   position: relative;
   min-width: 100%;
   /* min-height: 100%; */

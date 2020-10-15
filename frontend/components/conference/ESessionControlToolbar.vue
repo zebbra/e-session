@@ -37,7 +37,12 @@ import {
   watch,
 } from "nuxt-composition-api";
 // import consola from "consola";
-import { roomStore, sessionStore, conferenceStore } from "~/store";
+import {
+  roomStore,
+  sessionStore,
+  conferenceStore,
+  detectionStore,
+} from "~/store";
 import {
   useLeave,
   useRaiseHand,
@@ -67,6 +72,10 @@ export default defineComponent({
         app.$closeJitsiConnection();
         roomStore.setUsersFilter("");
         conferenceStore.doClearConferenceStatus();
+        if (detectionStore.expressionsDetection) {
+          detectionStore.toggleExpressionsDetection();
+          app.$stopFaceApi();
+        }
         redirect("/");
       });
       leave();

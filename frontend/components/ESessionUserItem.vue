@@ -77,13 +77,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "nuxt-composition-api";
+import { computed, defineComponent, useContext } from "nuxt-composition-api";
 import { useMutation } from "@vue/apollo-composable";
 import consola from "consola";
 import { mutations } from "~/apollo";
 import { useJoinConference, useLeaveConference } from "~/composable/useSession";
 import { IUser, IRoom } from "~/types";
-import { pollStore } from "~/store/";
+
+import { pollStore, detectionStore } from "~/store/";
 
 export default defineComponent({
   name: "ESessionUserItem",
@@ -99,6 +100,8 @@ export default defineComponent({
       import("~/components/ESessionUserItemVoteIndicator.vue"),
   },
   setup({ room }) {
+    const { app } = useContext();
+
     const { mutate: joinConference } = useJoinConference();
     const { mutate: leaveConference } = useLeaveConference();
 
@@ -123,6 +126,10 @@ export default defineComponent({
         userId: user.id,
         roomId: room.id,
       });
+      if (detectionStore.expressionsDetection) {
+        app.$stopFaceApi();
+        detectionStore.toggleExpressionsDetection();
+      }
     }
 
     const showVoteIndicator = computed(
