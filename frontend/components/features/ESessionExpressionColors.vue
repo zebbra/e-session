@@ -23,7 +23,6 @@ export default defineComponent({
 
     onMounted(() => {
       requestAnimationFrame(animate);
-      console.log("onMounterd", app);
       app.$startFaceApi();
     });
 

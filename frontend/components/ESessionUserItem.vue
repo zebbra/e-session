@@ -77,7 +77,6 @@
 </template>
 
 <script lang="ts">
-
 import { computed, defineComponent, useContext } from "nuxt-composition-api";
 import { useMutation } from "@vue/apollo-composable";
 import consola from "consola";

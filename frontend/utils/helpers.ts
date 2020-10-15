@@ -75,4 +75,11 @@ function keepProps(obj: object, keep: Array<string>) {
   return deepCopy;
 }
 
-export { delay, openFullscreen, closeFullscreen, keepProps, round, highestScore };
+export {
+  delay,
+  openFullscreen,
+  closeFullscreen,
+  keepProps,
+  round,
+  highestScore,
+};

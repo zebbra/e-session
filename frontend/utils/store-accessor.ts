@@ -34,5 +34,4 @@ export {
   conferenceStore,
   detectionStore,
   pollStore,
-  master
 };
