@@ -147,12 +147,24 @@ const config: Configuration = {
   /*
    ** Build configuration
    */
-  // build: {
-  //   /*
-  //    ** You can extend webpack config here
-  //    */
-  //   extend(config, ctx) {}
-  // }
+  build: {
+    /*
+     ** You can extend webpack config here
+     */
+    extend(config, { isClient }) {
+      // @see https://github.com/nuxt/nuxt.js/pull/3480#issuecomment-404150387
+      config.output.globalObject = "this";
+
+      if (isClient) {
+        // web workers are only available client-side
+        config.module.rules.push({
+          test: /\.worker\.js$/,
+          use: { loader: "workerize-loader" },
+          exclude: /(node_modules)/,
+        });
+      }
+    },
+  },
   /* server: {
     host: "0.0.0.0",
     https: {
