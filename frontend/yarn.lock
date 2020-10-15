@@ -2854,6 +2854,11 @@
   resolved "https://registry.yarnpkg.com/@types/webgl2/-/webgl2-0.0.4.tgz#c3b0f9d6b465c66138e84e64cb3bdf8373c2c279"
   integrity sha512-PACt1xdErJbMUOUweSrbVM7gSIYm1vTncW2hF6Os/EeWi6TXYAYMPp+8v6rzHmypE5gHrxaxZNXgMkJVIdZpHw==
 
+"@types/webgl2@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@types/webgl2/-/webgl2-0.0.5.tgz#dd925e20ab8ace80eb4b1e46fda5b109c508fb0d"
+  integrity sha512-oGaKsBbxQOY5+aJFV3KECDhGaXt+yZJt2y/OZsnQGLRkH6Fvr7rv4pCt3SRH1somIHfej/c4u7NSpCyd9x+1Ow==
+
 "@types/webpack-bundle-analyzer@^2.13.3":
   version "2.13.3"
   resolved "https://registry.yarnpkg.com/@types/webpack-bundle-analyzer/-/webpack-bundle-analyzer-2.13.3.tgz#820c8f734e171f081cbf02d889b9cda687cc89dd"
