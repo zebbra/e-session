@@ -70,7 +70,15 @@ export default defineComponent({
     } else if (process.client && localStorage.getItem("username")) {
       userName.value = localStorage.getItem("username");
     }
-    const { mutate: login } = useLogin(userName);
+    const moderator = ref(true);
+    const role = computed(() => {
+      if (moderator.value) {
+        return "moderator";
+      } else {
+        return "user";
+      }
+    });
+    const { mutate: login } = useLogin(userName, role.value);
     const { mutate: logout } = useLogout(userRef);
 
     const roomRef = computed(() => roomStore.room);
@@ -101,12 +109,11 @@ export default defineComponent({
       }
     });
 
-    const moderator = ref(true);
     watch(moderator, (isModerator) => {
       if (isModerator) {
         sessionStore.setRole("moderator");
       } else {
-        sessionStore.setRole("User");
+        sessionStore.setRole("user");
       }
     });
 

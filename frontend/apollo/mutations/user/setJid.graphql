@@ -1,5 +1,6 @@
 mutation setJid($userId: String!, $jid: String!) {
   setJid(userId: $userId, jid: $jid) {
     id
+    jid
   }
 }

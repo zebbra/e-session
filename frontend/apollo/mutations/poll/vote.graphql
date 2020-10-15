@@ -1,0 +1,9 @@
+mutation vote($id: String!, $userId: String!, $vote: String!) {
+  vote(id: $id, userId: $userId, vote: $vote) {
+    id
+    yes
+    no
+    didNot
+    abstain
+  }
+}

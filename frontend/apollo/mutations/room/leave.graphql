@@ -2,5 +2,10 @@ mutation leaveRoom($userId: String!, $roomId: String!) {
   leave(userId: $userId, roomId: $roomId) {
     id
     name
+    handRaised
+    conferenceJoined
+    screenShared
+    jid
+    role
   }
 }

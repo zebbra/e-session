@@ -1,3 +1,4 @@
 import * as room from "./room";
+import * as poll from "./poll";
 
-export { room };
+export { room, poll };

@@ -6,5 +6,6 @@ mutation startShare($userId: String!, $roomId: String!) {
     conferenceJoined
     screenShared
     jid
+    role
   }
 }

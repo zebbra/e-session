@@ -482,37 +482,39 @@ export default ({ app }) => {
     const type = track.getType();
 
     const id: string = track.getParticipantId();
-
-    if (app.$remoteTracks.value[id]) {
-      track.removeEventListener(
-        app.$jitsi.events.track.TRACK_MUTE_CHANGED,
-        (track: any) => _onRemoteTrackMuted(track),
-      );
-
+    if (app.$jitsi) {
+      if (app.$remoteTracks.value[id]) {
+        track.removeEventListener(
+          app.$jitsi.events.track.TRACK_MUTE_CHANGED,
+          (track: any) => _onRemoteTrackMuted(track),
+        );
+      }
       /* track.removeEventListener(
         app.$jitsi.events.track.LOCAL_TRACK_STOPPED,
         () => consola.log("remote track stoped"),
       ); */
-
-      track.removeEventListener(
-        app.$jitsi.events.track.TRACK_AUDIO_OUTPUT_CHANGED,
-        (deviceId: any) =>
-          consola.log(`track audio output device was changed to ${deviceId}`),
-      );
-
-      if (type === "video") {
-        Vue.delete(app.$remoteTracks.value[id].value, "video");
+      if (app.$jitsi) {
+        track.removeEventListener(
+          app.$jitsi.events.track.TRACK_AUDIO_OUTPUT_CHANGED,
+          (deviceId: any) =>
+            consola.log(`track audio output device was changed to ${deviceId}`),
+        );
       }
+      if (app.$remoteTracks.value[id]) {
+        if (type === "video") {
+          Vue.delete(app.$remoteTracks.value[id].value, "video");
+        }
 
-      if (type === "audio") {
-        Vue.delete(app.$remoteTracks.value[id].value, "audio");
-      }
+        if (type === "audio") {
+          Vue.delete(app.$remoteTracks.value[id].value, "audio");
+        }
 
-      if (
-        !app.$remoteTracks.value[id].value.video &&
-        !app.$remoteTracks.value[id].value.audio
-      ) {
-        Vue.delete(app.$remoteTracks.value, id);
+        if (
+          !app.$remoteTracks.value[id].value.video &&
+          !app.$remoteTracks.value[id].value.audio
+        ) {
+          Vue.delete(app.$remoteTracks.value, id);
+        }
       }
     }
   }

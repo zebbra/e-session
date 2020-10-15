@@ -4,12 +4,14 @@ import { sessionStore, roomStore } from "~/store";
 import { mutations } from "~/apollo";
 import { IUser } from "~/types";
 
-export function useLogin(userName: Ref<string>) {
+export function useLogin(userName: Ref<string>, role: string) {
   return useMutation(mutations.session.login, () => ({
     variables: {
       name: userName.value,
+      role,
     },
     update: (_cache, { data }) => {
+      // console.log("data:data", data);
       sessionStore.login(data.login);
     },
   }));

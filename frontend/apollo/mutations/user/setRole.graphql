@@ -1,0 +1,5 @@
+mutation setRole($userId: String!, $role: String!) {
+  setRole(userId: $userId, role: $role) {
+    id
+  }
+}

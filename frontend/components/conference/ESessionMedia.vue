@@ -6,6 +6,7 @@
       ref="videoRef"
       class="video-insert"
       autoplay
+      @dblclick="fullscreenEvent"
     />
     <audio v-if="audioStream" ref="audioRef" autoplay />
   </div>
@@ -45,11 +46,17 @@ export default defineComponent({
         stream.attach(audioRef.value);
       }
     }
+
     onMounted(() => {
       doConnectVideoStream(props.videoStream);
       doConnectAudioStream(props.audioStream);
     });
 
+    function fullscreenEvent(event: any) {
+      if (event.target.requestFullscreen) {
+        event.target.requestFullscreen();
+      }
+    }
     watch(
       // getter
       () => props.videoStream,
@@ -75,8 +82,7 @@ export default defineComponent({
         lazy: false, // immediate: true
       },
     );
-
-    return { videoRef, audioRef, id };
+    return { videoRef, audioRef, fullscreenEvent, id };
   },
 });
 </script>
@@ -90,5 +96,8 @@ export default defineComponent({
   height: 100%;
   width: 100%;
   background-size: cover;
+}
+video::-webkit-media-controls {
+  display: none !important;
 }
 </style>

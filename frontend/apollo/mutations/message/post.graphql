@@ -4,6 +4,11 @@ mutation postMessage($room: String!, $author: String!, $text: String!) {
     author {
       id
       name
+      handRaised
+      conferenceJoined
+      screenShared
+      jid
+      role
     }
   }
 }

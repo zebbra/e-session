@@ -1,0 +1,5 @@
+subscription agenda($roomId: String!) {
+  agenda(roomId: $roomId) {
+    activeAgendaItem
+  }
+}

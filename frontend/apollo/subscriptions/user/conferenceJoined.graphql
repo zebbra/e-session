@@ -6,5 +6,6 @@ subscription onConferenceJoined($roomId: String!) {
     conferenceJoined
     screenShared
     jid
+    role
   }
 }

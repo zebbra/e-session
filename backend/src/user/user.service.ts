@@ -11,9 +11,10 @@ export class UserService {
     private readonly logger: PinoLogger,
   ) {}
 
-  create(name: string): User {
-    this.logger.info("create(%s)", name);
+  create(name: string, role: string): User {
+    this.logger.info("create (%s) with role (%s)", name, role);
     const user = new User(name);
+    user.role = role
     this.users.push(user);
     return user;
   }
@@ -76,6 +77,11 @@ export class UserService {
   resetUserParameters(id: string): User {
     this.logger.info("resetUserParameters for user (%s)", id);
     return this.findOne(id).resetUserParameters();
+  }
+
+  setRole(id: string, role: string): User {
+    this.logger.info("setRole for (%s) to (%s)", id, role);
+    return this.findOne(id).setRole(role);
   }
 
 }

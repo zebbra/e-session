@@ -1,5 +1,5 @@
 <template>
-  <v-app dusk>
+  <v-app id="app-content-container" dusk>
     <e-session-snackbar />
     <v-app-bar fixed app class="custom-theme">
       <v-toolbar-title v-text="title" />
@@ -14,11 +14,7 @@
       <div id="stars"></div>
       <div id="stars2"></div>
       <div id="stars3"></div>
-      <v-container
-        fluid
-        class="d-flex align-center"
-        style="height: calc(100% - 36px); width: 130vh;"
-      >
+      <v-container fluid class="d-flex align-center">
         <e-session-error v-if="error" />
         <nuxt v-else />
       </v-container>
@@ -92,6 +88,7 @@ export default defineComponent({
 <style scoped>
 .custom-theme {
   background-color: var(--v-background-base) !important;
+  right: 0px !important;
 }
 .custom-theme-lighter {
   background-color: var(--v-background-lighten1) !important;

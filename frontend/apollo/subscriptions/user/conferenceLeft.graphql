@@ -1,10 +1,6 @@
 subscription onConferenceLeft($roomId: String!) {
   conferenceLeft(roomId: $roomId) {
     id
-    name
-    handRaised
-    conferenceJoined
-    screenShared
-    jid
+    role
   }
 }

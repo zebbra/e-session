@@ -67,6 +67,7 @@ export class RoomResolver {
   ) {
     const user = this.userService.raiseHand(userId);
     this.pubSub.publish("handMoved", { user, roomId });
+    console.log("raiseHand user: ", user)
     return user;
   }
 
@@ -162,6 +163,40 @@ export class RoomResolver {
   })
   shareToggled(@Args("roomId") roomId: string) {
     return this.pubSub.asyncIterator("shareToggled");
+  }
+
+  @Mutation((returns) => Room)
+  async setActiveAgendaItem(
+    @Args("roomId") roomId: string,
+    @Args("index") index: string,
+  ) {
+
+    const room = this.roomService.setActiveAgendaItem(roomId, index);
+    console.log("setActiveAgendaItem room", room)
+    this.pubSub.publish("agenda", { room });
+    return room;
+  }
+
+  @Subscription((returns) => Room, {
+    filter: (payload, variables) => {
+      console.log("payload.room.roomId", payload.room.id)
+      console.log("variables.roomId", variables.roomId)
+      if (payload.room.id === variables.roomId) {
+        return true
+      } else {
+        return false
+      }
+    },
+    resolve: (payload) => payload.room,
+  })
+  agenda(@Args("roomId") roomId: string) {
+    return this.pubSub.asyncIterator("agenda");
+  }
+
+  @Query((returns) => Room)
+  async fetchActiveAgendaItem(@Args("roomId") roomId: string) {
+    return this.roomService
+      .findOne(roomId)
   }
 
 }

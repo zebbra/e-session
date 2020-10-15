@@ -1,3 +1,5 @@
+import Vue from "vue";
+
 function delay(ms: number = 1000) {
   let ctr: any, rej: any;
   const p: any = new Promise((resolve, reject) => {
@@ -43,6 +45,7 @@ function closeFullscreen(document) {
     document.msExitFullscreen();
   }
 }
+
 function round(num: number) {
   return Math.round((num + Number.EPSILON) * 100) / 100;
 }
@@ -59,4 +62,17 @@ function highestScore(stack: Object) {
   }
 }
 
-export { delay, openFullscreen, closeFullscreen, round, highestScore };
+function keepProps(obj: object, keep: Array<string>) {
+  /*   console.log(obj)
+  console.log(keep) */
+  const deepCopy = { ...obj };
+  for (const prop in obj) {
+    if (!keep.includes(prop)) {
+      // delete obj[prop];
+      Vue.delete(deepCopy, prop);
+    }
+  }
+  return deepCopy;
+}
+
+export { delay, openFullscreen, closeFullscreen, keepProps, round, highestScore };

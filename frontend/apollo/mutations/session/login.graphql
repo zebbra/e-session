@@ -1,10 +1,11 @@
-mutation loginUser($name: String!) {
-  login(name: $name) {
+mutation loginUser($name: String!, $role: String!) {
+  login(name: $name, role: $role) {
     id
     name
     handRaised
     conferenceJoined
     screenShared
     jid
+    role
   }
 }

@@ -1,0 +1,5 @@
+mutation createPoll($roomId: String!) {
+  createPoll(roomId: $roomId) {
+    id
+  }
+}

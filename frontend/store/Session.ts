@@ -32,6 +32,11 @@ export default class Session extends VuexModule {
   }
 
   @Mutation
+  setVote(vote: string) {
+    this.user.vote = vote;
+  }
+
+  @Mutation
   toggleConferenceJoined() {
     this.user.conferenceJoined = !this.user.conferenceJoined;
   }

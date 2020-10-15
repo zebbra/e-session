@@ -1,3 +1,4 @@
+import Vue from "vue";
 import { Module, VuexModule, Mutation } from "vuex-module-decorators";
 import { IRoom, IUser, IMessage } from "~/types";
 
@@ -9,6 +10,7 @@ import { IRoom, IUser, IMessage } from "~/types";
 export default class Room extends VuexModule {
   public room: IRoom = null;
   public usersFilter: string = null;
+  public activeAgendaItem: number = 0;
 
   @Mutation
   setRoom(room: IRoom) {
@@ -18,6 +20,29 @@ export default class Room extends VuexModule {
   @Mutation
   clearRoom() {
     this.room = null;
+  }
+
+  @Mutation
+  setActiveAgendaItem(index: number) {
+    this.activeAgendaItem = index;
+  }
+
+  @Mutation
+  resetVoteAllUser() {
+    for (let i = this.room.users.length - 1; i >= 0; --i) {
+      Vue.set(this.room.users[i], "vote", "");
+      i = 0;
+    }
+  }
+
+  @Mutation
+  setVote(data: any) {
+    for (let i = this.room.users.length - 1; i >= 0; --i) {
+      if (this.room.users[i].id === data.userId) {
+        Vue.set(this.room.users[i], "vote", data.vote);
+        i = 0;
+      }
+    }
   }
 
   @Mutation
@@ -63,6 +88,7 @@ export default class Room extends VuexModule {
         this.room.users[i].handRaised = user.handRaised;
         this.room.users[i].screenShared = user.screenShared;
         this.room.users[i].jid = user.jid;
+        this.room.users[i].role = user.role;
         i = 0;
       }
     }
