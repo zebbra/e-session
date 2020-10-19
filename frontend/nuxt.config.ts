@@ -25,10 +25,10 @@ const config: Configuration = {
         src:
           "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js",
       },
-      /* {
-        src:
-          "https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/dist/face-api.min.js",
-      }, */
+      // {
+      //   src:
+      //     "https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/dist/face-api.min.js",
+      // },
     ],
   },
 
@@ -51,7 +51,7 @@ const config: Configuration = {
    */
   plugins: [
     { src: "~/plugins/jitsi.client", mode: "client" },
-    { src: "~/plugins/emotion.detector", mode: "client" },
+    { src: "~/plugins/face.api.web.worker", ssr: false },
   ],
 
   /*
@@ -159,7 +159,7 @@ const config: Configuration = {
         // web workers are only available client-side
         config.module.rules.push({
           test: /\.worker\.js$/,
-          use: { loader: "workerize-loader" },
+          use: { loader: "worker-loader" },
           exclude: /(node_modules)/,
         });
       }

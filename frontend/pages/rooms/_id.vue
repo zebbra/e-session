@@ -100,6 +100,7 @@ export default defineComponent({
 
     if (process.browser) {
       app.$initJitsi();
+      // app.$initFaceApi();
       app.$initFaceApi();
     }
     return {

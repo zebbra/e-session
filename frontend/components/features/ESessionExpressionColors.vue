@@ -23,7 +23,7 @@ export default defineComponent({
 
     onMounted(() => {
       requestAnimationFrame(animate);
-      app.$startFaceApi();
+      app.$runFaceApi();
     });
 
     const initColorTest = ref({
