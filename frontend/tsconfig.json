@@ -23,5 +23,5 @@
       "vue-cli-plugin-apollo"
     ]
   },
-  "exclude": ["node_modules", ".nuxt", "dist", "static"]
+  "exclude": ["node_modules", ".nuxt", "dist"]
 }
