@@ -51,7 +51,7 @@ const config: Configuration = {
    */
   plugins: [
     { src: "~/plugins/jitsi.client", mode: "client" },
-    { src: "~/plugins/face.api.web.worker", ssr: false },
+    { src: "~/plugins/face.api", ssr: false },
   ],
 
   /*
@@ -148,6 +148,18 @@ const config: Configuration = {
    ** Build configuration
    */
   build: {
+    babel: {
+      babelrc: false,
+      presets: [
+        [
+          "@nuxt/babel-preset-app",
+          {
+            modules: false,
+          },
+        ],
+      ],
+    },
+
     /*
      ** You can extend webpack config here
      */
@@ -159,7 +171,7 @@ const config: Configuration = {
         // web workers are only available client-side
         config.module.rules.push({
           test: /\.worker\.js$/,
-          use: { loader: "worker-loader" },
+          use: { loader: "workerize-loader" },
           exclude: /(node_modules)/,
         });
       }
