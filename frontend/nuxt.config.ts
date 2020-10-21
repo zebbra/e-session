@@ -25,10 +25,10 @@ const config: Configuration = {
         src:
           "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js",
       },
-      /* {
-        src:
-          "https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/dist/face-api.min.js",
-      }, */
+      // {
+      //   src:
+      //     "https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/dist/face-api.min.js",
+      // },
     ],
   },
 
@@ -51,7 +51,7 @@ const config: Configuration = {
    */
   plugins: [
     { src: "~/plugins/jitsi.client", mode: "client" },
-    { src: "~/plugins/emotion.detector", mode: "client" },
+    { src: "~/plugins/face.api", ssr: false },
   ],
 
   /*
@@ -147,12 +147,36 @@ const config: Configuration = {
   /*
    ** Build configuration
    */
-  // build: {
-  //   /*
-  //    ** You can extend webpack config here
-  //    */
-  //   extend(config, ctx) {}
-  // }
+  build: {
+    babel: {
+      babelrc: false,
+      presets: [
+        [
+          "@nuxt/babel-preset-app",
+          {
+            modules: false,
+          },
+        ],
+      ],
+    },
+
+    /*
+     ** You can extend webpack config here
+     */
+    extend(config, { isClient }) {
+      // @see https://github.com/nuxt/nuxt.js/pull/3480#issuecomment-404150387
+      config.output.globalObject = "this";
+
+      if (isClient) {
+        // web workers are only available client-side
+        config.module.rules.push({
+          test: /\.worker\.js$/,
+          use: { loader: "workerize-loader" },
+          exclude: /(node_modules)/,
+        });
+      }
+    },
+  },
   /* server: {
     host: "0.0.0.0",
     https: {
