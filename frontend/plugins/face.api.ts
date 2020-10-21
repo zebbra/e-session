@@ -1,25 +1,25 @@
-import consola from "consola";
-// import { getPrediction } from "~/assets/js/face.api.worker";
-import createTasks from "workerize-loader!~/shared/face.api"; // eslint-disable-line import/no-webpack-loader-syntax
+// import consola from "consola";
+import CreateTasks from "workerize-loader!~/shared/face.api.js"; // eslint-disable-line import/no-webpack-loader-syntax
 
 import { detectionStore } from "~/store";
 
 export default ({ app }) => {
   // const faceApiWorker: any = new FaceApiWorker();
   let doDetection = false;
-  const tasks = createTasks();
+  const tasks = new CreateTasks() as any;
   const _sleep = (m) => new Promise((resolve) => setTimeout(resolve, m));
 
   app.$runFaceApi = async () => {
     doDetection = true;
     if (doDetection) {
       const media = await _fetchStream();
-      consola.log("mediamediamediamediamedia", media);
       const w = media.width;
       const h = media.height;
       const imgData = media.getContext("2d").getImageData(0, 0, w, h);
       const result = await tasks.getPrediction(imgData);
-      detectionStore.updateExpression(result.expressions);
+      if (result.expressions) {
+        detectionStore.updateExpression(result.expressions);
+      }
       await _sleep(2000);
       window.requestAnimationFrame(app.$runFaceApi);
     }

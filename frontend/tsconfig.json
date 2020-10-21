@@ -21,7 +21,8 @@
       "@nuxtjs/vuetify",
       "@nuxtjs/apollo",
       "vue-cli-plugin-apollo",
-      "@types/w3c-image-capture"
+      "@types/w3c-image-capture",
+      "./types/custom",
     ]
   },
   "exclude": ["node_modules", ".nuxt", "dist"]
