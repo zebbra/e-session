@@ -10,7 +10,7 @@ steps:
     commands:
       - cd frontend
       - yarn install --pure-lockfile
-      - yarn lint --ignore-path .eslintignore
+      - yarn lint --ignore-path .eslintignore .
       - yarn test
     depends_on: [clone]
 

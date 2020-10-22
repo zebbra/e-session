@@ -11,7 +11,7 @@
     "start": "nuxt-ts start",
     "start:dev": "nuxt-ts",
     "start:prod": "nuxt start",
-    "lint": "eslint --ext .js,.ts,.vue --ignore-path .gitignore .eslintignore",
+    "lint": "eslint --ext .js,.ts,.vue --ignore-path .gitignore --ignore-path .eslintignore .",
     "test": "jest --passWithNoTests"
   },
   "lint-staged": {
