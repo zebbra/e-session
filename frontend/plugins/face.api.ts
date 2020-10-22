@@ -17,7 +17,7 @@ export default ({ app }) => {
       const h = media.height;
       const imgData = media.getContext("2d").getImageData(0, 0, w, h);
       const result = await tasks.getPrediction(imgData);
-      if (result.expressions) {
+      if (result && result.expressions) {
         detectionStore.updateExpression(result.expressions);
       }
       await _sleep(2000);
