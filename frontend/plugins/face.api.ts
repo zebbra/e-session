@@ -1,12 +1,12 @@
 // import consola from "consola";
-import CreateTasks from "workerize-loader!~/shared/face.api.js"; // eslint-disable-line import/no-webpack-loader-syntax
+import FaceApiWorker from "workerize-loader!~/shared/face.api.js"; // eslint-disable-line import/no-webpack-loader-syntax
 
 import { detectionStore } from "~/store";
 
 export default ({ app }) => {
   // const faceApiWorker: any = new FaceApiWorker();
   let doDetection = false;
-  const tasks = new CreateTasks() as any;
+  const tasks = new FaceApiWorker() as any;
   const _sleep = (m) => new Promise((resolve) => setTimeout(resolve, m));
 
   app.$runFaceApi = async () => {
