@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 <template>
-  <img alt="Logo" src="/tenant-logo.svg" />
+  <img alt="Logo" src="/bundeshaus.png" style="width: 90%; opacity: 60%;" />
 </template>
 
 <script lang="ts">

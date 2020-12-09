@@ -3,13 +3,8 @@
     <v-row class="mb-5">
       <e-session-tenant-logo class="mx-auto" />
     </v-row>
-    <v-form v-model="valid">
-      <v-card
-        color="rgb(0, 0, 0, 0.2)"
-        class="mx-auto"
-        max-width="600"
-        outlined
-      >
+    <v-form v-model="valid" class="hoverBlock">
+      <v-card color="rgb(0, 0, 0, 0.6)" class="mx-auto" max-width="600">
         <v-card-title>You are the Speaker</v-card-title>
         <v-card-text>
           <v-text-field
@@ -25,10 +20,10 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn v-if="user" color="primary" outlined @click="logout">
+          <v-btn v-if="user" light @click="logout">
             Exit
           </v-btn>
-          <v-btn color="primary" outlined :disabled="!valid" @click="submit">
+          <v-btn light :disabled="!valid" @click="submit">
             Enter
           </v-btn>
         </v-card-actions>
@@ -108,3 +103,10 @@ export default defineComponent({
   },
 });
 </script>
+<style scoped>
+.hoverBlock {
+  position: relative;
+  top: -300px;
+  z-index: 2;
+}
+</style>

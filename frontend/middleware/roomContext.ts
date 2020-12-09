@@ -1,4 +1,4 @@
-import { sessionStore, roomStore } from "~/store";
+/* import { sessionStore, roomStore } from "~/store";
 
 export default function ({ isHMR, route, redirect }) {
   if (isHMR) {
@@ -26,4 +26,6 @@ export default function ({ isHMR, route, redirect }) {
   } else if (route.name === "index" && roomJoined) {
     return redirect(`/rooms/${roomStore.room.name}`);
   }
-}
+} */
+
+export default function () {}

@@ -109,9 +109,9 @@ export default defineComponent({
         app.$closeJitsiConnection();
         conferenceStore.doClearConferenceStatus();
         if (wasModerator) {
-          window.location.href = "/parl/speaker";
+          window.location.href = "/parl";
         } else {
-          window.location.href = "/parl/member";
+          window.location.href = "/parl";
         }
       });
       leave();
